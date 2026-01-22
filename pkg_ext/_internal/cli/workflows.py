@@ -153,6 +153,7 @@ def sync_files(api_input: GenerateApiInput, ctx: pkg_ctx):
 
     update_pyproject_toml(ctx, version_str)
     write_changelog_md(ctx)
+    ctx.tool_state.groups.write()
     if hooks := settings.after_file_write_hooks:
         for hook in hooks:
             substituted = hook.format(pkg_path=settings.pkg_directory)

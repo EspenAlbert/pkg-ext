@@ -6,11 +6,13 @@ import re
 from typing import TYPE_CHECKING
 
 from pkg_ext._internal.changelog import (
+    GroupModuleAction,
     KeepPrivateAction,
     MakePublicAction,
     parse_changelog_actions,
 )
 from pkg_ext._internal.models import RefSymbol
+from pkg_ext._internal.reference_handling.added import get_or_prompt_group
 
 if TYPE_CHECKING:
     from pkg_ext._internal.context import pkg_ctx
@@ -63,19 +65,22 @@ def promote_symbols(
     selected: list[PromotableEntry],
     group_name: str | None,
 ) -> list[MakePublicAction]:
-    # Local import required: reference_handling/__init__.py -> added.py -> cli creates circular import
-    from pkg_ext._internal import interactive
-
     groups = ctx.tool_state.groups
     pkg_path = ctx.tool_state.pkg_path
     actions: list[MakePublicAction] = []
+    created_groups: set[str] = set()
 
     for private, ref in selected:
         if group_name:
             target_group = group_name
+            if target_group not in created_groups and target_group not in groups.name_to_group:
+                ctx.add_changelog_action(GroupModuleAction(name=target_group, module_path=ref.module_path))
+                created_groups.add(target_group)
         else:
-            group = interactive.select_group(groups, ref, pkg_path)
-            target_group = group.name
+            target_group, group_action = get_or_prompt_group(groups, ref, pkg_path)
+            if group_action and target_group not in created_groups:
+                ctx.add_changelog_action(group_action)
+                created_groups.add(target_group)
 
         details = f"promoted from private ({private.full_path})" if private else f"created in {ref.rel_path}"
         action = MakePublicAction(name=ref.name, group=target_group, details=details)

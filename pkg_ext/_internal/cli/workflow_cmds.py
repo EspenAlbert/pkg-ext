@@ -386,7 +386,9 @@ def promote(
     ctx: typer.Context,
     name: str | None = typer.Option(None, "--name", "-n", help="Symbol name to promote"),
     group: str | None = typer.Option(None, "--group", "-g", help="Target group"),
-    module_filter: str | None = typer.Option(None, "--module", "-m", help="Filter by module path prefix"),
+    module_filter: str | None = typer.Option(
+        None, "--module", "-m", help="Filter by module path prefix (inside the package, don't include the package name)"
+    ),
     pattern: str | None = typer.Option(None, "--pattern", "-p", help="Filter by name pattern (e.g., 'dump_*')"),
     undecided: bool = typer.Option(
         False,
@@ -419,6 +421,7 @@ def promote(
         actions = handle_promote(pkg_ctx, name, group, module_filter, pattern, undecided)
 
     if actions:
+        pkg_ctx.tool_state.groups.write()
         logger.info(f"Promoted {len(actions)} symbol(s) to public API")
     else:
         logger.info("No symbols promoted")
