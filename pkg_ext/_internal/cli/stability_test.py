@@ -2,7 +2,16 @@
 
 import pytest
 
+from pkg_ext._internal.changelog.actions import (
+    DeprecatedAction,
+    ExperimentalAction,
+    GAAction,
+    StabilityTarget,
+)
 from pkg_ext._internal.cli.stability import ParsedTarget, StabilityLevel
+from pkg_ext._internal.config import Stability
+from pkg_ext._internal.models.groups import PublicGroups
+from pkg_ext._internal.pkg_state import PkgExtState
 
 
 def test_parse_group_target():
@@ -35,23 +44,11 @@ def test_parse_invalid_target():
         ParsedTarget.parse("a.b.c.d")
 
 
-def test_stability_state_tracking():
-    from pathlib import Path
-
-    from pkg_ext._internal.changelog.actions import (
-        DeprecatedAction,
-        ExperimentalAction,
-        GAAction,
-        StabilityTarget,
-    )
-    from pkg_ext._internal.config import Stability
-    from pkg_ext._internal.models.groups import PublicGroups
-    from pkg_ext._internal.pkg_state import PkgExtState
-
+def test_stability_state_tracking(tmp_path):
     state = PkgExtState(
-        repo_root=Path(),
-        changelog_dir=Path(),
-        pkg_path=Path("code/py-libs/pkg-ext/pkg_ext"),
+        repo_root=tmp_path,
+        changelog_dir=tmp_path,
+        pkg_path=tmp_path,
         groups=PublicGroups(),
     )
 
