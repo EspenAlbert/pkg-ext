@@ -27,6 +27,7 @@ from pkg_ext._internal.cli.options import (
     option_skip_dirty_check,
     option_skip_docs,
     option_skip_fix_commits,
+    option_skip_open_in_editor,
 )
 from pkg_ext._internal.cli.workflows import (
     GenerateApiInput,
@@ -261,9 +262,12 @@ def pre_change(
     skip_fix_commits: bool = option_skip_fix_commits,
     full: bool = option_full,
     skip_docs: bool = option_skip_docs,
+    skip_open_in_editor: bool | None = option_skip_open_in_editor,
 ):
     """Handle new symbols then generate examples and tests."""
     settings: PkgSettings = ctx.obj
+    if skip_open_in_editor is not None:
+        settings.skip_open_in_editor = skip_open_in_editor
     api_input = GenerateApiInput(
         settings=settings,
         git_changes_since=git_changes_since,

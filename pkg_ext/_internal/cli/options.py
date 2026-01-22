@@ -40,3 +40,8 @@ option_full = typer.Option(
     "--full",
     help="Run pre-commit workflow after pre-change (sync + docs + diff)",
 )
+option_skip_open_in_editor = typer.Option(
+    None,
+    "--skip-open",
+    help="Skip opening files in editor",
+)
