@@ -48,6 +48,7 @@ class PkgSettings(BaseSettings):
     pkg_directory: DirectoryPath
     repo_root: DirectoryPath
     skip_open_in_editor: bool = False
+    keep_private: bool = False
     tag_prefix: str = ""
     keep_prerelease: bool = False
     ignored_symbols: frozenset[str] = frozenset()

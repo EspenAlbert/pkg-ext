@@ -45,3 +45,8 @@ option_skip_open_in_editor = typer.Option(
     "--skip-open",
     help="Skip opening files in editor",
 )
+option_keep_private = typer.Option(
+    False,
+    "--keep-private",
+    help="Automatically keep all new symbols private without prompting",
+)

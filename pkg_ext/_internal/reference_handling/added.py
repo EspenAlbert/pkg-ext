@@ -110,6 +110,23 @@ def make_expose_decisions(
     return decided_refs
 
 
+def _keep_all_private(ctx: pkg_ctx, added_refs: dict[str, RefStateWithSymbol]) -> None:
+    for ref in added_refs.values():
+        ctx.add_changelog_action(KeepPrivateAction(name=ref.name, full_path=ref.symbol.local_id))
+    logger.info(f"Kept {len(added_refs)} new references private")
+
+
+def _sort_by_dep_order(
+    code_state: PkgCodeState,
+    rel_path_refs: dict[str, list[RefStateWithSymbol]],
+) -> dict[str, list[RefStateWithSymbol]]:
+    sorted_rel_paths = code_state.sort_rel_paths_by_dependecy_order(rel_path_refs.keys(), reverse=True)
+    return {rel_path: rel_path_refs[rel_path] for rel_path in sorted_rel_paths}
+
+
+TRACKED_SYMBOL_TYPES = (SymbolType.FUNCTION, SymbolType.CLASS, SymbolType.EXCEPTION)
+
+
 def handle_added_refs(ctx: pkg_ctx) -> None:
     tool_state = ctx.tool_state
     code_state = ctx.code_state
@@ -118,43 +135,29 @@ def handle_added_refs(ctx: pkg_ctx) -> None:
         logger.info("No new references found in the package")
         return
 
-    def group_by_rel_path(state: RefStateWithSymbol) -> str:
-        return state.symbol.rel_path
+    if ctx.settings.keep_private:
+        _keep_all_private(ctx, added_refs)
+        return
 
-    def decide_refs(refs: list[RefStateWithSymbol | RefSymbol]) -> None:
-        for ref in refs:
-            added_refs.pop(ref.name, None)
-
-    def sort_by_dep_order(
-        rel_path_refs: dict[str, list[RefStateWithSymbol]],
-    ) -> dict[str, list[RefStateWithSymbol]]:
-        sorted_rel_paths = code_state.sort_rel_paths_by_dependecy_order(rel_path_refs.keys(), reverse=True)
-        new_order = {}
-        for rel_path in sorted_rel_paths:
-            new_order[rel_path] = rel_path_refs[rel_path]
-        return new_order
-
-    tracked_symbol_types = (SymbolType.FUNCTION, SymbolType.CLASS, SymbolType.EXCEPTION)
     with new_task(
         "New References expose/hide decisions",
         total=len(added_refs),
         log_updates=True,
     ) as task:
-        for symbol_type in tracked_symbol_types:
+        for symbol_type in TRACKED_SYMBOL_TYPES:
             relevant_refs = [ref for ref in added_refs.values() if ref.symbol.type == symbol_type]
             if not relevant_refs:
                 continue
-            file_added = group_by_once(relevant_refs, key=group_by_rel_path)
-            file_added = sort_by_dep_order(file_added)
+            file_added = group_by_once(relevant_refs, key=lambda s: s.symbol.rel_path)
+            file_added = _sort_by_dep_order(code_state, file_added)
             extra_refs_decided = make_expose_decisions(
                 file_added, ctx, tool_state, code_state, symbol_type, ctx.settings
             )
             all_refs_decided = relevant_refs + extra_refs_decided
-            decide_refs(all_refs_decided)
+            for ref in all_refs_decided:
+                added_refs.pop(ref.name, None)
             task.update(advance=len(all_refs_decided))
     if added_refs:
         remaining_str = "\n".join(str(ref) for ref in added_refs.values())
-        untracked_symbol_types = [symbol_type for symbol_type in SymbolType if symbol_type not in tracked_symbol_types]
-        logger.debug(
-            f"still has {len(added_refs)}, untracked symbol types: {untracked_symbol_types} remaining:\n{remaining_str}"
-        )
+        untracked = [s for s in SymbolType if s not in TRACKED_SYMBOL_TYPES]
+        logger.debug(f"still has {len(added_refs)}, untracked symbol types: {untracked} remaining:\n{remaining_str}")

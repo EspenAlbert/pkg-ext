@@ -126,6 +126,8 @@ def parse_symbols(
 ) -> PkgSrcFile | PkgTestFile | None:
     if is_dunder_file(path):
         return None
+    if "testdata" in rel_path:
+        return None
     py_script = path.read_text()
     if is_generated and is_generated(py_script):
         return None

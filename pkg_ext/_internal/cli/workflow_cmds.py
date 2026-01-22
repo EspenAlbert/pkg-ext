@@ -21,6 +21,7 @@ from pkg_ext._internal.cli.options import (
     option_full,
     option_git_changes_since,
     option_group,
+    option_keep_private,
     option_pr,
     option_push,
     option_skip_clean,
@@ -263,11 +264,14 @@ def pre_change(
     full: bool = option_full,
     skip_docs: bool = option_skip_docs,
     skip_open_in_editor: bool | None = option_skip_open_in_editor,
+    keep_private: bool = option_keep_private,
 ):
     """Handle new symbols then generate examples and tests."""
     settings: PkgSettings = ctx.obj
     if skip_open_in_editor is not None:
         settings.skip_open_in_editor = skip_open_in_editor
+    if keep_private:
+        settings.keep_private = True
     api_input = GenerateApiInput(
         settings=settings,
         git_changes_since=git_changes_since,
