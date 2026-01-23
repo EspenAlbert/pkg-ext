@@ -19,6 +19,8 @@ from pkg_ext._internal.models.api_dump import (
     ParamKind,
 )
 
+CLI_CONTEXT_TYPE_NAMES = frozenset({"Context", "typer.Context", "click.Context"})
+
 _PARAM_KIND_MAP = {
     inspect.Parameter.POSITIONAL_ONLY: ParamKind.POSITIONAL_ONLY,
     inspect.Parameter.POSITIONAL_OR_KEYWORD: ParamKind.POSITIONAL_OR_KEYWORD,
@@ -307,13 +309,27 @@ def parse_class_fields(cls: type) -> list[ClassFieldInfo] | None:
     return None
 
 
+def _has_cli_context_param(func: Callable) -> bool:
+    """Check if function has a typer/click Context parameter."""
+    try:
+        hints = get_type_hints(func)
+    except Exception:
+        return False
+    for hint in hints.values():
+        type_name = getattr(hint, "__name__", None) or str(hint)
+        if type_name in CLI_CONTEXT_TYPE_NAMES:
+            return True
+    return False
+
+
 def is_cli_command(func: Callable) -> bool:
-    """Check if a function is a typer CLI command by looking for ParameterInfo defaults."""
+    """Check if a function is a typer CLI command by looking for ParameterInfo defaults or Context params."""
     try:
         sig = inspect.signature(func)
     except (ValueError, TypeError):
         return False
-    return any(isinstance(p.default, ParameterInfo) for p in sig.parameters.values())
+    has_param_info = any(isinstance(p.default, ParameterInfo) for p in sig.parameters.values())
+    return has_param_info or _has_cli_context_param(func)
 
 
 def _resolve_cli_flags(param_name: str, param_info: Any) -> list[str]:

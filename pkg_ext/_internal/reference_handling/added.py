@@ -84,11 +84,8 @@ def _expose_function_args(
 
 
 def _is_cli_command_ref(code_state: PkgCodeState, ref: RefStateWithSymbol) -> bool:
-    try:
-        func = code_state.lookup(ref.symbol)
-        return is_cli_command(func)
-    except Exception:
-        return False
+    func = code_state.lookup(ref.symbol)
+    return is_cli_command(func)
 
 
 def _partition_cli_refs(

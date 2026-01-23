@@ -38,6 +38,7 @@ from pkg_ext._internal.models.api_dump import (
     TypeAliasDump,
 )
 from pkg_ext._internal.py_format import format_python_string
+from pkg_ext._internal.signature_parser import CLI_CONTEXT_TYPE_NAMES
 
 if TYPE_CHECKING:
     from pkg_ext._internal.generation.docs import SymbolContext
@@ -77,9 +78,6 @@ def _format_function_signature(func: FunctionDump) -> str:
     return f"def {func.name}({', '.join(params)}){ret}:\n    ..."
 
 
-_CLI_CONTEXT_TYPES = {"Context", "typer.Context", "click.Context"}
-
-
 def _format_cli_param(p: CLIParamInfo) -> str:
     """Format a CLI param for signature display."""
     parts = [p.param_name]
@@ -96,11 +94,11 @@ def _format_cli_command_signature(cmd: CLICommandDump) -> str:
     """Format CLI command signature, filtering out Context params and showing clean defaults."""
     cli_param_names = {p.param_name for p in cmd.cli_params}
     params = [
-        _format_cli_param(p) for p in cmd.cli_params if p.type_annotation not in _CLI_CONTEXT_TYPES and not p.hidden
+        _format_cli_param(p) for p in cmd.cli_params if p.type_annotation not in CLI_CONTEXT_TYPE_NAMES and not p.hidden
     ]
     # Include non-CLI params that aren't Context types
     for p in cmd.signature.parameters:
-        if p.name in cli_param_names or p.type_annotation in _CLI_CONTEXT_TYPES:
+        if p.name in cli_param_names or p.type_annotation in CLI_CONTEXT_TYPE_NAMES:
             continue
         params.append(_format_param(p))
     prefix = "*, " if params else ""
@@ -110,7 +108,7 @@ def _format_cli_command_signature(cmd: CLICommandDump) -> str:
 
 def render_cli_params_table(cli_params: list[CLIParamInfo]) -> str:
     """Render CLI parameters as a markdown table."""
-    visible = [p for p in cli_params if not p.hidden and p.type_annotation not in _CLI_CONTEXT_TYPES]
+    visible = [p for p in cli_params if not p.hidden and p.type_annotation not in CLI_CONTEXT_TYPE_NAMES]
     if not visible:
         return ""
 

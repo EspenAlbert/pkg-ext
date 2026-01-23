@@ -92,8 +92,13 @@ def _regular_function(a: int, b: str = "default") -> str:
     return ""
 
 
+def _context_only_cli(ctx: typer.Context) -> None:
+    pass
+
+
 def test_is_cli_command():
     assert is_cli_command(_sample_cli_command)
+    assert is_cli_command(_context_only_cli)
     assert not is_cli_command(_regular_function)
     assert not is_cli_command(sample_func)
 
