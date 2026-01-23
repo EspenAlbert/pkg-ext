@@ -63,6 +63,7 @@ def test_tool_state_update_state(settings):
         MakePublicAction(
             name="inferred",
             group="git_inferred",
+            full_path="inferred.inferred",
             ts=datetime(2025, 8, 25, 17, 37, 2, tzinfo=UTC),
             author="UNSET",
             details="created in inferred.py",

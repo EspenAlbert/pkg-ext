@@ -24,7 +24,7 @@ from pkg_ext._internal.models.code_state import PkgCodeState
 from pkg_ext._internal.models.groups import PublicGroups
 from pkg_ext._internal.models.py_symbols import RefSymbol
 from pkg_ext._internal.models.ref_state import RefState, RefStateType, RefStateWithSymbol
-from pkg_ext._internal.models.types import qualified_name
+from pkg_ext._internal.models.types import qualified_name, ref_id_module
 
 
 class PkgExtState(Entity):
@@ -84,31 +84,48 @@ class PkgExtState(Entity):
 
     def update_state(self, action: ChangelogAction) -> None:
         match action:
-            case MakePublicAction(name=name, group=group):
-                state = self.current_state(group, name)
-                state.type = RefStateType.EXPOSED
-            case KeepPrivateAction(name=name):
-                # KeepPrivate uses full_path for identification, no group needed
-                key = name  # Use name directly as key for hidden refs
-                if state := self.refs.get(key):
-                    state.type = RefStateType.HIDDEN
-                else:
-                    self.refs[key] = RefState(name=name, type=RefStateType.HIDDEN)
-            case DeleteAction(name=name, group=group):
-                state = self.current_state(group, name)
-                state.type = RefStateType.DELETED
+            case MakePublicAction(name=name, group=group, full_path=full_path):
+                self._handle_make_public(name, group, full_path)
+            case KeepPrivateAction(name=name, full_path=full_path):
+                self._handle_keep_private(name, full_path)
+            case DeleteAction(name=name, group=group_name):
+                self._handle_delete(name, group_name)
             case RenameAction(name=name, group=group, old_name=old_name):
-                state = self.current_state(group, name)
-                old_state = self.current_state(group, old_name)
-                old_state.type = RefStateType.DELETED
-                state.type = RefStateType.EXPOSED
+                self._handle_rename(name, group, old_name)
             case GroupModuleAction(name=group_name, module_path=module_path):
                 self.groups.add_module(group_name, module_path)
             case FixAction(short_sha=sha, ignored=ignored):
-                shas = self.ignored_shas if ignored else self.included_shas
-                shas.add(sha)
+                (self.ignored_shas if ignored else self.included_shas).add(sha)
             case ExperimentalAction() | GAAction() | DeprecatedAction():
                 self._update_stability(action)
+
+    def _handle_make_public(self, name: str, group: str, full_path: str) -> None:
+        state = self.current_state(group, name)
+        state.type = RefStateType.EXPOSED
+        grp = self.groups.get_or_create_group(group)
+        grp.owned_refs.add(full_path)
+        grp.owned_modules.add(ref_id_module(full_path))
+
+    def _handle_keep_private(self, name: str, full_path: str) -> None:
+        if state := self.refs.get(name):
+            state.type = RefStateType.HIDDEN
+        else:
+            self.refs[name] = RefState(name=name, type=RefStateType.HIDDEN)
+        for grp in self.groups.groups:
+            grp.owned_refs.discard(full_path)
+
+    def _handle_delete(self, name: str, group_name: str) -> None:
+        state = self.current_state(group_name, name)
+        state.type = RefStateType.DELETED
+        if grp := self.groups.name_to_group.get(group_name):
+            matching = {r for r in grp.owned_refs if r.endswith(f".{name}")}
+            grp.owned_refs -= matching
+
+    def _handle_rename(self, name: str, group: str, old_name: str) -> None:
+        state = self.current_state(group, name)
+        old_state = self.current_state(group, old_name)
+        old_state.type = RefStateType.DELETED
+        state.type = RefStateType.EXPOSED
 
     def _stability_from_action(self, action: ChangelogAction) -> Stability:
         match action:

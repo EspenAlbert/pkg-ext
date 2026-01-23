@@ -114,6 +114,7 @@ class ChangelogActionBase(Entity):
 class MakePublicAction(ChangelogActionBase):
     type: Literal["make_public"] = "make_public"
     group: str
+    full_path: str
     details: str = ""
 
     @property
@@ -122,7 +123,7 @@ class MakePublicAction(ChangelogActionBase):
 
     @property
     def stable_sort_key(self) -> tuple[str, ...]:
-        return (self.type, self.group, self.name)
+        return (self.type, self.group, self.full_path, self.name)
 
 
 class KeepPrivateAction(ChangelogActionBase):

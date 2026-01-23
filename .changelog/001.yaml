@@ -1337,18 +1337,21 @@ name: post_merge
 ts: 2026-01-22 21:04:03.569326+00:00
 type: make_public
 details: promoted from private (_internal.cli.workflow_cmds.post_merge)
+full_path: _internal.cli.workflow_cmds.post_merge
 group: workflows
 ---
 name: pre_change
 ts: 2026-01-22 21:04:53.217365+00:00
 type: make_public
 details: promoted from private (_internal.cli.workflow_cmds.pre_change)
+full_path: _internal.cli.workflow_cmds.pre_change
 group: workflows
 ---
 name: pre_commit
 ts: 2026-01-22 21:06:06.266657+00:00
 type: make_public
 details: promoted from private (_internal.cli.workflow_cmds.pre_commit)
+full_path: _internal.cli.workflow_cmds.pre_commit
 group: workflows
 ---
 name: workflows
@@ -1365,6 +1368,7 @@ name: PkgSettings
 ts: 2026-01-23 05:55:55.960102+00:00
 type: make_public
 details: promoted from private (_internal.settings.PkgSettings)
+full_path: _internal.settings.PkgSettings
 group: __ROOT__
 ---
 name: is_cli_command
@@ -1391,84 +1395,98 @@ name: CLIParamInfo
 ts: 2026-01-23 06:35:18.889516+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.CLIParamInfo
 group: api_dump
 ---
 name: CLICommandDump
 ts: 2026-01-23 06:35:18.890980+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.CLICommandDump
 group: api_dump
 ---
 name: ParamKind
 ts: 2026-01-23 06:37:17.967779+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.ParamKind
 group: api_dump
 ---
 name: ParamDefault
 ts: 2026-01-23 06:37:17.969463+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.ParamDefault
 group: api_dump
 ---
 name: FuncParamInfo
 ts: 2026-01-23 06:37:17.971274+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.FuncParamInfo
 group: api_dump
 ---
 name: CallableSignature
 ts: 2026-01-23 06:37:17.972704+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.CallableSignature
 group: api_dump
 ---
 name: ClassFieldInfo
 ts: 2026-01-23 06:37:17.974558+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.ClassFieldInfo
 group: api_dump
 ---
 name: FunctionDump
 ts: 2026-01-23 06:37:17.975893+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.FunctionDump
 group: api_dump
 ---
 name: ClassDump
 ts: 2026-01-23 06:37:17.977206+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.ClassDump
 group: api_dump
 ---
 name: ExceptionDump
 ts: 2026-01-23 06:37:17.978538+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.ExceptionDump
 group: api_dump
 ---
 name: TypeAliasDump
 ts: 2026-01-23 06:37:17.979915+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.TypeAliasDump
 group: api_dump
 ---
 name: GlobalVarDump
 ts: 2026-01-23 06:37:17.981401+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.GlobalVarDump
 group: api_dump
 ---
 name: GroupDump
 ts: 2026-01-23 06:37:17.982655+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.GroupDump
 group: api_dump
 ---
 name: PublicApiDump
 ts: 2026-01-23 06:37:17.984017+00:00
 type: make_public
 details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.PublicApiDump
 group: api_dump
 ---
 name: SymbolDumpBase
@@ -1485,18 +1503,21 @@ name: exp
 ts: 2026-01-23 06:39:46.047686+00:00
 type: make_public
 details: CLI command in _internal/cli/stability_cmds.py
+full_path: _internal.cli.stability_cmds.exp
 group: stability
 ---
 name: ga
 ts: 2026-01-23 06:39:46.050634+00:00
 type: make_public
 details: CLI command in _internal/cli/stability_cmds.py
+full_path: _internal.cli.stability_cmds.ga
 group: stability
 ---
 name: dep
 ts: 2026-01-23 06:39:46.053696+00:00
 type: make_public
 details: CLI command in _internal/cli/stability_cmds.py
+full_path: _internal.cli.stability_cmds.dep
 group: stability
 ---
 name: generate
@@ -1508,18 +1529,21 @@ name: gen_examples
 ts: 2026-01-23 07:03:05.468599+00:00
 type: make_public
 details: CLI command in _internal/cli/gen_cmds.py
+full_path: _internal.cli.gen_cmds.gen_examples
 group: generate
 ---
 name: gen_tests
 ts: 2026-01-23 07:03:05.472520+00:00
 type: make_public
 details: CLI command in _internal/cli/gen_cmds.py
+full_path: _internal.cli.gen_cmds.gen_tests
 group: generate
 ---
 name: gen_docs
 ts: 2026-01-23 07:03:05.476039+00:00
 type: make_public
 details: CLI command in _internal/cli/gen_cmds.py
+full_path: _internal.cli.gen_cmds.gen_docs
 group: generate
 ---
 name: api_commands
@@ -1531,12 +1555,14 @@ name: dump_api
 ts: 2026-01-23 07:22:11.777926+00:00
 type: make_public
 details: CLI command in _internal/cli/api_cmds.py
+full_path: _internal.cli.api_cmds.dump_api
 group: api_commands
 ---
 name: diff_api
 ts: 2026-01-23 07:22:11.780428+00:00
 type: make_public
 details: CLI command in _internal/cli/api_cmds.py
+full_path: _internal.cli.api_cmds.diff_api
 group: api_commands
 ---
 name: reconcile_groups_with_changelog
@@ -1553,6 +1579,7 @@ name: release_notes
 ts: 2026-01-23 07:40:09.847166+00:00
 type: make_public
 details: CLI command in _internal/cli/changelog_cmds.py
+full_path: _internal.cli.changelog_cmds.release_notes
 group: changelog
 ---
 name: find_release_action
@@ -1564,10 +1591,12 @@ name: chore
 ts: 2026-01-23 07:43:38.593450+00:00
 type: make_public
 details: CLI command in _internal/cli/changelog_cmds.py
+full_path: _internal.cli.changelog_cmds.chore
 group: changelog
 ---
 name: promote
 ts: 2026-01-23 07:43:38.595857+00:00
 type: make_public
 details: CLI command in _internal/cli/changelog_cmds.py
+full_path: _internal.cli.changelog_cmds.promote
 group: changelog

@@ -44,7 +44,7 @@ def test_fix_action_uses_changelog_message_when_set(mock_ctx):
 
 
 def test_make_public_action(mock_ctx):
-    action = MakePublicAction(name="my_func", group="utils", author="test")
+    action = MakePublicAction(name="my_func", group="utils", full_path="mod.my_func", author="test")
     result = as_changelog_line(action, "", mock_ctx)
     assert result == "New function `my_func`"
 

@@ -38,7 +38,7 @@ def test_find_release_version_not_found():
 
 def test_get_symbol_since_version_with_release():
     actions = [
-        MakePublicAction(name="my_func", group="config", ts=datetime(2025, 1, 1, tzinfo=UTC)),
+        MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime(2025, 1, 1, tzinfo=UTC)),
         ReleaseAction(name="1.0.0", old_version="0.0.0", ts=datetime(2025, 1, 10, tzinfo=UTC)),
     ]
     assert get_symbol_since_version("my_func", actions) == "1.0.0"
@@ -46,7 +46,7 @@ def test_get_symbol_since_version_with_release():
 
 def test_get_symbol_since_version_unreleased():
     actions = [
-        MakePublicAction(name="my_func", group="config", ts=datetime(2025, 1, 1, tzinfo=UTC)),
+        MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime(2025, 1, 1, tzinfo=UTC)),
     ]
     assert get_symbol_since_version("my_func", actions) == UNRELEASED_VERSION
 
@@ -67,7 +67,7 @@ def test_get_field_since_version_from_action():
 
 def test_get_field_since_version_falls_back_to_symbol():
     actions = [
-        MakePublicAction(name="MyClass", group="config", ts=datetime(2025, 1, 1, tzinfo=UTC)),
+        MakePublicAction(name="MyClass", group="config", full_path="mod.MyClass", ts=datetime(2025, 1, 1, tzinfo=UTC)),
         ReleaseAction(name="1.0.0", old_version="0.0.0", ts=datetime(2025, 1, 10, tzinfo=UTC)),
     ]
     assert get_field_since_version("MyClass", "existing_field", actions) == "1.0.0"
@@ -75,7 +75,7 @@ def test_get_field_since_version_falls_back_to_symbol():
 
 def test_build_symbol_changes_unreleased():
     actions = [
-        MakePublicAction(name="my_func", group="config", ts=datetime(2025, 1, 1, tzinfo=UTC)),
+        MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime(2025, 1, 1, tzinfo=UTC)),
         FixAction(
             name="my_func",
             short_sha="abc",
@@ -90,7 +90,7 @@ def test_build_symbol_changes_unreleased():
 
 def test_build_symbol_changes_with_releases():
     actions = [
-        MakePublicAction(name="parse", group="config", ts=datetime(2025, 1, 1, tzinfo=UTC)),
+        MakePublicAction(name="parse", group="config", full_path="mod.parse", ts=datetime(2025, 1, 1, tzinfo=UTC)),
         ReleaseAction(name="1.0.0", old_version="0.0.0", ts=datetime(2025, 1, 5, tzinfo=UTC)),
         FixAction(
             name="parse",

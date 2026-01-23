@@ -83,7 +83,7 @@ def promote_symbols(
                 created_groups.add(target_group)
 
         details = f"promoted from private ({private.full_path})" if private else f"created in {ref.rel_path}"
-        action = MakePublicAction(name=ref.name, group=target_group, details=details)
+        action = MakePublicAction(name=ref.name, group=target_group, full_path=ref.local_id, details=details)
         ctx.add_changelog_action(action)
         actions.append(action)
         logger.info(f"Promoted {ref.name} to group '{target_group}'")

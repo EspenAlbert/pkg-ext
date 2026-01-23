@@ -76,7 +76,7 @@ def test_symbol_context_complexity():
 
 def test_build_symbol_context_only_make_public_not_complex():
     func = _func_dump("my_func")
-    action = MakePublicAction(name="my_func", group="config", ts=datetime.now(UTC))
+    action = MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime.now(UTC))
     ctx = build_symbol_context(func, set(), [action])
     assert not ctx.has_meaningful_changes
     assert not ctx.is_complex

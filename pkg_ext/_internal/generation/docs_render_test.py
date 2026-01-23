@@ -220,7 +220,7 @@ def test_render_inline_symbol_shows_since_badge():
     func = _func_dump("my_func")
     ctx = SymbolContext(symbol=func)
     actions = [
-        MakePublicAction(name="my_func", group="config", ts=datetime(2025, 1, 1, tzinfo=UTC)),
+        MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime(2025, 1, 1, tzinfo=UTC)),
         ReleaseAction(name="1.0.0", old_version="0.0.0", ts=datetime(2025, 1, 10, tzinfo=UTC)),
     ]
     content = render_inline_symbol(ctx, actions)

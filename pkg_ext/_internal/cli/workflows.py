@@ -17,13 +17,9 @@ from pkg_ext._internal import api_diff, api_dumper, py_format
 from pkg_ext._internal.changelog import (
     AdditionalChangeAction,
     BreakingChangeAction,
-    DeleteAction,
-    KeepPrivateAction,
-    MakePublicAction,
     ReleaseAction,
     changelog_filepath,
     dump_changelog_actions,
-    parse_changelog_actions,
     parse_changelog_file_path,
 )
 from pkg_ext._internal.changelog.actions import archive_old_actions
@@ -50,45 +46,6 @@ from pkg_ext._internal.version_bump import bump_version, read_current_version
 from pkg_ext._internal.warnings_gen import write_warnings_module
 
 logger = logging.getLogger(__name__)
-
-
-def reconcile_groups_with_changelog(ctx: pkg_ctx) -> None:
-    """Sync groups with changelog: add refs from MakePublicAction, remove private/deleted.
-
-    Actions are processed in timestamp order (sorted). Later actions override earlier ones,
-    so a MakePublicAction after a KeepPrivateAction will make the ref public.
-    """
-    groups = ctx.tool_state.groups
-    changelog_actions = parse_changelog_actions(ctx.settings.changelog_dir)
-    refs_made_public: set[str] = set()
-    refs_to_remove: set[str] = set()
-
-    for action in sorted(changelog_actions):
-        match action:
-            case MakePublicAction(name=name, group=group_name):
-                if ref := ctx.code_state.named_refs.get(name):
-                    local_id = ref.symbol.local_id
-                    group = groups.get_or_create_group(group_name)
-                    group.owned_refs.add(local_id)
-                    group.owned_modules.add(ref.symbol.module_path)
-                    refs_made_public.add(local_id)
-                    refs_to_remove.discard(local_id)
-            case KeepPrivateAction(full_path=full_path):
-                assert full_path not in refs_made_public, (
-                    f"Invalid changelog: KeepPrivateAction for '{full_path}' after MakePublicAction. "
-                    f"Use DeleteAction to remove a public symbol."
-                )
-                refs_to_remove.add(full_path)
-            case DeleteAction(name=name, group=group_name):
-                if group := groups.name_to_group.get(group_name):
-                    matching = [r for r in group.owned_refs if r.endswith(f".{name}")]
-                    refs_to_remove.update(matching)
-
-    for group in groups.groups:
-        removed = group.owned_refs & refs_to_remove
-        if removed:
-            group.owned_refs -= removed
-            logger.info(f"Removed private/deleted refs from {group.name}: {removed}")
 
 
 class GenerateApiInput(Entity):
@@ -196,7 +153,6 @@ def sync_files(api_input: GenerateApiInput, ctx: pkg_ctx):
 
     update_pyproject_toml(ctx, version_str)
     write_changelog_md(ctx)
-    reconcile_groups_with_changelog(ctx)
     ctx.tool_state.groups.write()
     if hooks := settings.after_file_write_hooks:
         for hook in hooks:

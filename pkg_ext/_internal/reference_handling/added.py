@@ -55,7 +55,7 @@ def _expose_ref(ctx: pkg_ctx, groups: PublicGroups, ref: RefSymbol, details: str
     group_name, group_action = get_or_prompt_group(groups, ref, pkg_path)
     if group_action:
         ctx.add_changelog_action(group_action)
-    ctx.add_changelog_action(MakePublicAction(name=ref.name, group=group_name, details=details))
+    ctx.add_changelog_action(MakePublicAction(name=ref.name, group=group_name, full_path=ref.local_id, details=details))
 
 
 def _expose_function_args(

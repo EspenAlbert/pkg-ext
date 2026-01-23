@@ -6,6 +6,7 @@ from pkg_ext import workflows
 from pkg_ext import generate
 from pkg_ext import stability
 from pkg_ext import api_dump
+from pkg_ext._internal.settings import PkgSettings
 
 VERSION = "0.0.1"
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     "generate",
     "stability",
     "api_dump",
+    "PkgSettings",
 ]
