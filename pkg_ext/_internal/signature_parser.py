@@ -8,6 +8,8 @@ import typing
 from contextlib import suppress
 from typing import Any, Callable, ClassVar, Literal, Union, get_args, get_origin, get_type_hints
 
+from typer.models import ArgumentInfo, ParameterInfo
+
 from pkg_ext._internal.models.api_dump import (
     CallableSignature,
     ClassFieldInfo,
@@ -305,24 +307,13 @@ def parse_class_fields(cls: type) -> list[ClassFieldInfo] | None:
     return None
 
 
-def _get_typer_parameter_info_class() -> type | None:
-    with suppress(ImportError):
-        from typer.models import ParameterInfo
-
-        return ParameterInfo
-    return None
-
-
 def is_cli_command(func: Callable) -> bool:
     """Check if a function is a typer CLI command by looking for ParameterInfo defaults."""
-    param_info_cls = _get_typer_parameter_info_class()
-    if param_info_cls is None:
-        return False
     try:
         sig = inspect.signature(func)
     except (ValueError, TypeError):
         return False
-    return any(isinstance(p.default, param_info_cls) for p in sig.parameters.values())
+    return any(isinstance(p.default, ParameterInfo) for p in sig.parameters.values())
 
 
 def _resolve_cli_flags(param_name: str, param_info: Any) -> list[str]:
@@ -335,6 +326,8 @@ def _resolve_cli_flags(param_name: str, param_info: Any) -> list[str]:
 def _extract_choices(annotation: Any) -> list[str] | None:
     """Extract choices from Enum or Literal type annotations."""
     if isinstance(annotation, type) and issubclass(annotation, enum.Enum):
+        if issubclass(annotation, enum.StrEnum):
+            return [str(member) for member in annotation]
         return [member.name for member in annotation]
     origin = get_origin(annotation)
     if origin is Literal:
@@ -344,7 +337,7 @@ def _extract_choices(annotation: Any) -> list[str] | None:
 
 def _is_required(param_info: Any) -> bool:
     """Check if parameter is required (no default value)."""
-    if param_info.default is None and param_info.default_factory is None:
+    if param_info.default is None is param_info.default_factory:
         return True
     return param_info.default is ...
 
@@ -358,21 +351,8 @@ def _format_envvar(envvar: str | list[str] | None) -> str | None:
     return envvar
 
 
-def _get_typer_argument_info_class() -> type | None:
-    with suppress(ImportError):
-        from typer.models import ArgumentInfo
-
-        return ArgumentInfo
-    return None
-
-
 def extract_cli_params(func: Callable) -> list[CLIParamInfo]:
     """Extract CLI parameters from a typer command function."""
-    param_info_cls = _get_typer_parameter_info_class()
-    if param_info_cls is None:
-        return []
-    argument_cls = _get_typer_argument_info_class()
-
     try:
         sig = inspect.signature(func)
         hints = get_type_hints(func)
@@ -381,11 +361,11 @@ def extract_cli_params(func: Callable) -> list[CLIParamInfo]:
 
     params: list[CLIParamInfo] = []
     for name, param in sig.parameters.items():
-        if not isinstance(param.default, param_info_cls):
+        if not isinstance(param.default, ParameterInfo):
             continue
         info = param.default
         annotation = hints.get(name)
-        is_arg = argument_cls is not None and isinstance(info, argument_cls)
+        is_arg = isinstance(info, ArgumentInfo)
         default_repr: str | None = None
         if not _is_required(info):
             default_repr = repr(info.default)

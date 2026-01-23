@@ -84,14 +84,61 @@ def _expose_function_args(
 
 
 def _is_cli_command_ref(code_state: PkgCodeState, ref: RefStateWithSymbol) -> bool:
-    """Check if a function ref is a CLI command."""
-    if ref.symbol.type != SymbolType.FUNCTION:
-        return False
     try:
         func = code_state.lookup(ref.symbol)
         return is_cli_command(func)
     except Exception:
         return False
+
+
+def _partition_cli_refs(
+    code_state: PkgCodeState,
+    file_states: list[RefStateWithSymbol],
+) -> tuple[list[RefStateWithSymbol], list[RefStateWithSymbol]]:
+    cli_commands = [s for s in file_states if _is_cli_command_ref(code_state, s)]
+    non_cli = [s for s in file_states if s not in cli_commands]
+    return cli_commands, non_cli
+
+
+def _auto_expose_cli_commands(
+    ctx: pkg_ctx,
+    groups: PublicGroups,
+    pkg_path: Path,
+    rel_path: str,
+    cli_commands: list[RefStateWithSymbol],
+) -> None:
+    for ref in cli_commands:
+        logger.info(f"Auto-exposing CLI command: {ref.name}")
+        _expose_ref(ctx, groups, ref.symbol, f"CLI command in {rel_path}", pkg_path)
+
+
+def _prompt_and_expose(
+    ctx: pkg_ctx,
+    groups: PublicGroups,
+    pkg_path: Path,
+    rel_path: str,
+    non_cli: list[RefStateWithSymbol],
+    symbol_type: str,
+    settings: PkgSettings,
+) -> list[RefStateWithSymbol]:
+    if not non_cli:
+        return []
+
+    if not settings.skip_open_in_editor:
+        run_and_wait(f"{get_default_editor()} {pkg_path / rel_path}")
+
+    exposed = select_multiple_refs(
+        f"Select references of type {symbol_type} to expose from {rel_path} (if any):",
+        non_cli,
+    )
+    for ref in exposed:
+        _expose_ref(ctx, groups, ref.symbol, f"created in {rel_path}", pkg_path)
+
+    for ref in non_cli:
+        if ref not in exposed:
+            ctx.add_changelog_action(KeepPrivateAction(name=ref.name, full_path=ref.symbol.local_id))
+
+    return exposed
 
 
 def make_expose_decisions(
@@ -105,32 +152,20 @@ def make_expose_decisions(
     decided_refs: list[RefStateWithSymbol | RefSymbol] = []
     groups = tool_state.groups
     pkg_path = tool_state.pkg_path
-    for rel_path, file_states in refs.items():
-        # Auto-expose CLI commands without prompting
-        cli_commands = [s for s in file_states if _is_cli_command_ref(code_state, s)]
-        non_cli = [s for s in file_states if s not in cli_commands]
-        for ref in cli_commands:
-            logger.info(f"Auto-exposing CLI command: {ref.name}")
-            _expose_ref(ctx, groups, ref.symbol, f"CLI command in {rel_path}", pkg_path)
 
-        if non_cli:
-            if not settings.skip_open_in_editor:
-                run_and_wait(f"{get_default_editor()} {pkg_path / rel_path}")
-            exposed = select_multiple_refs(
-                f"Select references of type {symbol_type} to expose from {rel_path} (if any):",
-                non_cli,
-            )
-            for ref in exposed:
-                _expose_ref(ctx, groups, ref.symbol, f"created in {rel_path}", pkg_path)
-            hidden = [state for state in non_cli if state not in exposed]
-            for ref in hidden:
-                ctx.add_changelog_action(KeepPrivateAction(name=ref.name, full_path=ref.symbol.local_id))
+    for rel_path, file_states in refs.items():
+        if symbol_type == SymbolType.FUNCTION:
+            cli_commands, non_cli = _partition_cli_refs(code_state, file_states)
+            _auto_expose_cli_commands(ctx, groups, pkg_path, rel_path, cli_commands)
         else:
-            exposed = []
+            cli_commands, non_cli = [], file_states
+
+        exposed = _prompt_and_expose(ctx, groups, pkg_path, rel_path, non_cli, symbol_type, settings)
 
         all_exposed = cli_commands + exposed
         if all_exposed and symbol_type == SymbolType.FUNCTION:
             decided_refs.extend(_expose_function_args(ctx, tool_state, code_state, all_exposed))
+
     return decided_refs
 
 

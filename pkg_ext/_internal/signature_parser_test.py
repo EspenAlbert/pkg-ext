@@ -109,6 +109,6 @@ def test_extract_cli_params():
     assert count_param.default_repr == "0"
     assert not count_param.required
     format_param = next(p for p in params if p.param_name == "format")
-    assert format_param.choices == ["JSON", "YAML"]
+    assert format_param.choices == ["json", "yaml"]
     verbose_param = next(p for p in params if p.param_name == "verbose")
     assert verbose_param.flags == ["--verbose"]
