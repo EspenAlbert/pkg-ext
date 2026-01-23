@@ -17,7 +17,7 @@
 <a id="release_notes_def"></a>
 
 ### cli_command: `release_notes`
-- [source](../../pkg_ext/_internal/cli/changelog_cmds.py#L115)
+- [source](../../pkg_ext/_internal/cli/changelog_cmds.py#L121)
 > **Since:** unreleased
 
 ```python
@@ -35,7 +35,7 @@ def release_notes(*, tag_name: str = ...):
 <a id="chore_def"></a>
 
 ### cli_command: `chore`
-- [source](../../pkg_ext/_internal/cli/changelog_cmds.py#L38)
+- [source](../../pkg_ext/_internal/cli/changelog_cmds.py#L43)
 > **Since:** unreleased
 
 ```python
@@ -56,7 +56,7 @@ Create a ChoreAction for internal changes that warrant a release.
 <a id="promote_def"></a>
 
 ### cli_command: `promote`
-- [source](../../pkg_ext/_internal/cli/changelog_cmds.py#L61)
+- [source](../../pkg_ext/_internal/cli/changelog_cmds.py#L66)
 > **Since:** unreleased
 
 ```python

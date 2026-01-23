@@ -15,9 +15,14 @@ from pkg_ext._internal.changelog import (
     parse_changelog_file_path,
 )
 from pkg_ext._internal.changelog.write_changelog_md import read_changelog_section
-from pkg_ext._internal.cli.workflows import GenerateApiInput, create_ctx
+from pkg_ext._internal.cli.workflows import (
+    GenerateApiInput,
+    create_ctx,
+    write_generated_modules,
+)
 from pkg_ext._internal.git_usage import GitSince, find_pr_info_or_none
 from pkg_ext._internal.settings import PkgSettings
+from pkg_ext._internal.version_bump import read_current_version
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +102,8 @@ def promote(
         actions = handle_promote(pkg_ctx, name, group, module_filter, pattern, undecided)
 
     if actions:
-        pkg_ctx.tool_state.groups.write()
+        version = str(read_current_version(pkg_ctx))
+        write_generated_modules(pkg_ctx, version)
         logger.info(f"Promoted {len(actions)} symbol(s) to public API")
     else:
         logger.info("No symbols promoted")

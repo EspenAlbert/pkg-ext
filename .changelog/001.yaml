@@ -1600,3 +1600,8 @@ type: make_public
 details: CLI command in _internal/cli/changelog_cmds.py
 full_path: _internal.cli.changelog_cmds.promote
 group: changelog
+---
+name: write_generated_modules
+ts: 2026-01-23 09:40:50.195582+00:00
+type: keep_private
+full_path: _internal.cli.workflows.write_generated_modules

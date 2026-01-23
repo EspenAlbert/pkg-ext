@@ -136,6 +136,18 @@ def update_changelog_entries(api_input: GenerateApiInput) -> pkg_ctx | None:
     return ctx
 
 
+def write_generated_modules(ctx: pkg_ctx, version: str) -> None:
+    """Write group modules, __init__.py, warnings module, and .groups.yaml."""
+    settings = ctx.settings
+    generated_py_paths: list[Path] = []
+    if warnings_path := write_warnings_module(settings, ctx.tool_state):
+        generated_py_paths.append(warnings_path)
+    generated_py_paths.extend(write_groups(ctx))
+    generated_py_paths.append(write_init(ctx, version))
+    py_format.format_python_files(generated_py_paths, settings.format_command)
+    ctx.tool_state.groups.write()
+
+
 def sync_files(api_input: GenerateApiInput, ctx: pkg_ctx):
     version_old = read_current_version(ctx)
     version_new = bump_version(ctx, version_old)
@@ -143,17 +155,10 @@ def sync_files(api_input: GenerateApiInput, ctx: pkg_ctx):
     version_str = str(version_new) if api_input.bump_version else str(version_old)
     settings = api_input.settings
 
-    generated_py_paths: list[Path] = []
-    if warnings_path := write_warnings_module(settings, ctx.tool_state):
-        generated_py_paths.append(warnings_path)
-    generated_py_paths.extend(write_groups(ctx))
-    generated_py_paths.append(write_init(ctx, version_str))
-
-    py_format.format_python_files(generated_py_paths, settings.format_command)
+    write_generated_modules(ctx, version_str)
 
     update_pyproject_toml(ctx, version_str)
     write_changelog_md(ctx)
-    ctx.tool_state.groups.write()
     if hooks := settings.after_file_write_hooks:
         for hook in hooks:
             substituted = hook.format(pkg_path=settings.pkg_directory)
