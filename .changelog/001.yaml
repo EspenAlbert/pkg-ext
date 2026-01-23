@@ -1477,3 +1477,49 @@ name: PkgExtDeprecationWarning
 ts: 2026-01-22 20:56:16.357421+00:00
 type: keep_private
 full_path: _internal.warnings.PkgExtDeprecationWarning
+---
+name: post_merge
+ts: 2026-01-22 21:04:03.569326+00:00
+type: make_public
+details: promoted from private (_internal.cli.workflow_cmds.post_merge)
+group: workflows
+---
+name: pre_change
+ts: 2026-01-22 21:04:53.217365+00:00
+type: make_public
+details: promoted from private (_internal.cli.workflow_cmds.pre_change)
+group: workflows
+---
+name: pre_commit
+ts: 2026-01-22 21:06:06.266657+00:00
+type: make_public
+details: promoted from private (_internal.cli.workflow_cmds.pre_commit)
+group: workflows
+---
+name: chore
+ts: 2026-01-22 21:06:20.278977+00:00
+type: make_public
+details: promoted from private (_internal.cli.workflow_cmds.chore)
+group: workflows
+---
+name: workflows
+ts: 2026-01-22 21:10:17.465172+00:00
+type: group_module
+module_path: _internal.cli.workflow_cmds
+---
+name: promote
+ts: 2026-01-22 21:10:17.466870+00:00
+type: make_public
+details: promoted from private (_internal.cli.workflow_cmds.promote)
+group: workflows
+---
+name: __ROOT__
+ts: 2026-01-23 05:55:55.958984+00:00
+type: group_module
+module_path: _internal.settings
+---
+name: PkgSettings
+ts: 2026-01-23 05:55:55.960102+00:00
+type: make_public
+details: promoted from private (_internal.settings.PkgSettings)
+group: __ROOT__
