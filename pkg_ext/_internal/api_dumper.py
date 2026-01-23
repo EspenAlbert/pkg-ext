@@ -12,6 +12,7 @@ from zero_3rdparty.object_name import as_name
 
 from pkg_ext._internal.models.api_dump import (
     ClassDump,
+    CLICommandDump,
     ExceptionDump,
     FunctionDump,
     GlobalVarDump,
@@ -23,6 +24,8 @@ from pkg_ext._internal.models.api_dump import (
 from pkg_ext._internal.models.groups import PublicGroup, PublicGroups
 from pkg_ext._internal.models.py_symbols import RefSymbol, SymbolType
 from pkg_ext._internal.signature_parser import (
+    extract_cli_params,
+    is_cli_command,
     parse_class_fields,
     parse_direct_bases,
     parse_signature,
@@ -63,14 +66,18 @@ def _get_class_docstring(cls: type) -> str:
     return cls.__doc__ or ""
 
 
-def dump_function(symbol: Callable, ref: RefSymbol) -> FunctionDump:
-    return FunctionDump(
-        name=ref.name,
-        module_path=ref.module_path,
-        docstring=symbol.__doc__ or "",
-        signature=parse_signature(symbol),
-        line_number=_get_line_number(symbol),
-    )
+def dump_function(symbol: Callable, ref: RefSymbol) -> FunctionDump | CLICommandDump:
+    sig = parse_signature(symbol)
+    base = {
+        "name": ref.name,
+        "module_path": ref.module_path,
+        "docstring": symbol.__doc__ or "",
+        "signature": sig,
+        "line_number": _get_line_number(symbol),
+    }
+    if is_cli_command(symbol):
+        return CLICommandDump(**base, cli_params=extract_cli_params(symbol))
+    return FunctionDump(**base)
 
 
 def dump_class(cls: type, ref: RefSymbol) -> ClassDump:

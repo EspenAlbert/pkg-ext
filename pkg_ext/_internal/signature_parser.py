@@ -1,15 +1,17 @@
 from __future__ import annotations
 
 import dataclasses
+import enum
 import inspect
 import types
 import typing
 from contextlib import suppress
-from typing import Any, Callable, ClassVar, Union, get_origin, get_type_hints
+from typing import Any, Callable, ClassVar, Literal, Union, get_args, get_origin, get_type_hints
 
 from pkg_ext._internal.models.api_dump import (
     CallableSignature,
     ClassFieldInfo,
+    CLIParamInfo,
     FuncParamInfo,
     ParamDefault,
     ParamKind,
@@ -301,3 +303,104 @@ def parse_class_fields(cls: type) -> list[ClassFieldInfo] | None:
     if dataclasses.is_dataclass(cls):
         return _parse_dataclass_fields(cls)
     return None
+
+
+def _get_typer_parameter_info_class() -> type | None:
+    with suppress(ImportError):
+        from typer.models import ParameterInfo
+
+        return ParameterInfo
+    return None
+
+
+def is_cli_command(func: Callable) -> bool:
+    """Check if a function is a typer CLI command by looking for ParameterInfo defaults."""
+    param_info_cls = _get_typer_parameter_info_class()
+    if param_info_cls is None:
+        return False
+    try:
+        sig = inspect.signature(func)
+    except (ValueError, TypeError):
+        return False
+    return any(isinstance(p.default, param_info_cls) for p in sig.parameters.values())
+
+
+def _resolve_cli_flags(param_name: str, param_info: Any) -> list[str]:
+    """Resolve CLI flags from ParameterInfo, auto-generating if empty."""
+    if param_info.param_decls:
+        return list(param_info.param_decls)
+    return [f"--{param_name.replace('_', '-')}"]
+
+
+def _extract_choices(annotation: Any) -> list[str] | None:
+    """Extract choices from Enum or Literal type annotations."""
+    if isinstance(annotation, type) and issubclass(annotation, enum.Enum):
+        return [member.name for member in annotation]
+    origin = get_origin(annotation)
+    if origin is Literal:
+        return [str(arg) for arg in get_args(annotation)]
+    return None
+
+
+def _is_required(param_info: Any) -> bool:
+    """Check if parameter is required (no default value)."""
+    if param_info.default is None and param_info.default_factory is None:
+        return True
+    return param_info.default is ...
+
+
+def _format_envvar(envvar: str | list[str] | None) -> str | None:
+    """Format envvar to a single string."""
+    if envvar is None:
+        return None
+    if isinstance(envvar, list):
+        return envvar[0] if envvar else None
+    return envvar
+
+
+def _get_typer_argument_info_class() -> type | None:
+    with suppress(ImportError):
+        from typer.models import ArgumentInfo
+
+        return ArgumentInfo
+    return None
+
+
+def extract_cli_params(func: Callable) -> list[CLIParamInfo]:
+    """Extract CLI parameters from a typer command function."""
+    param_info_cls = _get_typer_parameter_info_class()
+    if param_info_cls is None:
+        return []
+    argument_cls = _get_typer_argument_info_class()
+
+    try:
+        sig = inspect.signature(func)
+        hints = get_type_hints(func)
+    except Exception:
+        return []
+
+    params: list[CLIParamInfo] = []
+    for name, param in sig.parameters.items():
+        if not isinstance(param.default, param_info_cls):
+            continue
+        info = param.default
+        annotation = hints.get(name)
+        is_arg = argument_cls is not None and isinstance(info, argument_cls)
+        default_repr: str | None = None
+        if not _is_required(info):
+            default_repr = repr(info.default)
+        params.append(
+            CLIParamInfo(
+                param_name=name,
+                type_annotation=_annotation_str(annotation),
+                flags=[] if is_arg else _resolve_cli_flags(name, info),
+                help=info.help,
+                default_repr=default_repr,
+                required=_is_required(info),
+                envvar=_format_envvar(info.envvar),
+                is_argument=is_arg,
+                hidden=info.hidden,
+                choices=_extract_choices(annotation),
+            )
+        )
+    return params

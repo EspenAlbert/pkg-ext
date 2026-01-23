@@ -61,6 +61,29 @@ class FunctionDump(SymbolDumpBase):
     signature: CallableSignature
 
 
+class CLIParamInfo(Entity):
+    """CLI parameter metadata from typer OptionInfo/ArgumentInfo."""
+
+    param_name: str
+    type_annotation: str | None = None
+    flags: list[str] = Field(default_factory=list)
+    help: str | None = None
+    default_repr: str | None = None
+    required: bool = False
+    envvar: str | None = None
+    is_argument: bool = False
+    hidden: bool = False
+    choices: list[str] | None = None
+
+
+class CLICommandDump(SymbolDumpBase):
+    """A typer CLI command with rich parameter metadata."""
+
+    type: Literal[SymbolType.CLI_COMMAND] = SymbolType.CLI_COMMAND
+    signature: CallableSignature
+    cli_params: list[CLIParamInfo] = Field(default_factory=list)
+
+
 class ClassDump(SymbolDumpBase):
     type: Literal[SymbolType.CLASS] = SymbolType.CLASS
     direct_bases: list[str] = Field(default_factory=list)
@@ -86,7 +109,7 @@ class GlobalVarDump(SymbolDumpBase):
 
 
 SymbolDump = Annotated[
-    FunctionDump | ClassDump | ExceptionDump | TypeAliasDump | GlobalVarDump,
+    FunctionDump | CLICommandDump | ClassDump | ExceptionDump | TypeAliasDump | GlobalVarDump,
     Field(discriminator="type"),
 ]
 

@@ -14,6 +14,7 @@ from pkg_ext._internal.generation.docs_render import (
     format_docstring,
     format_signature,
     render_changes_section,
+    render_cli_params_table,
     render_env_var_table,
     render_example_section,
     render_field_table,
@@ -26,6 +27,8 @@ from pkg_ext._internal.models.api_dump import (
     CallableSignature,
     ClassDump,
     ClassFieldInfo,
+    CLICommandDump,
+    CLIParamInfo,
     ExceptionDump,
     FuncParamInfo,
     FunctionDump,
@@ -222,3 +225,55 @@ def test_render_inline_symbol_shows_since_badge():
     ]
     content = render_inline_symbol(ctx, actions)
     assert "**Since:** 1.0.0" in content
+
+
+def _cli_cmd_dump(name: str, params: list[CLIParamInfo]) -> CLICommandDump:
+    return CLICommandDump(name=name, module_path="cli", signature=CallableSignature(), cli_params=params)
+
+
+def test_format_signature_cli_command():
+    cmd = _cli_cmd_dump(
+        "chore",
+        [
+            CLIParamInfo(param_name="description", type_annotation="str", flags=["--description", "-d"], required=True),
+            CLIParamInfo(param_name="pr", type_annotation="int", flags=["--pr"], default_repr="0"),
+        ],
+    )
+    sig = format_signature(cmd)
+    assert "def chore(*, description: str = ..., pr: int = 0)" in sig
+
+
+def test_render_cli_params_table():
+    params = [
+        CLIParamInfo(param_name="name", type_annotation="str", flags=["--name", "-n"], required=True, help="The name"),
+        CLIParamInfo(param_name="count", type_annotation="int", flags=["--count"], default_repr="0", help="Count"),
+    ]
+    table = render_cli_params_table(params)
+    assert "`--name`, `-n`" in table
+    assert "*required*" in table
+    assert "`0`" in table
+
+
+def test_render_cli_params_table_with_envvar():
+    params = [
+        CLIParamInfo(param_name="key", type_annotation="str", flags=["--key"], required=True, envvar="MY_KEY"),
+        CLIParamInfo(param_name="debug", type_annotation="bool", flags=["--debug"], default_repr="False"),
+    ]
+    table = render_cli_params_table(params)
+    assert "Env Var" in table
+    assert "`MY_KEY`" in table
+
+
+def test_render_cli_params_table_with_choices():
+    params = [
+        CLIParamInfo(
+            param_name="format",
+            type_annotation="Format",
+            flags=["--format"],
+            default_repr="'json'",
+            choices=["json", "yaml"],
+            help="Output format",
+        ),
+    ]
+    table = render_cli_params_table(params)
+    assert "[json, yaml]" in table

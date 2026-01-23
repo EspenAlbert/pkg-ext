@@ -27,6 +27,8 @@ from pkg_ext._internal.generation.example_gen import (
 from pkg_ext._internal.models.api_dump import (
     ClassDump,
     ClassFieldInfo,
+    CLICommandDump,
+    CLIParamInfo,
     ExceptionDump,
     FunctionDump,
     GlobalVarDump,
@@ -75,6 +77,73 @@ def _format_function_signature(func: FunctionDump) -> str:
     return f"def {func.name}({', '.join(params)}){ret}:\n    ..."
 
 
+_CLI_CONTEXT_TYPES = {"Context", "typer.Context", "click.Context"}
+
+
+def _format_cli_param(p: CLIParamInfo) -> str:
+    """Format a CLI param for signature display."""
+    parts = [p.param_name]
+    if p.type_annotation:
+        parts.append(f": {p.type_annotation}")
+    if p.required:
+        parts.append(" = ...")
+    elif p.default_repr:
+        parts.append(f" = {p.default_repr}")
+    return "".join(parts)
+
+
+def _format_cli_command_signature(cmd: CLICommandDump) -> str:
+    """Format CLI command signature, filtering out Context params and showing clean defaults."""
+    cli_param_names = {p.param_name for p in cmd.cli_params}
+    params = [
+        _format_cli_param(p) for p in cmd.cli_params if p.type_annotation not in _CLI_CONTEXT_TYPES and not p.hidden
+    ]
+    # Include non-CLI params that aren't Context types
+    for p in cmd.signature.parameters:
+        if p.name in cli_param_names or p.type_annotation in _CLI_CONTEXT_TYPES:
+            continue
+        params.append(_format_param(p))
+    prefix = "*, " if params else ""
+    ret = f" -> {cmd.signature.return_annotation}" if cmd.signature.return_annotation else ""
+    return f"def {cmd.name}({prefix}{', '.join(params)}){ret}:\n    ..."
+
+
+def render_cli_params_table(cli_params: list[CLIParamInfo]) -> str:
+    """Render CLI parameters as a markdown table."""
+    visible = [p for p in cli_params if not p.hidden and p.type_annotation not in _CLI_CONTEXT_TYPES]
+    if not visible:
+        return ""
+
+    has_envvar = any(p.envvar for p in visible)
+    cols = ["Flag", "Type", "Default"]
+    if has_envvar:
+        cols.append("Env Var")
+    cols.append("Description")
+
+    header = "| " + " | ".join(cols) + " |"
+    sep = "|" + "|".join("---" for _ in cols) + "|"
+
+    rows = []
+    for p in visible:
+        if p.is_argument:
+            flag_str = f"`{p.param_name}` (arg)"
+        else:
+            flag_str = ", ".join(f"`{f}`" for f in p.flags) if p.flags else "-"
+        type_str = f"`{p.type_annotation}`" if p.type_annotation else "-"
+        default_str = "*required*" if p.required else f"`{p.default_repr}`" if p.default_repr else "-"
+        help_str = (p.help or "-").replace("|", "\\|")
+        if p.choices:
+            help_str += f" [{', '.join(p.choices)}]"
+
+        row = [flag_str, type_str, default_str]
+        if has_envvar:
+            row.append(f"`{p.envvar}`" if p.envvar else "-")
+        row.append(help_str)
+        rows.append("| " + " | ".join(row) + " |")
+
+    return "\n".join([header, sep, *rows])
+
+
 def _format_field(f: ClassFieldInfo) -> str:
     parts = [f"    {f.name}"]
     if f.type_annotation:
@@ -102,6 +171,8 @@ def format_signature(symbol: SymbolDump) -> str:
     match symbol:
         case FunctionDump():
             return _format_function_signature(symbol)
+        case CLICommandDump():
+            return _format_cli_command_signature(symbol)
         case ClassDump():
             return _format_class_signature(symbol)
         case ExceptionDump():
@@ -268,6 +339,10 @@ def render_inline_symbol(
     if docstring:
         lines.extend(["", docstring])
 
+    if isinstance(symbol, CLICommandDump) and symbol.cli_params:
+        if table := render_cli_params_table(symbol.cli_params):
+            lines.extend(["", "**CLI Options:**", "", table])
+
     if isinstance(symbol, ClassDump) and symbol.fields:
         field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions)
         if should_show_field_table(symbol.fields, field_versions):
@@ -330,6 +405,10 @@ def render_symbol_page(
         if env_table := render_env_var_table(symbol):
             parts.extend(["", env_table])
 
+    if isinstance(symbol, CLICommandDump) and symbol.cli_params:
+        if table := render_cli_params_table(symbol.cli_params):
+            parts.extend(["", "### CLI Options", "", table])
+
     if isinstance(symbol, ClassDump) and symbol.fields:
         field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions)
         if should_show_field_table(symbol.fields, field_versions):
@@ -377,7 +456,7 @@ def render_example_section(example: Any, symbol: SymbolDump, pkg_import_name: st
 
     fields = {k: v for k, v in example.model_dump().items() if k not in EXAMPLE_BASE_FIELDS}
 
-    if isinstance(symbol, FunctionDump):
+    if isinstance(symbol, (FunctionDump, CLICommandDump)):
         args = ", ".join(f"{k}={_format_example_value(v)}" for k, v in fields.items())
         code = f"result = {symbol.name}({args})"
     elif isinstance(symbol, ClassDump):

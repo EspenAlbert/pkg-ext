@@ -1,9 +1,13 @@
 from dataclasses import dataclass
+from enum import StrEnum
 
+import typer
 from pydantic import BaseModel, Field, computed_field
 
 from pkg_ext._internal.models.api_dump import ParamKind
 from pkg_ext._internal.signature_parser import (
+    extract_cli_params,
+    is_cli_command,
     parse_class_fields,
     parse_direct_bases,
     parse_signature,
@@ -68,3 +72,43 @@ def test_parse_dataclass_fields():
 def test_parse_direct_bases():
     bases = parse_direct_bases(ChildClass)
     assert "SampleModel" in bases
+
+
+class OutputFormat(StrEnum):
+    JSON = "json"
+    YAML = "yaml"
+
+
+def _sample_cli_command(
+    name: str = typer.Option(..., "--name", "-n", help="The name"),
+    count: int = typer.Option(0, "--count", help="Count value"),
+    format: OutputFormat = typer.Option(OutputFormat.JSON, help="Output format"),
+    verbose: bool = typer.Option(False),
+) -> None:
+    pass
+
+
+def _regular_function(a: int, b: str = "default") -> str:
+    return ""
+
+
+def test_is_cli_command():
+    assert is_cli_command(_sample_cli_command)
+    assert not is_cli_command(_regular_function)
+    assert not is_cli_command(sample_func)
+
+
+def test_extract_cli_params():
+    params = extract_cli_params(_sample_cli_command)
+    assert len(params) == 4
+    name_param = next(p for p in params if p.param_name == "name")
+    assert name_param.flags == ["--name", "-n"]
+    assert name_param.required
+    assert name_param.help == "The name"
+    count_param = next(p for p in params if p.param_name == "count")
+    assert count_param.default_repr == "0"
+    assert not count_param.required
+    format_param = next(p for p in params if p.param_name == "format")
+    assert format_param.choices == ["JSON", "YAML"]
+    verbose_param = next(p for p in params if p.param_name == "verbose")
+    assert verbose_param.flags == ["--verbose"]

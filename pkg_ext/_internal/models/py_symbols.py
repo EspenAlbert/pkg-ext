@@ -13,6 +13,7 @@ class SymbolType(StrEnum):
     TYPE_ALIAS = "type_alias"
     GLOBAL_VAR = "global_var"
     FUNCTION = "function"
+    CLI_COMMAND = "cli_command"
     CLASS = "class"
     EXCEPTION = "exception"
     UNKNOWN = "unknown"
