@@ -19,6 +19,7 @@ from pkg_ext._internal.changelog import (
     BreakingChangeAction,
     DeleteAction,
     KeepPrivateAction,
+    MakePublicAction,
     ReleaseAction,
     changelog_filepath,
     dump_changelog_actions,
@@ -52,14 +53,31 @@ logger = logging.getLogger(__name__)
 
 
 def reconcile_groups_with_changelog(ctx: pkg_ctx) -> None:
-    """Remove refs from groups that are marked private or deleted in changelog."""
+    """Sync groups with changelog: add refs from MakePublicAction, remove private/deleted.
+
+    Actions are processed in timestamp order (sorted). Later actions override earlier ones,
+    so a MakePublicAction after a KeepPrivateAction will make the ref public.
+    """
     groups = ctx.tool_state.groups
     changelog_actions = parse_changelog_actions(ctx.settings.changelog_dir)
+    refs_made_public: set[str] = set()
     refs_to_remove: set[str] = set()
 
-    for action in changelog_actions:
+    for action in sorted(changelog_actions):
         match action:
-            case KeepPrivateAction(full_path=full_path) if full_path:
+            case MakePublicAction(name=name, group=group_name):
+                if ref := ctx.code_state.named_refs.get(name):
+                    local_id = ref.symbol.local_id
+                    group = groups.get_or_create_group(group_name)
+                    group.owned_refs.add(local_id)
+                    group.owned_modules.add(ref.symbol.module_path)
+                    refs_made_public.add(local_id)
+                    refs_to_remove.discard(local_id)
+            case KeepPrivateAction(full_path=full_path):
+                assert full_path not in refs_made_public, (
+                    f"Invalid changelog: KeepPrivateAction for '{full_path}' after MakePublicAction. "
+                    f"Use DeleteAction to remove a public symbol."
+                )
                 refs_to_remove.add(full_path)
             case DeleteAction(name=name, group=group_name):
                 if group := groups.name_to_group.get(group_name):

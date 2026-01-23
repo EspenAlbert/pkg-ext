@@ -2,6 +2,7 @@
 # flake8: noqa
 from pkg_ext import api_commands
 from pkg_ext import changelog
+from pkg_ext import workflows
 from pkg_ext import generate
 from pkg_ext import stability
 from pkg_ext import api_dump
@@ -10,6 +11,7 @@ VERSION = "0.0.1"
 __all__ = [
     "api_commands",
     "changelog",
+    "workflows",
     "generate",
     "stability",
     "api_dump",
