@@ -3,7 +3,7 @@
 # === OK_EDIT: path-sync header ===
 [project]
 name = "pkg-ext"
-version = "0.1.0"
+version = "0.0.1"
 description = "Python package public API management, versioning, and changelog generation"
 requires-python = ">=3.13"
 license = "MIT"
@@ -85,6 +85,7 @@ dev = [
   "pytest>=9.0",
   "pytest-asyncio>=0.24",
   "pytest-cov>=7.0",
+  "pytest-regressions>=2.6",
   "ruff>=0.14",
 ]
 # === OK_EDIT: path-sync dev ===
