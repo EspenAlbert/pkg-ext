@@ -17,9 +17,12 @@ from pkg_ext._internal import api_diff, api_dumper, py_format
 from pkg_ext._internal.changelog import (
     AdditionalChangeAction,
     BreakingChangeAction,
+    DeleteAction,
+    KeepPrivateAction,
     ReleaseAction,
     changelog_filepath,
     dump_changelog_actions,
+    parse_changelog_actions,
     parse_changelog_file_path,
 )
 from pkg_ext._internal.changelog.actions import archive_old_actions
@@ -46,6 +49,28 @@ from pkg_ext._internal.version_bump import bump_version, read_current_version
 from pkg_ext._internal.warnings_gen import write_warnings_module
 
 logger = logging.getLogger(__name__)
+
+
+def reconcile_groups_with_changelog(ctx: pkg_ctx) -> None:
+    """Remove refs from groups that are marked private or deleted in changelog."""
+    groups = ctx.tool_state.groups
+    changelog_actions = parse_changelog_actions(ctx.settings.changelog_dir)
+    refs_to_remove: set[str] = set()
+
+    for action in changelog_actions:
+        match action:
+            case KeepPrivateAction(full_path=full_path) if full_path:
+                refs_to_remove.add(full_path)
+            case DeleteAction(name=name, group=group_name):
+                if group := groups.name_to_group.get(group_name):
+                    matching = [r for r in group.owned_refs if r.endswith(f".{name}")]
+                    refs_to_remove.update(matching)
+
+    for group in groups.groups:
+        removed = group.owned_refs & refs_to_remove
+        if removed:
+            group.owned_refs -= removed
+            logger.info(f"Removed private/deleted refs from {group.name}: {removed}")
 
 
 class GenerateApiInput(Entity):
@@ -153,6 +178,7 @@ def sync_files(api_input: GenerateApiInput, ctx: pkg_ctx):
 
     update_pyproject_toml(ctx, version_str)
     write_changelog_md(ctx)
+    reconcile_groups_with_changelog(ctx)
     ctx.tool_state.groups.write()
     if hooks := settings.after_file_write_hooks:
         for hook in hooks:
