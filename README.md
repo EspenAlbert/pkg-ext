@@ -24,9 +24,11 @@ pip install pkg-ext
 ## Core Concepts
 
 ### Symbol Reference IDs
+
 Symbols are identified by `{module_path}.{symbol_name}`, e.g., `my_pkg.utils.parse_config`.
 
 ### Changelog Actions
+
 Stored in `.changelog/{pr_number}.yaml` files using Pydantic discriminated unions:
 
 | Action Type | Description | Version Bump | Key Fields |
@@ -64,6 +66,7 @@ Stability actions (`experimental`, `ga`, `deprecated`) support three target leve
 | `arg` | Function argument | `parent` = `{group}.{symbol}`, `name` = arg name |
 
 ### Public Groups
+
 Groups organize related symbols. Configured in `.groups.yaml`:
 
 ```yaml
@@ -96,15 +99,17 @@ pkg-ext [OPTIONS] COMMAND
 | `--skip-open` | Skip opening files in editor |
 | `--tag-prefix` | Git tag prefix (e.g., `v` for `v1.0.0`) |
 
-### Workflow Commands
+### Command Reference
 
-| Command | When | Interactive | Writes |
-|---------|------|-------------|--------|
-| `pre-change` | After adding/removing symbols | Yes | Examples, tests |
-| `pre-commit` | Before commit / CI validation | No | `-dev` files, docs |
-| `post-merge` | After merge to main | No | Real files, tag |
+| Category | Commands | Description | Docs |
+|----------|----------|-------------|------|
+| Workflow | `pre-change`, `pre-commit`, `post-merge` | Development lifecycle commands | [docs/workflows](docs/workflows/index.md) |
+| Changelog | `chore`, `promote`, `release-notes` | Changelog management | [docs/changelog](docs/changelog/index.md) |
+| Stability | `exp`, `ga`, `dep` | Stability level management | [docs/stability](docs/stability/index.md) |
+| API | `diff-api`, `dump-api` | API comparison and export | [docs/api_commands](docs/api_commands/index.md) |
+| Generation | `gen-docs`, `gen-examples`, `gen-tests` | Generate documentation and scaffolds | [docs/generate](docs/generate/index.md) |
 
-#### When to Use
+### When to Use Workflow Commands
 
 | Scenario | Command |
 |----------|---------|
@@ -116,109 +121,6 @@ pkg-ext [OPTIONS] COMMAND
 - **`pre-change`** handles interactive decisions (expose/hide symbols, delete/rename). Fast because it only generates example and test scaffolds.
 - **`pre-commit`** validates all decisions are made (fails in bot mode if prompts needed), syncs generated files, regenerates docs, and runs the dirty check.
 - **`pre-change --full`** combines both: runs interactive prompts, generates examples/tests, then syncs files and regenerates docs. The dirty check is skipped since you're still developing.
-
-#### `pre-change`
-
-Prompts for new symbols (expose or hide) and removed symbols (delete or alias). Generates `{group}_examples.py` and `{group}_test.py` scaffolds.
-
-```bash
-pkg-ext pre-change                     # All groups
-pkg-ext pre-change -g config           # Single group
-pkg-ext pre-change --full              # Also run pre-commit workflow
-pkg-ext pre-change --full --skip-docs  # Skip docs generation
-```
-
-#### `pre-commit`
-
-Runs in bot mode (fails if pending prompts). Updates `.groups-dev.yaml`, `CHANGELOG-dev.md`, and docs.
-
-```bash
-pkg-ext pre-commit              # With docs
-pkg-ext pre-commit --skip-docs  # Skip docs for faster iteration
-```
-
-#### `post-merge`
-
-Run after merge on default branch. Bumps version, creates git tag, cleans old changelog entries.
-
-```bash
-pkg-ext post-merge --push --pr 123
-pkg-ext post-merge --pr 123 --force-reason "CI improvements"  # Force release
-```
-
-When no changelog entries exist for a PR, `post-merge` skips the release (no version bump, no tag). Use `--force-reason` to force a release by auto-creating a `ChoreAction`.
-
-#### `chore`
-
-Create a `ChoreAction` for internal changes that warrant a release but don't affect the public API.
-
-```bash
-pkg-ext chore -d "CI improvements"           # Auto-detect PR number
-pkg-ext chore -d "Dependency updates" --pr 4 # Explicit PR number
-```
-
-Use when merging PRs with internal changes (refactoring, CI updates, dependency bumps) that should trigger a patch release.
-
-### Stability Commands
-
-Manage stability at group, symbol, and argument levels. All stability state is tracked in `.changelog/` as the single source of truth.
-
-**Target format:** `{group}` or `{group}.{symbol}` or `{group}.{symbol}.{arg}`
-
-**Constraints:**
-- Arg-level stability changes require the parent group to be GA
-- Commands validate that the target exists before creating an action
-
-#### `exp` - Mark as experimental
-
-```bash
-pkg-ext exp --target config              # Mark entire group
-pkg-ext exp --target config.parse        # Mark symbol in group
-pkg-ext exp --target config.parse.timeout  # Mark argument on symbol
-```
-
-#### `ga` - Graduate to GA
-
-```bash
-pkg-ext ga --target config               # Graduate group to stable
-pkg-ext ga --target config.parse         # Graduate symbol
-```
-
-#### `dep` - Mark as deprecated
-
-```bash
-pkg-ext dep --target config --replacement new_config
-pkg-ext dep --target config.parse.callback --replacement on_done
-```
-
-### Utility Commands
-
-#### `dump-groups`
-
-Regenerate `.groups.yaml` with merged config data (for debugging group assignments).
-
-```bash
-pkg-ext dump-groups
-```
-
-#### `diff-api`
-
-Compare baseline API dump against current code to detect breaking and non-breaking changes.
-
-```bash
-pkg-ext diff-api                    # Compare {pkg}.api.yaml vs current code
-pkg-ext diff-api --baseline v1.0.0  # Compare against specific git tag/ref
-```
-
-Outputs a summary grouped by breaking and non-breaking changes. The comparison runs automatically during `pre-commit`; this command is for manual inspection.
-
-#### `release-notes`
-
-Extract changelog section for a specific tag.
-
-```bash
-pkg-ext release-notes --tag v1.2.0
-```
 
 ## Configuration
 
@@ -258,6 +160,29 @@ docstring = "Utilities for common operations"
 
 **Note:** Stability is not configured here. Use `pkg-ext exp/ga/dep` CLI commands to manage stability via changelog actions.
 
+### Version Bump Limits
+
+For pre-1.0.0 packages where breaking changes are expected, cap the version bump:
+
+**Project-level** (applies to all PRs):
+
+```toml
+# pyproject.toml
+[tool.pkg-ext]
+max_bump_type = "minor"  # All PRs capped to minor
+```
+
+**Per-PR override** (`MaxBumpTypeAction` in changelog overrides config):
+
+```yaml
+# .changelog/{pr}.yaml
+name: version_cap
+type: max_bump_type
+max_bump: patch
+reason: Documentation-only release
+ts: '2026-01-17T14:35:00+00:00'
+```
+
 ### Dev Mode
 
 The `pre-commit` command enables dev mode, which writes to `-dev` suffixed files:
@@ -269,8 +194,6 @@ This allows iterating on changelog entries during development without modifying 
 ## Generated Files
 
 ### Files Updated During PR
-
-These files are created/updated when running `pre-commit` during development:
 
 | File | Purpose | Editable |
 |------|---------|----------|
@@ -289,9 +212,9 @@ These files are created/updated when running `pre-commit` during development:
 - Symbol doc pages include a "Changes" table showing unreleased modifications
 - Content outside `=== OK_EDIT: pkg-ext ... ===` markers can be customized and is preserved
 
-### Files Updated During Release (main branch only)
+### Files Updated During Release
 
-These files are updated by `post-merge` after PR is merged:
+These files are updated by `post-merge` after PR is merged (main branch only):
 
 | File | What Changes |
 |------|--------------|
@@ -302,9 +225,9 @@ These files are updated by `post-merge` after PR is merged:
 | `{pkg}.api.yaml` | Regenerated with new version |
 | `docs/**/*.md` | Unreleased changes become versioned |
 
-### File Contents
+### File Contents Examples
 
-#### `__init__.py`
+**`__init__.py`:**
 
 ```python
 # Generated by pkg-ext
@@ -319,121 +242,26 @@ __all__ = [
 ]
 ```
 
-### Group Module (`my_group.py`)
-
-**Standard (GA stability):**
-
-```python
-# Generated by pkg-ext
-from my_pkg.helpers import helper_func as _helper_func
-
-helper_func = _helper_func
-```
-
-**With experimental stability:**
+**Group module (`my_group.py`):**
 
 ```python
 # Generated by pkg-ext
 from my_pkg.helpers import helper_func as _helper_func
 from my_pkg._warnings import _experimental
 
-helper_func = _experimental(_helper_func)
+helper_func = _experimental(_helper_func)  # With experimental stability
 ```
 
 The underscore alias pattern prevents re-export issues with `__all__`.
 
-### `_warnings.py` (Generated)
+**`_warnings.py`:**
 
-When any group has non-GA stability, pkg-ext generates a `_warnings.py` module in the target package. This removes the runtime dependency on pkg-ext.
+When any group has non-GA stability, pkg-ext generates a `_warnings.py` module in the target package (removes runtime dependency on pkg-ext):
 
 ```python
-"""Warning classes and decorators for MyPkg stability levels.
-
-Auto-generated by pkg-ext. Do not edit manually.
-"""
-# ... implementation details ...
-
 class MyPkgWarning(UserWarning): ...
 class MyPkgExperimentalWarning(MyPkgWarning): ...
 class MyPkgDeprecationWarning(MyPkgWarning, DeprecationWarning): ...
-```
-
-The warning class names use PascalCase of the package name (e.g., `PkgExtWarning` for `pkg_ext`).
-
-### `.changelog/{pr}.yaml`
-
-```yaml
-name: parse_config
-type: make_public
-group: my_group
-ts: '2025-01-02T10:00:00+00:00'
-author: username
-details: created in my_pkg/utils.py
----
-name: my_group
-type: group_module
-ts: '2025-01-02T10:00:01+00:00'
-module_path: my_pkg.utils
----
-name: my_group
-type: experimental
-target: group
-ts: '2025-01-02T10:00:02+00:00'
-```
-
-### `CHANGELOG.md`
-
-```markdown
-# Changelog
-
-## 0.1.0 2025-01-02
-
-### My_Group
-- New function parse_config
-
-### Other Changes
-- Fixed parsing edge case [abc123](https://github.com/user/repo/commit/abc123)
-```
-
-## Developer Workflow
-
-### Development Cycle
-
-1. Create branch, make code changes
-2. Run `pkg-ext pre-change` - prompts for new/removed symbols, generates scaffolds
-3. Fill in examples, run tests locally
-4. Run `pkg-ext pre-commit` - validates decisions, updates `-dev` files and docs
-5. Commit and push
-6. CI runs `pkg-ext pre-commit` - validates all decisions, regenerates docs
-7. After merge, CI runs `pkg-ext post-merge` - bumps version, writes real files, creates tag
-
-### Stability Workflow
-
-1. Mark new group as experimental: `pkg-ext exp --target new_group`
-2. Develop features, symbols auto-inherit group stability
-3. Graduate to GA: `pkg-ext ga --target new_group`
-4. Mark arg for deprecation: `pkg-ext dep --target group.func.old_arg --replacement new_arg`
-
-### Git Hook Setup
-
-**Manual hook** (`.git/hooks/pre-commit`):
-
-```bash
-#!/bin/bash
-pkg-ext pre-commit
-```
-
-**[pre-commit](https://pre-commit.com/) framework** (`.pre-commit-config.yaml`):
-
-```yaml
-repos:
-  - repo: local
-    hooks:
-      - id: pkg-ext
-        name: pkg-ext pre-commit
-        entry: pkg-ext pre-commit
-        language: system
-        pass_filenames: false
 ```
 
 ## Symbol Detection
@@ -453,9 +281,11 @@ Files skipped:
 ## Automatic Behaviors
 
 ### Function Argument Exposure
+
 When exposing a function, its type hint arguments are auto-exposed if they reference local package types.
 
 ### Git Integration
+
 - Uses [GitPython](https://gitpython.readthedocs.io/) for commit analysis
 - Uses [gh CLI](https://cli.github.com/) to detect PR info
 - Extracts PR number from merge commit message (`Merge pull request #123`)
@@ -493,29 +323,6 @@ Interactive actions (from `pre-change`) are never replaced.
 ### First Release
 
 When no baseline `{pkg}.api.yaml` exists, diff is skipped (nothing to compare against).
-
-## Version Bump Override
-
-For pre-1.0.0 packages where breaking changes are expected, cap the version bump using project config:
-
-```toml
-# pyproject.toml
-[tool.pkg-ext]
-max_bump_type = "minor"  # All PRs capped to minor
-```
-
-For per-PR overrides, use `MaxBumpTypeAction` in the changelog (overrides config):
-
-```yaml
-# .changelog/{pr}.yaml
-name: version_cap
-type: max_bump_type
-max_bump: patch
-reason: Documentation-only release
-ts: '2026-01-17T14:35:00+00:00'
-```
-
-Precedence: `MaxBumpTypeAction` overrides `max_bump_type` config (allows per-PR escape from project default).
 
 ## Limitations
 
@@ -558,7 +365,15 @@ Precedence: `MaxBumpTypeAction` overrides `max_bump_type` config (allows per-PR 
 - **Return types always breaking** - No semantic analysis (e.g., returning subclass is flagged as breaking)
 - **Factory defaults** - Defaults using `"..."` (factory pattern) may cause false positives
 
-## File Structure
+## Dependencies
+
+- **[ask-shell](https://github.com/EspenAlbert/ask-shell)** - Interactive prompts and shell execution
+- **[model-lib](https://github.com/EspenAlbert/model-lib)** - YAML/TOML parsing and Pydantic models
+- **[GitPython](https://gitpython.readthedocs.io/)** - Git repository access
+
+## Appendix
+
+### File Structure
 
 ```
 my-repo/
@@ -576,15 +391,9 @@ my-repo/
     _internal.py         # Private module (ignored)
 ```
 
-## Dependencies
+### CI Configuration
 
-- **[ask-shell](https://github.com/EspenAlbert/py-libs)** - Interactive prompts and shell execution
-- **[model-lib](https://github.com/EspenAlbert/py-libs)** - YAML/TOML parsing and Pydantic models
-- **[GitPython](https://gitpython.readthedocs.io/)** - Git repository access
-
-## Appendix: CI Configuration
-
-### GitHub Actions
+**GitHub Actions:**
 
 ```yaml
 jobs:
@@ -606,3 +415,7 @@ jobs:
       - run: pip install pkg-ext
       - run: pkg-ext post-merge --push
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, workflow, and git hooks.
