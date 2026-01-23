@@ -27,6 +27,13 @@ groups:
   - _internal.models.api_dump.ParamKind
   - _internal.models.api_dump.PublicApiDump
   - _internal.models.api_dump.TypeAliasDump
+- name: changelog
+  owned_modules:
+  - _internal.cli.changelog_cmds
+  owned_refs:
+  - _internal.cli.changelog_cmds.chore
+  - _internal.cli.changelog_cmds.promote
+  - _internal.cli.changelog_cmds.release_notes
 - name: generate
   owned_modules:
   - _internal.cli.gen_cmds

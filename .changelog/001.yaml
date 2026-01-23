@@ -518,21 +518,6 @@ ts: 2026-01-22 20:56:16.356772+00:00
 type: keep_private
 full_path: _internal.cli.options.get_default_editor
 ---
-name: find_release_action
-ts: 2026-01-22 20:56:16.356775+00:00
-type: keep_private
-full_path: _internal.cli.release_cmds.find_release_action
----
-name: release_notes
-ts: 2026-01-22 20:56:16.356778+00:00
-type: keep_private
-full_path: _internal.cli.release_cmds.release_notes
----
-name: dump_groups
-ts: 2026-01-22 20:56:16.356783+00:00
-type: keep_private
-full_path: _internal.cli.release_cmds.dump_groups
----
 name: validate_group_exists
 ts: 2026-01-22 20:56:16.356786+00:00
 type: keep_private
@@ -592,31 +577,6 @@ name: generate_docs_for_pkg
 ts: 2026-01-22 20:56:16.356831+00:00
 type: keep_private
 full_path: _internal.cli.workflow_cmds.generate_docs_for_pkg
----
-name: post_merge
-ts: 2026-01-22 20:56:16.356834+00:00
-type: keep_private
-full_path: _internal.cli.workflow_cmds.post_merge
----
-name: pre_change
-ts: 2026-01-22 20:56:16.356837+00:00
-type: keep_private
-full_path: _internal.cli.workflow_cmds.pre_change
----
-name: pre_commit
-ts: 2026-01-22 20:56:16.356839+00:00
-type: keep_private
-full_path: _internal.cli.workflow_cmds.pre_commit
----
-name: chore
-ts: 2026-01-22 20:56:16.356842+00:00
-type: keep_private
-full_path: _internal.cli.workflow_cmds.chore
----
-name: promote
-ts: 2026-01-22 20:56:16.356845+00:00
-type: keep_private
-full_path: _internal.cli.workflow_cmds.promote
 ---
 name: parse_pkg_code_state
 ts: 2026-01-22 20:56:16.356848+00:00
@@ -1391,22 +1351,10 @@ type: make_public
 details: promoted from private (_internal.cli.workflow_cmds.pre_commit)
 group: workflows
 ---
-name: chore
-ts: 2026-01-22 21:06:20.278977+00:00
-type: make_public
-details: promoted from private (_internal.cli.workflow_cmds.chore)
-group: workflows
----
 name: workflows
 ts: 2026-01-22 21:10:17.465172+00:00
 type: group_module
 module_path: _internal.cli.workflow_cmds
----
-name: promote
-ts: 2026-01-22 21:10:17.466870+00:00
-type: make_public
-details: promoted from private (_internal.cli.workflow_cmds.promote)
-group: workflows
 ---
 name: __ROOT__
 ts: 2026-01-23 05:55:55.958984+00:00
@@ -1595,3 +1543,31 @@ name: reconcile_groups_with_changelog
 ts: 2026-01-23 07:22:17.346546+00:00
 type: keep_private
 full_path: _internal.cli.workflows.reconcile_groups_with_changelog
+---
+name: changelog
+ts: 2026-01-23 07:40:09.844398+00:00
+type: group_module
+module_path: _internal.cli.changelog_cmds
+---
+name: release_notes
+ts: 2026-01-23 07:40:09.847166+00:00
+type: make_public
+details: CLI command in _internal/cli/changelog_cmds.py
+group: changelog
+---
+name: find_release_action
+ts: 2026-01-23 07:40:13.825979+00:00
+type: keep_private
+full_path: _internal.cli.changelog_cmds.find_release_action
+---
+name: chore
+ts: 2026-01-23 07:43:38.593450+00:00
+type: make_public
+details: CLI command in _internal/cli/changelog_cmds.py
+group: changelog
+---
+name: promote
+ts: 2026-01-23 07:43:38.595857+00:00
+type: make_public
+details: CLI command in _internal/cli/changelog_cmds.py
+group: changelog

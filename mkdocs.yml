@@ -15,6 +15,7 @@ nav:
   - Home: index.md
   - api_commands: api_commands/index.md
   - api_dump: api_dump/index.md
+  - changelog: changelog/index.md
   - generate: generate/index.md
   - stability: stability/index.md
   - workflows: workflows/index.md
