@@ -3,6 +3,8 @@ groups:
 - name: __ROOT__
   owned_modules:
   - _internal.settings
+  owned_refs:
+  - _internal.settings.PkgSettings
 - name: api_commands
   owned_modules:
   - _internal.cli.api_cmds
