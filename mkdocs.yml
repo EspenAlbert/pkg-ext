@@ -13,10 +13,10 @@ theme:
 # === DO_NOT_EDIT: pkg-ext nav ===
 nav:
   - Home: index.md
-  - pkg_ext:
-    - Overview: _root/index.md
-    - PkgSettings: _root/pkgsettings.md
+  - api_commands: api_commands/index.md
   - api_dump: api_dump/index.md
+  - generate: generate/index.md
+  - stability: stability/index.md
   - workflows: workflows/index.md
 # === OK_EDIT: pkg-ext nav ===
 

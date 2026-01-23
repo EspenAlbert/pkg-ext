@@ -513,31 +513,6 @@ ts: 2026-01-22 20:56:16.356752+00:00
 type: keep_private
 full_path: _internal.cli.base_commands.resolve_pkg_path_str
 ---
-name: dump_api
-ts: 2026-01-22 20:56:16.356755+00:00
-type: keep_private
-full_path: _internal.cli.gen_cmds.dump_api
----
-name: gen_examples
-ts: 2026-01-22 20:56:16.356759+00:00
-type: keep_private
-full_path: _internal.cli.gen_cmds.gen_examples
----
-name: gen_tests
-ts: 2026-01-22 20:56:16.356763+00:00
-type: keep_private
-full_path: _internal.cli.gen_cmds.gen_tests
----
-name: gen_docs
-ts: 2026-01-22 20:56:16.356766+00:00
-type: keep_private
-full_path: _internal.cli.gen_cmds.gen_docs
----
-name: diff_api
-ts: 2026-01-22 20:56:16.356769+00:00
-type: keep_private
-full_path: _internal.cli.gen_cmds.diff_api
----
 name: get_default_editor
 ts: 2026-01-22 20:56:16.356772+00:00
 type: keep_private
@@ -592,21 +567,6 @@ name: ParsedTarget
 ts: 2026-01-22 20:56:16.356806+00:00
 type: keep_private
 full_path: _internal.cli.stability.ParsedTarget
----
-name: exp
-ts: 2026-01-22 20:56:16.356809+00:00
-type: keep_private
-full_path: _internal.cli.stability_cmds.exp
----
-name: ga
-ts: 2026-01-22 20:56:16.356812+00:00
-type: keep_private
-full_path: _internal.cli.stability_cmds.ga
----
-name: dep
-ts: 2026-01-22 20:56:16.356815+00:00
-type: keep_private
-full_path: _internal.cli.stability_cmds.dep
 ---
 name: get_generated_file_paths
 ts: 2026-01-22 20:56:16.356818+00:00
@@ -1567,3 +1527,71 @@ name: SymbolDumpBase
 ts: 2026-01-23 06:37:17.984082+00:00
 type: keep_private
 full_path: _internal.models.api_dump.SymbolDumpBase
+---
+name: stability
+ts: 2026-01-23 06:39:46.046281+00:00
+type: group_module
+module_path: _internal.cli.stability_cmds
+---
+name: exp
+ts: 2026-01-23 06:39:46.047686+00:00
+type: make_public
+details: CLI command in _internal/cli/stability_cmds.py
+group: stability
+---
+name: ga
+ts: 2026-01-23 06:39:46.050634+00:00
+type: make_public
+details: CLI command in _internal/cli/stability_cmds.py
+group: stability
+---
+name: dep
+ts: 2026-01-23 06:39:46.053696+00:00
+type: make_public
+details: CLI command in _internal/cli/stability_cmds.py
+group: stability
+---
+name: generate
+ts: 2026-01-23 07:03:05.461297+00:00
+type: group_module
+module_path: _internal.cli.gen_cmds
+---
+name: gen_examples
+ts: 2026-01-23 07:03:05.468599+00:00
+type: make_public
+details: CLI command in _internal/cli/gen_cmds.py
+group: generate
+---
+name: gen_tests
+ts: 2026-01-23 07:03:05.472520+00:00
+type: make_public
+details: CLI command in _internal/cli/gen_cmds.py
+group: generate
+---
+name: gen_docs
+ts: 2026-01-23 07:03:05.476039+00:00
+type: make_public
+details: CLI command in _internal/cli/gen_cmds.py
+group: generate
+---
+name: api_commands
+ts: 2026-01-23 07:22:11.776461+00:00
+type: group_module
+module_path: _internal.cli.api_cmds
+---
+name: dump_api
+ts: 2026-01-23 07:22:11.777926+00:00
+type: make_public
+details: CLI command in _internal/cli/api_cmds.py
+group: api_commands
+---
+name: diff_api
+ts: 2026-01-23 07:22:11.780428+00:00
+type: make_public
+details: CLI command in _internal/cli/api_cmds.py
+group: api_commands
+---
+name: reconcile_groups_with_changelog
+ts: 2026-01-23 07:22:17.346546+00:00
+type: keep_private
+full_path: _internal.cli.workflows.reconcile_groups_with_changelog
