@@ -456,7 +456,7 @@ def render_example_section(example: Any, symbol: SymbolDump, pkg_import_name: st
 
     fields = {k: v for k, v in example.model_dump().items() if k not in EXAMPLE_BASE_FIELDS}
 
-    if isinstance(symbol, (FunctionDump, CLICommandDump)):
+    if isinstance(symbol, FunctionDump | CLICommandDump):
         args = ", ".join(f"{k}={_format_example_value(v)}" for k, v in fields.items())
         code = f"result = {symbol.name}({args})"
     elif isinstance(symbol, ClassDump):

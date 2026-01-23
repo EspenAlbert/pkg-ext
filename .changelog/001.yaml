@@ -1258,71 +1258,6 @@ ts: 2026-01-22 20:56:16.357289+00:00
 type: keep_private
 full_path: _internal.interactive.CommitFixAction
 ---
-name: ParamKind
-ts: 2026-01-22 20:56:16.357292+00:00
-type: keep_private
-full_path: _internal.models.api_dump.ParamKind
----
-name: ParamDefault
-ts: 2026-01-22 20:56:16.357295+00:00
-type: keep_private
-full_path: _internal.models.api_dump.ParamDefault
----
-name: FuncParamInfo
-ts: 2026-01-22 20:56:16.357298+00:00
-type: keep_private
-full_path: _internal.models.api_dump.FuncParamInfo
----
-name: CallableSignature
-ts: 2026-01-22 20:56:16.357301+00:00
-type: keep_private
-full_path: _internal.models.api_dump.CallableSignature
----
-name: ClassFieldInfo
-ts: 2026-01-22 20:56:16.357303+00:00
-type: keep_private
-full_path: _internal.models.api_dump.ClassFieldInfo
----
-name: SymbolDumpBase
-ts: 2026-01-22 20:56:16.357307+00:00
-type: keep_private
-full_path: _internal.models.api_dump.SymbolDumpBase
----
-name: FunctionDump
-ts: 2026-01-22 20:56:16.357309+00:00
-type: keep_private
-full_path: _internal.models.api_dump.FunctionDump
----
-name: ClassDump
-ts: 2026-01-22 20:56:16.357312+00:00
-type: keep_private
-full_path: _internal.models.api_dump.ClassDump
----
-name: ExceptionDump
-ts: 2026-01-22 20:56:16.357317+00:00
-type: keep_private
-full_path: _internal.models.api_dump.ExceptionDump
----
-name: TypeAliasDump
-ts: 2026-01-22 20:56:16.357320+00:00
-type: keep_private
-full_path: _internal.models.api_dump.TypeAliasDump
----
-name: GlobalVarDump
-ts: 2026-01-22 20:56:16.357324+00:00
-type: keep_private
-full_path: _internal.models.api_dump.GlobalVarDump
----
-name: GroupDump
-ts: 2026-01-22 20:56:16.357327+00:00
-type: keep_private
-full_path: _internal.models.api_dump.GroupDump
----
-name: PublicApiDump
-ts: 2026-01-22 20:56:16.357329+00:00
-type: keep_private
-full_path: _internal.models.api_dump.PublicApiDump
----
 name: PkgCodeState
 ts: 2026-01-22 20:56:16.357332+00:00
 type: keep_private
@@ -1523,3 +1458,112 @@ ts: 2026-01-23 05:55:55.960102+00:00
 type: make_public
 details: promoted from private (_internal.settings.PkgSettings)
 group: __ROOT__
+---
+name: is_cli_command
+ts: 2026-01-23 06:34:19.207793+00:00
+type: keep_private
+full_path: _internal.signature_parser.is_cli_command
+---
+name: extract_cli_params
+ts: 2026-01-23 06:34:19.207869+00:00
+type: keep_private
+full_path: _internal.signature_parser.extract_cli_params
+---
+name: render_cli_params_table
+ts: 2026-01-23 06:34:39.154915+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.render_cli_params_table
+---
+name: api_dump
+ts: 2026-01-23 06:35:18.888155+00:00
+type: group_module
+module_path: _internal.models.api_dump
+---
+name: CLIParamInfo
+ts: 2026-01-23 06:35:18.889516+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: CLICommandDump
+ts: 2026-01-23 06:35:18.890980+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: ParamKind
+ts: 2026-01-23 06:37:17.967779+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: ParamDefault
+ts: 2026-01-23 06:37:17.969463+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: FuncParamInfo
+ts: 2026-01-23 06:37:17.971274+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: CallableSignature
+ts: 2026-01-23 06:37:17.972704+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: ClassFieldInfo
+ts: 2026-01-23 06:37:17.974558+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: FunctionDump
+ts: 2026-01-23 06:37:17.975893+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: ClassDump
+ts: 2026-01-23 06:37:17.977206+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: ExceptionDump
+ts: 2026-01-23 06:37:17.978538+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: TypeAliasDump
+ts: 2026-01-23 06:37:17.979915+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: GlobalVarDump
+ts: 2026-01-23 06:37:17.981401+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: GroupDump
+ts: 2026-01-23 06:37:17.982655+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: PublicApiDump
+ts: 2026-01-23 06:37:17.984017+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+group: api_dump
+---
+name: SymbolDumpBase
+ts: 2026-01-23 06:37:17.984082+00:00
+type: keep_private
+full_path: _internal.models.api_dump.SymbolDumpBase

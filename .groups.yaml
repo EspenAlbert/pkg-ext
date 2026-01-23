@@ -5,6 +5,24 @@ groups:
   - _internal.settings
   owned_refs:
   - _internal.settings.PkgSettings
+- name: api_dump
+  owned_modules:
+  - _internal.models.api_dump
+  owned_refs:
+  - _internal.models.api_dump.CLICommandDump
+  - _internal.models.api_dump.CLIParamInfo
+  - _internal.models.api_dump.CallableSignature
+  - _internal.models.api_dump.ClassDump
+  - _internal.models.api_dump.ClassFieldInfo
+  - _internal.models.api_dump.ExceptionDump
+  - _internal.models.api_dump.FuncParamInfo
+  - _internal.models.api_dump.FunctionDump
+  - _internal.models.api_dump.GlobalVarDump
+  - _internal.models.api_dump.GroupDump
+  - _internal.models.api_dump.ParamDefault
+  - _internal.models.api_dump.ParamKind
+  - _internal.models.api_dump.PublicApiDump
+  - _internal.models.api_dump.TypeAliasDump
 - name: workflows
   owned_modules:
   - _internal.cli.workflow_cmds
