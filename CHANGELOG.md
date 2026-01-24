@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 2026-01-24T21-01Z
+
+### __Root__
+- `__ROOT__.PkgSettings`: added optional field 'default_branch' (default: 'main')
+- `__ROOT__.PkgSettings`: added optional field 'repo_url' (default: '')
+
+
 ## 0.1.0 2026-01-24T18-18Z
 
 ### __Root__

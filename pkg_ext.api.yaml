@@ -1,12 +1,12 @@
 pkg_import_name: pkg_ext
-version: 0.1.0
+version: 0.1.1
 groups:
 - name: __ROOT__
   symbols:
   - name: PkgSettings
     module_path: _internal.settings
     docstring: ''
-    line_number: 23
+    line_number: 25
     type: class
     direct_bases:
     - BaseSettings
@@ -181,6 +181,26 @@ groups:
       is_computed: false
       env_vars:
       - max_bump_type
+    - name: default_branch
+      type_annotation: str
+      type_imports: []
+      default:
+        value_repr: '''main'''
+        is_factory: false
+      is_class_var: false
+      is_computed: false
+      env_vars:
+      - default_branch
+    - name: repo_url
+      type_annotation: str
+      type_imports: []
+      default:
+        value_repr: ''''''
+        is_factory: false
+      is_class_var: false
+      is_computed: false
+      env_vars:
+      - repo_url
 - name: api_commands
   symbols:
   - name: diff_api
@@ -200,7 +220,7 @@ groups:
         type_annotation: str | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b28f50>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99309450>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -230,14 +250,14 @@ groups:
         type_imports:
         - pathlib.Path
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092da90>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431950>
           is_factory: false
       - name: dev
         kind: positional_or_keyword
         type_annotation: bool
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092e0d0>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431f90>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -957,14 +977,14 @@ groups:
         type_annotation: str
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b29090>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99309590>
           is_factory: false
       - name: pr_number
         kind: positional_or_keyword
         type_annotation: int
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b291d0>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d993096d0>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1003,42 +1023,42 @@ groups:
         type_annotation: str | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b29310>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99309810>
           is_factory: false
       - name: group
         kind: positional_or_keyword
         type_annotation: str | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b29450>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99309950>
           is_factory: false
       - name: module_filter
         kind: positional_or_keyword
         type_annotation: str | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b29590>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99309a90>
           is_factory: false
       - name: pattern
         kind: positional_or_keyword
         type_annotation: str | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b296d0>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99309bd0>
           is_factory: false
       - name: undecided
         kind: positional_or_keyword
         type_annotation: bool
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b29810>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99309d10>
           is_factory: false
       - name: pr_number
         kind: positional_or_keyword
         type_annotation: int
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b29950>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99309e50>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1114,7 +1134,7 @@ groups:
         type_annotation: str
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b29a90>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99309f90>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1146,14 +1166,14 @@ groups:
         type_imports:
         - pathlib.Path
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092dbd0>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431a90>
           is_factory: false
       - name: group
         kind: positional_or_keyword
         type_annotation: str | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092d6d0>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431590>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1192,7 +1212,7 @@ groups:
         type_annotation: str | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092d6d0>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431590>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1222,7 +1242,7 @@ groups:
         type_annotation: str | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092d6d0>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431590>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1254,14 +1274,14 @@ groups:
         type_annotation: str
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092d810>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d994316d0>
           is_factory: false
       - name: replacement
         kind: positional_or_keyword
         type_annotation: str | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092d950>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431810>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1300,7 +1320,7 @@ groups:
         type_annotation: str
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092d810>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d994316d0>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1330,7 +1350,7 @@ groups:
         type_annotation: str
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092d810>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d994316d0>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1348,7 +1368,7 @@ groups:
   - name: post_merge
     module_path: _internal.cli.workflow_cmds
     docstring: ''
-    line_number: 190
+    line_number: 196
     type: cli_command
     signature:
       parameters:
@@ -1362,28 +1382,28 @@ groups:
         type_annotation: int
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092d590>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431450>
           is_factory: false
       - name: push
         kind: positional_or_keyword
         type_annotation: bool
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092d450>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431310>
           is_factory: false
       - name: skip_clean_old_entries
         kind: positional_or_keyword
         type_annotation: bool
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092de50>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431d10>
           is_factory: false
       - name: force_reason
         kind: positional_or_keyword
         type_annotation: str
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x120b29d10>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d9930a210>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1426,7 +1446,7 @@ groups:
   - name: pre_change
     module_path: _internal.cli.workflow_cmds
     docstring: Handle new symbols then generate examples and tests.
-    line_number: 254
+    line_number: 260
     type: cli_command
     signature:
       parameters:
@@ -1440,7 +1460,7 @@ groups:
         type_annotation: str | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092d6d0>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431590>
           is_factory: false
       - name: git_changes_since
         kind: positional_or_keyword
@@ -1448,42 +1468,42 @@ groups:
         type_imports:
         - pkg_ext._internal.git_usage.state.GitSince
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092cf50>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99430e10>
           is_factory: false
       - name: skip_fix_commits
         kind: positional_or_keyword
         type_annotation: bool
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092e210>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d994320d0>
           is_factory: false
       - name: full
         kind: positional_or_keyword
         type_annotation: bool
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092e350>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99432210>
           is_factory: false
       - name: skip_docs
         kind: positional_or_keyword
         type_annotation: bool
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092dd10>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431bd0>
           is_factory: false
       - name: skip_open_in_editor
         kind: positional_or_keyword
         type_annotation: bool | None
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092e490>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99432350>
           is_factory: false
       - name: keep_private
         kind: positional_or_keyword
         type_annotation: bool
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092e5d0>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99432490>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1557,7 +1577,7 @@ groups:
   - name: pre_commit
     module_path: _internal.cli.workflow_cmds
     docstring: Update changelog and regenerate docs (bot mode, writes to -dev files).
-    line_number: 302
+    line_number: 308
     type: cli_command
     signature:
       parameters:
@@ -1572,21 +1592,21 @@ groups:
         type_imports:
         - pkg_ext._internal.git_usage.state.GitSince
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092cf50>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99430e10>
           is_factory: false
       - name: skip_docs
         kind: positional_or_keyword
         type_annotation: bool
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092dd10>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431bd0>
           is_factory: false
       - name: skip_dirty_check
         kind: positional_or_keyword
         type_annotation: bool
         type_imports: []
         default:
-          value_repr: <typer.models.OptionInfo object at 0x12092df90>
+          value_repr: <typer.models.OptionInfo object at 0x7f8d99431e50>
           is_factory: false
       return_type_imports: []
     cli_params:
@@ -1622,4 +1642,4 @@ groups:
       required: false
       is_argument: false
       hidden: false
-dumped_at: 2026-01-24 18:18:13.819043+00:00
+dumped_at: 2026-01-24 21:01:47.791683+00:00

@@ -20,3 +20,8 @@ change_kind: optional_field_added
 details: 'added optional field ''repo_url'' (default: '''')'
 field_name: repo_url
 group: __ROOT__
+---
+name: 0.1.1
+ts: 2026-01-24 21:01:47.854346+00:00
+type: release
+old_version: 0.1.0
