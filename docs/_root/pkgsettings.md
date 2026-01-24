@@ -81,4 +81,6 @@ class PkgSettings(BaseSettings):
 | 0.1.1 | added optional field 'repo_url' (default: '') |
 | 0.1.1 | added optional field 'default_branch' (default: 'main') |
 | 0.1.0 | Made public |
+| unreleased | field 'repo_root' default removed (was: PydanticUndefined) |
+| unreleased | field 'pkg_directory' default removed (was: PydanticUndefined) |
 <!-- === OK_EDIT: pkg-ext pkgsettings_changes === -->

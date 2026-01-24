@@ -1,0 +1,233 @@
+name: PkgSettings
+ts: 2026-01-24 21:12:57.274062+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''pkg_directory'' default removed (was: PydanticUndefined)'
+field_name: pkg_directory
+group: __ROOT__
+---
+name: PkgSettings
+ts: 2026-01-24 21:12:57.274073+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''repo_root'' default removed (was: PydanticUndefined)'
+field_name: repo_root
+group: __ROOT__
+---
+name: CLIParamInfo
+ts: 2026-01-24 21:12:57.274076+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''param_name'' default removed (was: PydanticUndefined)'
+field_name: param_name
+group: api_dump
+---
+name: FuncParamInfo
+ts: 2026-01-24 21:12:57.274079+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''name'' default removed (was: PydanticUndefined)'
+field_name: name
+group: api_dump
+---
+name: FuncParamInfo
+ts: 2026-01-24 21:12:57.274081+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''kind'' default removed (was: PydanticUndefined)'
+field_name: kind
+group: api_dump
+---
+name: GroupDump
+ts: 2026-01-24 21:12:57.274083+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''name'' default removed (was: PydanticUndefined)'
+field_name: name
+group: api_dump
+---
+name: ParamDefault
+ts: 2026-01-24 21:12:57.274085+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''value_repr'' default removed (was: PydanticUndefined)'
+field_name: value_repr
+group: api_dump
+---
+name: ExceptionDump
+ts: 2026-01-24 21:12:57.274087+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''name'' default removed (was: PydanticUndefined)'
+field_name: name
+group: api_dump
+---
+name: ExceptionDump
+ts: 2026-01-24 21:12:57.274089+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''module_path'' default removed (was: PydanticUndefined)'
+field_name: module_path
+group: api_dump
+---
+name: CLICommandDump
+ts: 2026-01-24 21:12:57.274091+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''name'' default removed (was: PydanticUndefined)'
+field_name: name
+group: api_dump
+---
+name: CLICommandDump
+ts: 2026-01-24 21:12:57.274093+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''signature'' default removed (was: PydanticUndefined)'
+field_name: signature
+group: api_dump
+---
+name: CLICommandDump
+ts: 2026-01-24 21:12:57.274095+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''module_path'' default removed (was: PydanticUndefined)'
+field_name: module_path
+group: api_dump
+---
+name: ClassDump
+ts: 2026-01-24 21:12:57.274097+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''name'' default removed (was: PydanticUndefined)'
+field_name: name
+group: api_dump
+---
+name: ClassDump
+ts: 2026-01-24 21:12:57.274099+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''module_path'' default removed (was: PydanticUndefined)'
+field_name: module_path
+group: api_dump
+---
+name: GlobalVarDump
+ts: 2026-01-24 21:12:57.274101+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''name'' default removed (was: PydanticUndefined)'
+field_name: name
+group: api_dump
+---
+name: GlobalVarDump
+ts: 2026-01-24 21:12:57.274102+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''module_path'' default removed (was: PydanticUndefined)'
+field_name: module_path
+group: api_dump
+---
+name: ClassFieldInfo
+ts: 2026-01-24 21:12:57.274104+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''name'' default removed (was: PydanticUndefined)'
+field_name: name
+group: api_dump
+---
+name: TypeAliasDump
+ts: 2026-01-24 21:12:57.274106+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''name'' default removed (was: PydanticUndefined)'
+field_name: name
+group: api_dump
+---
+name: TypeAliasDump
+ts: 2026-01-24 21:12:57.274108+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''module_path'' default removed (was: PydanticUndefined)'
+field_name: module_path
+group: api_dump
+---
+name: TypeAliasDump
+ts: 2026-01-24 21:12:57.274110+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''alias_target'' default removed (was: PydanticUndefined)'
+field_name: alias_target
+group: api_dump
+---
+name: FunctionDump
+ts: 2026-01-24 21:12:57.274112+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''name'' default removed (was: PydanticUndefined)'
+field_name: name
+group: api_dump
+---
+name: FunctionDump
+ts: 2026-01-24 21:12:57.274114+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''signature'' default removed (was: PydanticUndefined)'
+field_name: signature
+group: api_dump
+---
+name: FunctionDump
+ts: 2026-01-24 21:12:57.274116+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''module_path'' default removed (was: PydanticUndefined)'
+field_name: module_path
+group: api_dump
+---
+name: PublicApiDump
+ts: 2026-01-24 21:12:57.274118+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''dumped_at'' default removed (was: PydanticUndefined)'
+field_name: dumped_at
+group: api_dump
+---
+name: PublicApiDump
+ts: 2026-01-24 21:12:57.274120+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''version'' default removed (was: PydanticUndefined)'
+field_name: version
+group: api_dump
+---
+name: PublicApiDump
+ts: 2026-01-24 21:12:57.274122+00:00
+type: breaking_change
+auto_generated: true
+change_kind: default_removed
+details: 'field ''pkg_import_name'' default removed (was: PydanticUndefined)'
+field_name: pkg_import_name
+group: api_dump
