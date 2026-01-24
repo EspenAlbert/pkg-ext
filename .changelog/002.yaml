@@ -1,0 +1,22 @@
+name: transform_repo_root_links
+ts: 2026-01-24 20:50:51.628461+00:00
+type: keep_private
+full_path: _internal.generation.docs_mkdocs.transform_repo_root_links
+---
+name: PkgSettings
+ts: 2026-01-24 20:54:31.981203+00:00
+type: additional_change
+auto_generated: true
+change_kind: optional_field_added
+details: 'added optional field ''default_branch'' (default: ''main'')'
+field_name: default_branch
+group: __ROOT__
+---
+name: PkgSettings
+ts: 2026-01-24 20:54:31.981214+00:00
+type: additional_change
+auto_generated: true
+change_kind: optional_field_added
+details: 'added optional field ''repo_url'' (default: '''')'
+field_name: repo_url
+group: __ROOT__
