@@ -1605,3 +1605,8 @@ name: write_generated_modules
 ts: 2026-01-23 09:40:50.195582+00:00
 type: keep_private
 full_path: _internal.cli.workflows.write_generated_modules
+---
+name: 0.1.0
+ts: 2026-01-24 18:18:13.908534+00:00
+type: release
+old_version: 0.0.1

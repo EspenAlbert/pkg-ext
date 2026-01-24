@@ -17,7 +17,7 @@
 
 ### cli_command: `diff_api`
 - [source](../../pkg_ext/_internal/cli/api_cmds.py#L36)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def diff_api(*, baseline_ref: str | None = ...):
@@ -37,7 +37,7 @@ Show API changes between baseline and dev dump.
 
 ### cli_command: `dump_api`
 - [source](../../pkg_ext/_internal/cli/api_cmds.py#L20)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def dump_api(*, output: Path | None = ..., dev: bool = False):

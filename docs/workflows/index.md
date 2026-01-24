@@ -17,7 +17,7 @@
 
 ### cli_command: `post_merge`
 - [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L190)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def post_merge(*, explicit_pr: int = 0, push: bool = False, skip_clean_old_entries: bool = False, force_reason: str = ''):
@@ -38,7 +38,7 @@ def post_merge(*, explicit_pr: int = 0, push: bool = False, skip_clean_old_entri
 
 ### cli_command: `pre_change`
 - [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L254)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def pre_change(*, group: str | None = ..., git_changes_since: GitSince = <GitSince.DEFAULT: 'default'>, skip_fix_commits: bool = False, full: bool = False, skip_docs: bool = False, skip_open_in_editor: bool | None = ..., keep_private: bool = False):
@@ -64,7 +64,7 @@ Handle new symbols then generate examples and tests.
 
 ### cli_command: `pre_commit`
 - [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L302)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def pre_commit(*, git_changes_since: GitSince = <GitSince.DEFAULT: 'default'>, skip_docs: bool = False, skip_dirty_check: bool = False):

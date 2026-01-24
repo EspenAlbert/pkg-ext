@@ -29,7 +29,7 @@
 
 ### class: `CLICommandDump`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L79)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class CLICommandDump(SymbolDumpBase):
@@ -46,20 +46,20 @@ A typer CLI command with rich parameter metadata.
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | unreleased |
-| module_path | `str` | `PydanticUndefined` | unreleased |
-| docstring | `str` | `''` | unreleased |
-| line_number | `int | None` | - | unreleased |
-| type | `Literal[cli_command]` | `'cli_command'` | unreleased |
-| signature | `CallableSignature` | `PydanticUndefined` | unreleased |
-| cli_params | `list[CLIParamInfo]` | `...` | unreleased |
+| name | `str` | `PydanticUndefined` | 0.1.0 |
+| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| docstring | `str` | `''` | 0.1.0 |
+| line_number | `int | None` | - | 0.1.0 |
+| type | `Literal[cli_command]` | `'cli_command'` | 0.1.0 |
+| signature | `CallableSignature` | `PydanticUndefined` | 0.1.0 |
+| cli_params | `list[CLIParamInfo]` | `...` | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext clicommanddump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext cliparaminfo_def === -->
 <a id="cliparaminfo_def"></a>
 
 ### class: `CLIParamInfo`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L64)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class CLIParamInfo(Entity):
@@ -79,23 +79,23 @@ CLI parameter metadata from typer OptionInfo/ArgumentInfo.
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| param_name | `str` | `PydanticUndefined` | unreleased |
-| type_annotation | `str | None` | - | unreleased |
-| flags | `list[str]` | `...` | unreleased |
-| help | `str | None` | - | unreleased |
-| default_repr | `str | None` | - | unreleased |
-| required | `bool` | `False` | unreleased |
-| envvar | `str | None` | - | unreleased |
-| is_argument | `bool` | `False` | unreleased |
-| hidden | `bool` | `False` | unreleased |
-| choices | `list[str] | None` | - | unreleased |
+| param_name | `str` | `PydanticUndefined` | 0.1.0 |
+| type_annotation | `str | None` | - | 0.1.0 |
+| flags | `list[str]` | `...` | 0.1.0 |
+| help | `str | None` | - | 0.1.0 |
+| default_repr | `str | None` | - | 0.1.0 |
+| required | `bool` | `False` | 0.1.0 |
+| envvar | `str | None` | - | 0.1.0 |
+| is_argument | `bool` | `False` | 0.1.0 |
+| hidden | `bool` | `False` | 0.1.0 |
+| choices | `list[str] | None` | - | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext cliparaminfo_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext callablesignature_def === -->
 <a id="callablesignature_def"></a>
 
 ### class: `CallableSignature`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L34)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class CallableSignature(Entity):
@@ -106,16 +106,16 @@ class CallableSignature(Entity):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| parameters | `list[FuncParamInfo]` | `...` | unreleased |
-| return_annotation | `str | None` | - | unreleased |
-| return_type_imports | `list[str]` | `...` | unreleased |
+| parameters | `list[FuncParamInfo]` | `...` | 0.1.0 |
+| return_annotation | `str | None` | - | 0.1.0 |
+| return_type_imports | `list[str]` | `...` | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext callablesignature_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext classdump_def === -->
 <a id="classdump_def"></a>
 
 ### class: `ClassDump`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L87)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class ClassDump(SymbolDumpBase):
@@ -131,21 +131,21 @@ class ClassDump(SymbolDumpBase):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | unreleased |
-| module_path | `str` | `PydanticUndefined` | unreleased |
-| docstring | `str` | `''` | unreleased |
-| line_number | `int | None` | - | unreleased |
-| type | `Literal[class]` | `'class'` | unreleased |
-| direct_bases | `list[str]` | `...` | unreleased |
-| init_signature | `CallableSignature | None` | - | unreleased |
-| fields | `list[ClassFieldInfo] | None` | - | unreleased |
+| name | `str` | `PydanticUndefined` | 0.1.0 |
+| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| docstring | `str` | `''` | 0.1.0 |
+| line_number | `int | None` | - | 0.1.0 |
+| type | `Literal[class]` | `'class'` | 0.1.0 |
+| direct_bases | `list[str]` | `...` | 0.1.0 |
+| init_signature | `CallableSignature | None` | - | 0.1.0 |
+| fields | `list[ClassFieldInfo] | None` | - | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext classdump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext classfieldinfo_def === -->
 <a id="classfieldinfo_def"></a>
 
 ### class: `ClassFieldInfo`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L40)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class ClassFieldInfo(Entity):
@@ -162,22 +162,22 @@ class ClassFieldInfo(Entity):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | unreleased |
-| type_annotation | `str | None` | - | unreleased |
-| type_imports | `list[str]` | `...` | unreleased |
-| default | `ParamDefault | None` | - | unreleased |
-| is_class_var | `bool` | `False` | unreleased |
-| is_computed | `bool` | `False` | unreleased |
-| description | `str | None` | - | unreleased |
-| deprecated | `str | None` | - | unreleased |
-| env_vars | `list[str] | None` | - | unreleased |
+| name | `str` | `PydanticUndefined` | 0.1.0 |
+| type_annotation | `str | None` | - | 0.1.0 |
+| type_imports | `list[str]` | `...` | 0.1.0 |
+| default | `ParamDefault | None` | - | 0.1.0 |
+| is_class_var | `bool` | `False` | 0.1.0 |
+| is_computed | `bool` | `False` | 0.1.0 |
+| description | `str | None` | - | 0.1.0 |
+| deprecated | `str | None` | - | 0.1.0 |
+| env_vars | `list[str] | None` | - | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext classfieldinfo_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext exceptiondump_def === -->
 <a id="exceptiondump_def"></a>
 
 ### class: `ExceptionDump`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L94)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class ExceptionDump(SymbolDumpBase):
@@ -192,20 +192,20 @@ class ExceptionDump(SymbolDumpBase):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | unreleased |
-| module_path | `str` | `PydanticUndefined` | unreleased |
-| docstring | `str` | `''` | unreleased |
-| line_number | `int | None` | - | unreleased |
-| type | `Literal[exception]` | `'exception'` | unreleased |
-| direct_bases | `list[str]` | `...` | unreleased |
-| init_signature | `CallableSignature | None` | - | unreleased |
+| name | `str` | `PydanticUndefined` | 0.1.0 |
+| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| docstring | `str` | `''` | 0.1.0 |
+| line_number | `int | None` | - | 0.1.0 |
+| type | `Literal[exception]` | `'exception'` | 0.1.0 |
+| direct_bases | `list[str]` | `...` | 0.1.0 |
+| init_signature | `CallableSignature | None` | - | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext exceptiondump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext funcparaminfo_def === -->
 <a id="funcparaminfo_def"></a>
 
 ### class: `FuncParamInfo`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L26)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class FuncParamInfo(Entity):
@@ -218,18 +218,18 @@ class FuncParamInfo(Entity):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | unreleased |
-| kind | `ParamKind` | `PydanticUndefined` | unreleased |
-| type_annotation | `str | None` | - | unreleased |
-| type_imports | `list[str]` | `...` | unreleased |
-| default | `ParamDefault | None` | - | unreleased |
+| name | `str` | `PydanticUndefined` | 0.1.0 |
+| kind | `ParamKind` | `PydanticUndefined` | 0.1.0 |
+| type_annotation | `str | None` | - | 0.1.0 |
+| type_imports | `list[str]` | `...` | 0.1.0 |
+| default | `ParamDefault | None` | - | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext funcparaminfo_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext functiondump_def === -->
 <a id="functiondump_def"></a>
 
 ### class: `FunctionDump`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L59)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class FunctionDump(SymbolDumpBase):
@@ -243,19 +243,19 @@ class FunctionDump(SymbolDumpBase):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | unreleased |
-| module_path | `str` | `PydanticUndefined` | unreleased |
-| docstring | `str` | `''` | unreleased |
-| line_number | `int | None` | - | unreleased |
-| type | `Literal[function]` | `'function'` | unreleased |
-| signature | `CallableSignature` | `PydanticUndefined` | unreleased |
+| name | `str` | `PydanticUndefined` | 0.1.0 |
+| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| docstring | `str` | `''` | 0.1.0 |
+| line_number | `int | None` | - | 0.1.0 |
+| type | `Literal[function]` | `'function'` | 0.1.0 |
+| signature | `CallableSignature` | `PydanticUndefined` | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext functiondump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext globalvardump_def === -->
 <a id="globalvardump_def"></a>
 
 ### class: `GlobalVarDump`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L105)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class GlobalVarDump(SymbolDumpBase):
@@ -270,20 +270,20 @@ class GlobalVarDump(SymbolDumpBase):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | unreleased |
-| module_path | `str` | `PydanticUndefined` | unreleased |
-| docstring | `str` | `''` | unreleased |
-| line_number | `int | None` | - | unreleased |
-| type | `Literal[global_var]` | `'global_var'` | unreleased |
-| annotation | `str | None` | - | unreleased |
-| value_repr | `str | None` | - | unreleased |
+| name | `str` | `PydanticUndefined` | 0.1.0 |
+| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| docstring | `str` | `''` | 0.1.0 |
+| line_number | `int | None` | - | 0.1.0 |
+| type | `Literal[global_var]` | `'global_var'` | 0.1.0 |
+| annotation | `str | None` | - | 0.1.0 |
+| value_repr | `str | None` | - | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext globalvardump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext groupdump_def === -->
 <a id="groupdump_def"></a>
 
 ### class: `GroupDump`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L117)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class GroupDump(Entity):
@@ -293,15 +293,15 @@ class GroupDump(Entity):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | unreleased |
-| symbols | `list[Annotated[FunctionDump | CLICommandDump | ClassDump | ExceptionDump | TypeAliasDump | GlobalVarDump, annotation=NoneType required=True discriminator='type']]` | `...` | unreleased |
+| name | `str` | `PydanticUndefined` | 0.1.0 |
+| symbols | `list[Annotated[FunctionDump | CLICommandDump | ClassDump | ExceptionDump | TypeAliasDump | GlobalVarDump, annotation=NoneType required=True discriminator='type']]` | `...` | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext groupdump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext paramdefault_def === -->
 <a id="paramdefault_def"></a>
 
 ### class: `ParamDefault`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L21)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class ParamDefault(Entity):
@@ -311,15 +311,15 @@ class ParamDefault(Entity):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| value_repr | `str` | `PydanticUndefined` | unreleased |
-| is_factory | `bool` | `False` | unreleased |
+| value_repr | `str` | `PydanticUndefined` | 0.1.0 |
+| is_factory | `bool` | `False` | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext paramdefault_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext paramkind_def === -->
 <a id="paramkind_def"></a>
 
 ### class: `ParamKind`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L13)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class ParamKind(StrEnum):
@@ -331,7 +331,7 @@ class ParamKind(StrEnum):
 
 ### class: `PublicApiDump`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L128)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class PublicApiDump(Entity):
@@ -343,17 +343,17 @@ class PublicApiDump(Entity):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| pkg_import_name | `str` | `PydanticUndefined` | unreleased |
-| version | `str` | `PydanticUndefined` | unreleased |
-| groups | `list[GroupDump]` | `...` | unreleased |
-| dumped_at | `datetime` | `PydanticUndefined` | unreleased |
+| pkg_import_name | `str` | `PydanticUndefined` | 0.1.0 |
+| version | `str` | `PydanticUndefined` | 0.1.0 |
+| groups | `list[GroupDump]` | `...` | 0.1.0 |
+| dumped_at | `datetime` | `PydanticUndefined` | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext publicapidump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext typealiasdump_def === -->
 <a id="typealiasdump_def"></a>
 
 ### class: `TypeAliasDump`
 - [source](../../pkg_ext/_internal/models/api_dump.py#L100)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class TypeAliasDump(SymbolDumpBase):
@@ -367,10 +367,10 @@ class TypeAliasDump(SymbolDumpBase):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | unreleased |
-| module_path | `str` | `PydanticUndefined` | unreleased |
-| docstring | `str` | `''` | unreleased |
-| line_number | `int | None` | - | unreleased |
-| type | `Literal[type_alias]` | `'type_alias'` | unreleased |
-| alias_target | `str` | `PydanticUndefined` | unreleased |
+| name | `str` | `PydanticUndefined` | 0.1.0 |
+| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| docstring | `str` | `''` | 0.1.0 |
+| line_number | `int | None` | - | 0.1.0 |
+| type | `Literal[type_alias]` | `'type_alias'` | 0.1.0 |
+| alias_target | `str` | `PydanticUndefined` | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext typealiasdump_def === -->

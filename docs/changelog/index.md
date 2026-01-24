@@ -18,7 +18,7 @@
 
 ### cli_command: `release_notes`
 - [source](../../pkg_ext/_internal/cli/changelog_cmds.py#L121)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def release_notes(*, tag_name: str = ...):
@@ -36,7 +36,7 @@ def release_notes(*, tag_name: str = ...):
 
 ### cli_command: `chore`
 - [source](../../pkg_ext/_internal/cli/changelog_cmds.py#L43)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def chore(*, description: str = ..., pr_number: int = 0):
@@ -57,7 +57,7 @@ Create a ChoreAction for internal changes that warrant a release.
 
 ### cli_command: `promote`
 - [source](../../pkg_ext/_internal/cli/changelog_cmds.py#L66)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def promote(*, name: str | None = ..., group: str | None = ..., module_filter: str | None = ..., pattern: str | None = ..., undecided: bool = False, pr_number: int = 0):

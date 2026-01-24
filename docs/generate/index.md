@@ -18,7 +18,7 @@
 
 ### cli_command: `gen_docs`
 - [source](../../pkg_ext/_internal/cli/gen_cmds.py#L42)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def gen_docs(*, output_dir: Path | None = ..., group: str | None = ...):
@@ -39,7 +39,7 @@ Generate documentation from public API.
 
 ### cli_command: `gen_examples`
 - [source](../../pkg_ext/_internal/cli/gen_cmds.py#L20)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def gen_examples(*, group: str | None = ...):
@@ -59,7 +59,7 @@ Generate example files for public API functions.
 
 ### cli_command: `gen_tests`
 - [source](../../pkg_ext/_internal/cli/gen_cmds.py#L31)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def gen_tests(*, group: str | None = ...):

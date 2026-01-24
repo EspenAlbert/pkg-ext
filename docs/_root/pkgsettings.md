@@ -3,7 +3,7 @@
 <!-- === DO_NOT_EDIT: pkg-ext pkgsettings_def === -->
 ## class: PkgSettings
 - [source](../../pkg_ext/_internal/settings.py#L23)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 class PkgSettings(BaseSettings):
@@ -76,5 +76,5 @@ class PkgSettings(BaseSettings):
 
 | Version | Change |
 |---------|--------|
-| unreleased | Made public |
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext pkgsettings_changes === -->

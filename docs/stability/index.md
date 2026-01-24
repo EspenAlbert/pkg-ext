@@ -18,7 +18,7 @@
 
 ### cli_command: `dep`
 - [source](../../pkg_ext/_internal/cli/stability_cmds.py#L84)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def dep(*, target: str = ..., replacement: str | None = ...):
@@ -39,7 +39,7 @@ Mark target as deprecated.
 
 ### cli_command: `exp`
 - [source](../../pkg_ext/_internal/cli/stability_cmds.py#L22)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def exp(*, target: str = ...):
@@ -59,7 +59,7 @@ Mark target as experimental.
 
 ### cli_command: `ga`
 - [source](../../pkg_ext/_internal/cli/stability_cmds.py#L54)
-> **Since:** unreleased
+> **Since:** 0.1.0
 
 ```python
 def ga(*, target: str = ...):
