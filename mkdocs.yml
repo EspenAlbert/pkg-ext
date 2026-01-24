@@ -1,0 +1,34 @@
+# === DO_NOT_EDIT: pkg-ext site ===
+site_name: pkg_ext
+# === OK_EDIT: pkg-ext site ===
+
+# === DO_NOT_EDIT: pkg-ext theme ===
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+# === OK_EDIT: pkg-ext theme ===
+
+# === DO_NOT_EDIT: pkg-ext nav ===
+nav:
+  - Home: index.md
+  - pkg_ext:
+    - Overview: _root/index.md
+    - PkgSettings: _root/pkgsettings.md
+  - api_commands: api_commands/index.md
+  - api_dump: api_dump/index.md
+  - changelog: changelog/index.md
+  - generate: generate/index.md
+  - stability: stability/index.md
+  - workflows: workflows/index.md
+# === OK_EDIT: pkg-ext nav ===
+
+# === DO_NOT_EDIT: pkg-ext extensions ===
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - admonition
+  - attr_list
+# === OK_EDIT: pkg-ext extensions ===

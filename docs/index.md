@@ -10,7 +10,7 @@ A CLI tool for managing Python package public API, versioning, and changelog gen
 - Maintains a structured changelog directory (`.changelog/`) per PR
 - Bumps version based on changelog action types (make_public=minor, fix=patch, delete/rename=major)
 - Writes a human-readable `CHANGELOG.md`
-- Provides [stability decorators](docs/stability.md) (`@experimental`, `@deprecated`) with suppressible warnings
+- Provides [stability decorators](stability.md) (`@experimental`, `@deprecated`) with suppressible warnings
 - Generates `_warnings.py` in target packages to avoid runtime pkg-ext dependency
 
 ## Installation
@@ -103,11 +103,11 @@ pkg-ext [OPTIONS] COMMAND
 
 | Category | Commands | Description | Docs |
 |----------|----------|-------------|------|
-| Workflow | `pre-change`, `pre-commit`, `post-merge` | Development lifecycle commands | [docs/workflows](docs/workflows/index.md) |
-| Changelog | `chore`, `promote`, `release-notes` | Changelog management | [docs/changelog](docs/changelog/index.md) |
-| Stability | `exp`, `ga`, `dep` | Stability level management | [docs/stability](docs/stability/index.md) |
-| API | `diff-api`, `dump-api` | API comparison and export | [docs/api_commands](docs/api_commands/index.md) |
-| Generation | `gen-docs`, `gen-examples`, `gen-tests` | Generate documentation and scaffolds | [docs/generate](docs/generate/index.md) |
+| Workflow | `pre-change`, `pre-commit`, `post-merge` | Development lifecycle commands | [docs/workflows](workflows/index.md) |
+| Changelog | `chore`, `promote`, `release-notes` | Changelog management | [docs/changelog](changelog/index.md) |
+| Stability | `exp`, `ga`, `dep` | Stability level management | [docs/stability](stability/index.md) |
+| API | `diff-api`, `dump-api` | API comparison and export | [docs/api_commands](api_commands/index.md) |
+| Generation | `gen-docs`, `gen-examples`, `gen-tests` | Generate documentation and scaffolds | [docs/generate](generate/index.md) |
 
 ### When to Use Workflow Commands
 

@@ -3,24 +3,43 @@
 # === OK_EDIT: path-sync header ===
 [project]
 name = "pkg-ext"
-version = "0.1.0"
-description = "Package description"
+version = "0.0.1"
+description = "Python package public API management, versioning, and changelog generation"
 requires-python = ">=3.13"
 license = "MIT"
 license-files = ["LICENSE"]
-dependencies = []
+readme = "README.md"
+keywords = ["api", "versioning", "changelog", "cli", "package-management"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3.13",
+]
+authors = [
+  { name = "EspenAlbert", email = "espen.albert1@gmail.com" },
+]
+dependencies = [
+  "ask-shell",
+  "GitPython>=3.1.0",
+  "model-lib[toml]",
+  "tomlkit>=0.13",
+  "zero-3rdparty",
+]
+
+[project.scripts]
+pkg-ext = "pkg_ext.cli:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.sdist]
-include = ["*/**/*.py", "*/py.typed"]
+include = ["pkg_ext/**/*.py", "pkg_ext/py.typed"]
 exclude = [
   "*_examples.py",
   "*_test.py",
   "conftest.py",
   "test_*.json",
+  "testdata/**",
 ]
 
 # === DO_NOT_EDIT: path-sync pkg-ext ===
@@ -59,16 +78,16 @@ omit = ["*_test.py"]
 exclude_lines = ["no cov", "if __name__ == .__main__.:"]
 # === OK_EDIT: path-sync coverage ===
 
-# === DO_NOT_EDIT: path-sync dev ===
 [dependency-groups]
 dev = [
   "pyright>=1.1",
   "pytest>=9.0",
   "pytest-asyncio>=0.24",
   "pytest-cov>=7.0",
+  "pytest-regressions>=2.6",
+  "pytest-model-lib",
   "ruff>=0.14",
 ]
-# === OK_EDIT: path-sync dev ===
 
 # === DO_NOT_EDIT: path-sync docs ===
 docs = [

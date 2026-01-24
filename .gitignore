@@ -35,6 +35,10 @@ coverage.xml
 CHANGELOG-dev.md
 *.api-dev.yaml
 
+
 # MkDocs build output
 site/
 # === OK_EDIT: path-sync gitignore ===
+# Include dev mode files in testdata for e2e regression tests
+!pkg_ext/_internal/testdata/e2e/**/.groups-dev.yaml
+!pkg_ext/_internal/testdata/e2e/**/CHANGELOG-dev.md

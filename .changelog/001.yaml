@@ -1,0 +1,1607 @@
+name: needs_warnings_module
+ts: 2026-01-22 20:32:20.170544+00:00
+type: keep_private
+full_path: _internal.warnings_gen.needs_warnings_module
+---
+name: get_warning_class_names
+ts: 2026-01-22 20:32:20.756464+00:00
+type: keep_private
+full_path: _internal.warnings_gen.get_warning_class_names
+---
+name: generate_warnings_content
+ts: 2026-01-22 20:32:20.756478+00:00
+type: keep_private
+full_path: _internal.warnings_gen.generate_warnings_content
+---
+name: write_warnings_module
+ts: 2026-01-22 20:32:20.756484+00:00
+type: keep_private
+full_path: _internal.warnings_gen.write_warnings_module
+---
+name: warn_experimental
+ts: 2026-01-22 20:36:31.549312+00:00
+type: keep_private
+full_path: _internal.warnings.warn_experimental
+---
+name: warn_deprecated
+ts: 2026-01-22 20:36:31.549489+00:00
+type: keep_private
+full_path: _internal.warnings.warn_deprecated
+---
+name: experimental
+ts: 2026-01-22 20:36:31.549498+00:00
+type: keep_private
+full_path: _internal.warnings.experimental
+---
+name: experimental_args
+ts: 2026-01-22 20:36:31.549503+00:00
+type: keep_private
+full_path: _internal.warnings.experimental_args
+---
+name: deprecated_args
+ts: 2026-01-22 20:36:31.549508+00:00
+type: keep_private
+full_path: _internal.warnings.deprecated_args
+---
+name: deprecated_arg
+ts: 2026-01-22 20:36:31.549513+00:00
+type: keep_private
+full_path: _internal.warnings.deprecated_arg
+---
+name: cap_bump_type
+ts: 2026-01-22 20:43:42.654601+00:00
+type: keep_private
+full_path: _internal.version_bump.cap_bump_type
+---
+name: bump_version
+ts: 2026-01-22 20:43:42.654680+00:00
+type: keep_private
+full_path: _internal.version_bump.bump_version
+---
+name: read_current_version
+ts: 2026-01-22 20:43:42.654691+00:00
+type: keep_private
+full_path: _internal.version_bump.read_current_version
+---
+name: inferred
+ts: 2026-01-22 20:43:45.004466+00:00
+type: keep_private
+full_path: _internal.testdata.e2e.04_git_fix.my_pkg.inferred.inferred
+---
+name: chosen
+ts: 2026-01-22 20:43:46.910402+00:00
+type: keep_private
+full_path: _internal.testdata.e2e.04_git_fix.my_pkg.chosen.chosen
+---
+name: parse_param_default
+ts: 2026-01-22 20:46:41.806513+00:00
+type: keep_private
+full_path: _internal.signature_parser.parse_param_default
+---
+name: parse_signature
+ts: 2026-01-22 20:46:41.806615+00:00
+type: keep_private
+full_path: _internal.signature_parser.parse_signature
+---
+name: parse_direct_bases
+ts: 2026-01-22 20:46:41.806626+00:00
+type: keep_private
+full_path: _internal.signature_parser.parse_direct_bases
+---
+name: parse_class_fields
+ts: 2026-01-22 20:46:41.806634+00:00
+type: keep_private
+full_path: _internal.signature_parser.parse_class_fields
+---
+name: process_reference_renames
+ts: 2026-01-22 20:46:44.206909+00:00
+type: keep_private
+full_path: _internal.reference_handling.removed.process_reference_renames
+---
+name: handle_removed_refs
+ts: 2026-01-22 20:46:44.206972+00:00
+type: keep_private
+full_path: _internal.reference_handling.removed.handle_removed_refs
+---
+name: match_symbol_in_code
+ts: 2026-01-22 20:47:24.753847+00:00
+type: keep_private
+full_path: _internal.reference_handling.promote.match_symbol_in_code
+---
+name: find_private_symbols
+ts: 2026-01-22 20:47:24.753927+00:00
+type: keep_private
+full_path: _internal.reference_handling.promote.find_private_symbols
+---
+name: find_undecided_symbols
+ts: 2026-01-22 20:47:24.753939+00:00
+type: keep_private
+full_path: _internal.reference_handling.promote.find_undecided_symbols
+---
+name: filter_by_module
+ts: 2026-01-22 20:47:24.753947+00:00
+type: keep_private
+full_path: _internal.reference_handling.promote.filter_by_module
+---
+name: filter_by_pattern
+ts: 2026-01-22 20:47:24.753957+00:00
+type: keep_private
+full_path: _internal.reference_handling.promote.filter_by_pattern
+---
+name: promote_symbols
+ts: 2026-01-22 20:47:24.753965+00:00
+type: keep_private
+full_path: _internal.reference_handling.promote.promote_symbols
+---
+name: find_promotable
+ts: 2026-01-22 20:47:24.753976+00:00
+type: keep_private
+full_path: _internal.reference_handling.promote.find_promotable
+---
+name: handle_promote
+ts: 2026-01-22 20:47:24.753985+00:00
+type: keep_private
+full_path: _internal.reference_handling.promote.handle_promote
+---
+name: get_or_prompt_group
+ts: 2026-01-22 20:47:26.347816+00:00
+type: keep_private
+full_path: _internal.reference_handling.added.get_or_prompt_group
+---
+name: ensure_function_args_exposed
+ts: 2026-01-22 20:47:26.347861+00:00
+type: keep_private
+full_path: _internal.reference_handling.added.ensure_function_args_exposed
+---
+name: make_expose_decisions
+ts: 2026-01-22 20:47:26.347868+00:00
+type: keep_private
+full_path: _internal.reference_handling.added.make_expose_decisions
+---
+name: handle_added_refs
+ts: 2026-01-22 20:47:26.347873+00:00
+type: keep_private
+full_path: _internal.reference_handling.added.handle_added_refs
+---
+name: default_commit_fix_prefixes
+ts: 2026-01-22 20:51:31.557257+00:00
+type: keep_private
+full_path: _internal.settings.default_commit_fix_prefixes
+---
+name: default_commit_diff_suffixes
+ts: 2026-01-22 20:51:31.557385+00:00
+type: keep_private
+full_path: _internal.settings.default_commit_diff_suffixes
+---
+name: pkg_settings
+ts: 2026-01-22 20:51:31.557391+00:00
+type: keep_private
+full_path: _internal.settings.pkg_settings
+---
+name: format_python_string
+ts: 2026-01-22 20:51:33.501824+00:00
+type: keep_private
+full_path: _internal.py_format.format_python_string
+---
+name: format_python_files
+ts: 2026-01-22 20:51:33.501870+00:00
+type: keep_private
+full_path: _internal.py_format.format_python_files
+---
+name: normalize_type
+ts: 2026-01-22 20:56:16.356390+00:00
+type: keep_private
+full_path: _internal.api_diff.normalize_type
+---
+name: types_equal
+ts: 2026-01-22 20:56:16.356423+00:00
+type: keep_private
+full_path: _internal.api_diff.types_equal
+---
+name: compare_params
+ts: 2026-01-22 20:56:16.356499+00:00
+type: keep_private
+full_path: _internal.api_diff.compare_params
+---
+name: compare_fields
+ts: 2026-01-22 20:56:16.356522+00:00
+type: keep_private
+full_path: _internal.api_diff.compare_fields
+---
+name: compare_function
+ts: 2026-01-22 20:56:16.356526+00:00
+type: keep_private
+full_path: _internal.api_diff.compare_function
+---
+name: compare_class
+ts: 2026-01-22 20:56:16.356532+00:00
+type: keep_private
+full_path: _internal.api_diff.compare_class
+---
+name: compare_exception
+ts: 2026-01-22 20:56:16.356535+00:00
+type: keep_private
+full_path: _internal.api_diff.compare_exception
+---
+name: compare_global_var
+ts: 2026-01-22 20:56:16.356538+00:00
+type: keep_private
+full_path: _internal.api_diff.compare_global_var
+---
+name: compare_symbols
+ts: 2026-01-22 20:56:16.356542+00:00
+type: keep_private
+full_path: _internal.api_diff.compare_symbols
+---
+name: compare_group
+ts: 2026-01-22 20:56:16.356545+00:00
+type: keep_private
+full_path: _internal.api_diff.compare_group
+---
+name: compare_api_dumps
+ts: 2026-01-22 20:56:16.356548+00:00
+type: keep_private
+full_path: _internal.api_diff.compare_api_dumps
+---
+name: format_diff_results
+ts: 2026-01-22 20:56:16.356555+00:00
+type: keep_private
+full_path: _internal.api_diff.format_diff_results
+---
+name: reconcile_auto_actions
+ts: 2026-01-22 20:56:16.356559+00:00
+type: keep_private
+full_path: _internal.api_diff.reconcile_auto_actions
+---
+name: ChangeKind
+ts: 2026-01-22 20:56:16.356562+00:00
+type: keep_private
+full_path: _internal.api_diff.ChangeKind
+---
+name: DiffResult
+ts: 2026-01-22 20:56:16.356565+00:00
+type: keep_private
+full_path: _internal.api_diff.DiffResult
+---
+name: dump_function
+ts: 2026-01-22 20:56:16.356569+00:00
+type: keep_private
+full_path: _internal.api_dumper.dump_function
+---
+name: dump_class
+ts: 2026-01-22 20:56:16.356572+00:00
+type: keep_private
+full_path: _internal.api_dumper.dump_class
+---
+name: dump_exception
+ts: 2026-01-22 20:56:16.356576+00:00
+type: keep_private
+full_path: _internal.api_dumper.dump_exception
+---
+name: dump_type_alias
+ts: 2026-01-22 20:56:16.356593+00:00
+type: keep_private
+full_path: _internal.api_dumper.dump_type_alias
+---
+name: dump_global_var
+ts: 2026-01-22 20:56:16.356597+00:00
+type: keep_private
+full_path: _internal.api_dumper.dump_global_var
+---
+name: dump_symbol
+ts: 2026-01-22 20:56:16.356600+00:00
+type: keep_private
+full_path: _internal.api_dumper.dump_symbol
+---
+name: dump_group
+ts: 2026-01-22 20:56:16.356604+00:00
+type: keep_private
+full_path: _internal.api_dumper.dump_group
+---
+name: dump_public_api
+ts: 2026-01-22 20:56:16.356607+00:00
+type: keep_private
+full_path: _internal.api_dumper.dump_public_api
+---
+name: ACTION_FILE_SPLIT
+ts: 2026-01-22 20:56:16.356612+00:00
+type: keep_private
+full_path: _internal.changelog.actions.ACTION_FILE_SPLIT
+---
+name: current_user
+ts: 2026-01-22 20:56:16.356616+00:00
+type: keep_private
+full_path: _internal.changelog.actions.current_user
+---
+name: parse_changelog_file_path
+ts: 2026-01-22 20:56:16.356619+00:00
+type: keep_private
+full_path: _internal.changelog.actions.parse_changelog_file_path
+---
+name: parse_changelog_actions
+ts: 2026-01-22 20:56:16.356622+00:00
+type: keep_private
+full_path: _internal.changelog.actions.parse_changelog_actions
+---
+name: changelog_filename
+ts: 2026-01-22 20:56:16.356626+00:00
+type: keep_private
+full_path: _internal.changelog.actions.changelog_filename
+---
+name: changelog_archive_path
+ts: 2026-01-22 20:56:16.356629+00:00
+type: keep_private
+full_path: _internal.changelog.actions.changelog_archive_path
+---
+name: archive_old_actions
+ts: 2026-01-22 20:56:16.356632+00:00
+type: keep_private
+full_path: _internal.changelog.actions.archive_old_actions
+---
+name: changelog_filepath
+ts: 2026-01-22 20:56:16.356635+00:00
+type: keep_private
+full_path: _internal.changelog.actions.changelog_filepath
+---
+name: default_changelog_path
+ts: 2026-01-22 20:56:16.356638+00:00
+type: keep_private
+full_path: _internal.changelog.actions.default_changelog_path
+---
+name: dump_changelog_actions
+ts: 2026-01-22 20:56:16.356641+00:00
+type: keep_private
+full_path: _internal.changelog.actions.dump_changelog_actions
+---
+name: StabilityTarget
+ts: 2026-01-22 20:56:16.356644+00:00
+type: keep_private
+full_path: _internal.changelog.actions.StabilityTarget
+---
+name: BumpType
+ts: 2026-01-22 20:56:16.356648+00:00
+type: keep_private
+full_path: _internal.changelog.actions.BumpType
+---
+name: ChangelogActionBase
+ts: 2026-01-22 20:56:16.356651+00:00
+type: keep_private
+full_path: _internal.changelog.actions.ChangelogActionBase
+---
+name: MakePublicAction
+ts: 2026-01-22 20:56:16.356655+00:00
+type: keep_private
+full_path: _internal.changelog.actions.MakePublicAction
+---
+name: KeepPrivateAction
+ts: 2026-01-22 20:56:16.356658+00:00
+type: keep_private
+full_path: _internal.changelog.actions.KeepPrivateAction
+---
+name: FixAction
+ts: 2026-01-22 20:56:16.356661+00:00
+type: keep_private
+full_path: _internal.changelog.actions.FixAction
+---
+name: DeleteAction
+ts: 2026-01-22 20:56:16.356664+00:00
+type: keep_private
+full_path: _internal.changelog.actions.DeleteAction
+---
+name: RenameAction
+ts: 2026-01-22 20:56:16.356668+00:00
+type: keep_private
+full_path: _internal.changelog.actions.RenameAction
+---
+name: BreakingChangeAction
+ts: 2026-01-22 20:56:16.356671+00:00
+type: keep_private
+full_path: _internal.changelog.actions.BreakingChangeAction
+---
+name: AdditionalChangeAction
+ts: 2026-01-22 20:56:16.356674+00:00
+type: keep_private
+full_path: _internal.changelog.actions.AdditionalChangeAction
+---
+name: GroupModuleAction
+ts: 2026-01-22 20:56:16.356677+00:00
+type: keep_private
+full_path: _internal.changelog.actions.GroupModuleAction
+---
+name: ReleaseAction
+ts: 2026-01-22 20:56:16.356683+00:00
+type: keep_private
+full_path: _internal.changelog.actions.ReleaseAction
+---
+name: StabilityActionMixin
+ts: 2026-01-22 20:56:16.356687+00:00
+type: keep_private
+full_path: _internal.changelog.actions.StabilityActionMixin
+---
+name: ExperimentalAction
+ts: 2026-01-22 20:56:16.356690+00:00
+type: keep_private
+full_path: _internal.changelog.actions.ExperimentalAction
+---
+name: GAAction
+ts: 2026-01-22 20:56:16.356693+00:00
+type: keep_private
+full_path: _internal.changelog.actions.GAAction
+---
+name: DeprecatedAction
+ts: 2026-01-22 20:56:16.356700+00:00
+type: keep_private
+full_path: _internal.changelog.actions.DeprecatedAction
+---
+name: MaxBumpTypeAction
+ts: 2026-01-22 20:56:16.356703+00:00
+type: keep_private
+full_path: _internal.changelog.actions.MaxBumpTypeAction
+---
+name: ChoreAction
+ts: 2026-01-22 20:56:16.356707+00:00
+type: keep_private
+full_path: _internal.changelog.actions.ChoreAction
+---
+name: py_diff
+ts: 2026-01-22 20:56:16.356710+00:00
+type: keep_private
+full_path: _internal.changelog.committer.py_diff
+---
+name: rich_diff
+ts: 2026-01-22 20:56:16.356713+00:00
+type: keep_private
+full_path: _internal.changelog.committer.rich_diff
+---
+name: infer_group
+ts: 2026-01-22 20:56:16.356716+00:00
+type: keep_private
+full_path: _internal.changelog.committer.infer_group
+---
+name: prompt_for_fix
+ts: 2026-01-22 20:56:16.356719+00:00
+type: keep_private
+full_path: _internal.changelog.committer.prompt_for_fix
+---
+name: fix_changelog_action
+ts: 2026-01-22 20:56:16.356723+00:00
+type: keep_private
+full_path: _internal.changelog.committer.fix_changelog_action
+---
+name: add_git_changes
+ts: 2026-01-22 20:56:16.356726+00:00
+type: keep_private
+full_path: _internal.changelog.committer.add_git_changes
+---
+name: parse_changelog
+ts: 2026-01-22 20:56:16.356729+00:00
+type: keep_private
+full_path: _internal.changelog.parser.parse_changelog
+---
+name: read_changelog_section
+ts: 2026-01-22 20:56:16.356732+00:00
+type: keep_private
+full_path: _internal.changelog.write_changelog_md.read_changelog_section
+---
+name: as_changelog_line
+ts: 2026-01-22 20:56:16.356735+00:00
+type: keep_private
+full_path: _internal.changelog.write_changelog_md.as_changelog_line
+---
+name: write_changelog_md
+ts: 2026-01-22 20:56:16.356740+00:00
+type: keep_private
+full_path: _internal.changelog.write_changelog_md.write_changelog_md
+---
+name: main
+ts: 2026-01-22 20:56:16.356743+00:00
+type: keep_private
+full_path: _internal.cli.base_commands.main
+---
+name: resolve_repo_root
+ts: 2026-01-22 20:56:16.356746+00:00
+type: keep_private
+full_path: _internal.cli.base_commands.resolve_repo_root
+---
+name: is_package_dir
+ts: 2026-01-22 20:56:16.356749+00:00
+type: keep_private
+full_path: _internal.cli.base_commands.is_package_dir
+---
+name: resolve_pkg_path_str
+ts: 2026-01-22 20:56:16.356752+00:00
+type: keep_private
+full_path: _internal.cli.base_commands.resolve_pkg_path_str
+---
+name: get_default_editor
+ts: 2026-01-22 20:56:16.356772+00:00
+type: keep_private
+full_path: _internal.cli.options.get_default_editor
+---
+name: validate_group_exists
+ts: 2026-01-22 20:56:16.356786+00:00
+type: keep_private
+full_path: _internal.cli.stability.validate_group_exists
+---
+name: validate_symbol_exists
+ts: 2026-01-22 20:56:16.356789+00:00
+type: keep_private
+full_path: _internal.cli.stability.validate_symbol_exists
+---
+name: validate_arg_exists
+ts: 2026-01-22 20:56:16.356793+00:00
+type: keep_private
+full_path: _internal.cli.stability.validate_arg_exists
+---
+name: validate_target
+ts: 2026-01-22 20:56:16.356796+00:00
+type: keep_private
+full_path: _internal.cli.stability.validate_target
+---
+name: validate_group_is_ga
+ts: 2026-01-22 20:56:16.356799+00:00
+type: keep_private
+full_path: _internal.cli.stability.validate_group_is_ga
+---
+name: StabilityLevel
+ts: 2026-01-22 20:56:16.356802+00:00
+type: keep_private
+full_path: _internal.cli.stability.StabilityLevel
+---
+name: ParsedTarget
+ts: 2026-01-22 20:56:16.356806+00:00
+type: keep_private
+full_path: _internal.cli.stability.ParsedTarget
+---
+name: get_generated_file_paths
+ts: 2026-01-22 20:56:16.356818+00:00
+type: keep_private
+full_path: _internal.cli.workflow_cmds.get_generated_file_paths
+---
+name: check_generated_files_dirty
+ts: 2026-01-22 20:56:16.356821+00:00
+type: keep_private
+full_path: _internal.cli.workflow_cmds.check_generated_files_dirty
+---
+name: generate_examples_for_groups
+ts: 2026-01-22 20:56:16.356824+00:00
+type: keep_private
+full_path: _internal.cli.workflow_cmds.generate_examples_for_groups
+---
+name: generate_tests_for_groups
+ts: 2026-01-22 20:56:16.356828+00:00
+type: keep_private
+full_path: _internal.cli.workflow_cmds.generate_tests_for_groups
+---
+name: generate_docs_for_pkg
+ts: 2026-01-22 20:56:16.356831+00:00
+type: keep_private
+full_path: _internal.cli.workflow_cmds.generate_docs_for_pkg
+---
+name: parse_pkg_code_state
+ts: 2026-01-22 20:56:16.356848+00:00
+type: keep_private
+full_path: _internal.cli.workflows.parse_pkg_code_state
+---
+name: create_ctx
+ts: 2026-01-22 20:56:16.356851+00:00
+type: keep_private
+full_path: _internal.cli.workflows.create_ctx
+---
+name: update_changelog_entries
+ts: 2026-01-22 20:56:16.356854+00:00
+type: keep_private
+full_path: _internal.cli.workflows.update_changelog_entries
+---
+name: sync_files
+ts: 2026-01-22 20:56:16.356857+00:00
+type: keep_private
+full_path: _internal.cli.workflows.sync_files
+---
+name: create_release_action
+ts: 2026-01-22 20:56:16.356860+00:00
+type: keep_private
+full_path: _internal.cli.workflows.create_release_action
+---
+name: post_merge_commit_workflow
+ts: 2026-01-22 20:56:16.356863+00:00
+type: keep_private
+full_path: _internal.cli.workflows.post_merge_commit_workflow
+---
+name: generate_api_workflow
+ts: 2026-01-22 20:56:16.356866+00:00
+type: keep_private
+full_path: _internal.cli.workflows.generate_api_workflow
+---
+name: clean_old_entries
+ts: 2026-01-22 20:56:16.356869+00:00
+type: keep_private
+full_path: _internal.cli.workflows.clean_old_entries
+---
+name: create_stability_ctx
+ts: 2026-01-22 20:56:16.356872+00:00
+type: keep_private
+full_path: _internal.cli.workflows.create_stability_ctx
+---
+name: create_api_dump
+ts: 2026-01-22 20:56:16.356875+00:00
+type: keep_private
+full_path: _internal.cli.workflows.create_api_dump
+---
+name: write_api_dump
+ts: 2026-01-22 20:56:16.356878+00:00
+type: keep_private
+full_path: _internal.cli.workflows.write_api_dump
+---
+name: run_api_diff
+ts: 2026-01-22 20:56:16.356880+00:00
+type: keep_private
+full_path: _internal.cli.workflows.run_api_diff
+---
+name: GenerateApiInput
+ts: 2026-01-22 20:56:16.356884+00:00
+type: keep_private
+full_path: _internal.cli.workflows.GenerateApiInput
+---
+name: ROOT_GROUP_NAME
+ts: 2026-01-22 20:56:16.356887+00:00
+type: keep_private
+full_path: _internal.config.ROOT_GROUP_NAME
+---
+name: PKG_EXT_TOOL_NAME
+ts: 2026-01-22 20:56:16.356890+00:00
+type: keep_private
+full_path: _internal.config.PKG_EXT_TOOL_NAME
+---
+name: load_user_config
+ts: 2026-01-22 20:56:16.356893+00:00
+type: keep_private
+full_path: _internal.config.load_user_config
+---
+name: load_project_config
+ts: 2026-01-22 20:56:16.356895+00:00
+type: keep_private
+full_path: _internal.config.load_project_config
+---
+name: validate_group_dependencies
+ts: 2026-01-22 20:56:16.356898+00:00
+type: keep_private
+full_path: _internal.config.validate_group_dependencies
+---
+name: UserConfig
+ts: 2026-01-22 20:56:16.356901+00:00
+type: keep_private
+full_path: _internal.config.UserConfig
+---
+name: Stability
+ts: 2026-01-22 20:56:16.356904+00:00
+type: keep_private
+full_path: _internal.config.Stability
+---
+name: GroupConfig
+ts: 2026-01-22 20:56:16.356907+00:00
+type: keep_private
+full_path: _internal.config.GroupConfig
+---
+name: ProjectConfig
+ts: 2026-01-22 20:56:16.356910+00:00
+type: keep_private
+full_path: _internal.config.ProjectConfig
+---
+name: RunState
+ts: 2026-01-22 20:56:16.356915+00:00
+type: keep_private
+full_path: _internal.context.RunState
+---
+name: pkg_ctx
+ts: 2026-01-22 20:56:16.356918+00:00
+type: keep_private
+full_path: _internal.context.pkg_ctx
+---
+name: InvalidGroupSelectionError
+ts: 2026-01-22 20:56:16.356921+00:00
+type: keep_private
+full_path: _internal.errors.InvalidGroupSelectionError
+---
+name: LocateError
+ts: 2026-01-22 20:56:16.356924+00:00
+type: keep_private
+full_path: _internal.errors.LocateError
+---
+name: RefSymbolNotInCodeError
+ts: 2026-01-22 20:56:16.356927+00:00
+type: keep_private
+full_path: _internal.errors.RefSymbolNotInCodeError
+---
+name: NoHumanRequiredError
+ts: 2026-01-22 20:56:16.356930+00:00
+type: keep_private
+full_path: _internal.errors.NoHumanRequiredError
+---
+name: PRFromCommitsNotFoundError
+ts: 2026-01-22 20:56:16.356933+00:00
+type: keep_private
+full_path: _internal.errors.PRFromCommitsNotFoundError
+---
+name: parse_symbols
+ts: 2026-01-22 20:56:16.356936+00:00
+type: keep_private
+full_path: _internal.file_parser.parse_symbols
+---
+name: parse_code_symbols
+ts: 2026-01-22 20:56:16.356939+00:00
+type: keep_private
+full_path: _internal.file_parser.parse_code_symbols
+---
+name: SymbolParser
+ts: 2026-01-22 20:56:16.356942+00:00
+type: keep_private
+full_path: _internal.file_parser.SymbolParser
+---
+name: group_dir_name
+ts: 2026-01-22 20:56:16.356945+00:00
+type: keep_private
+full_path: _internal.generation.docs.group_dir_name
+---
+name: has_env_vars
+ts: 2026-01-22 20:56:16.356948+00:00
+type: keep_private
+full_path: _internal.generation.docs.has_env_vars
+---
+name: build_symbol_context
+ts: 2026-01-22 20:56:16.357028+00:00
+type: keep_private
+full_path: _internal.generation.docs.build_symbol_context
+---
+name: render_symbol_entry
+ts: 2026-01-22 20:56:16.357031+00:00
+type: keep_private
+full_path: _internal.generation.docs.render_symbol_entry
+---
+name: render_group_index
+ts: 2026-01-22 20:56:16.357035+00:00
+type: keep_private
+full_path: _internal.generation.docs.render_group_index
+---
+name: load_examples_for_group
+ts: 2026-01-22 20:56:16.357040+00:00
+type: keep_private
+full_path: _internal.generation.docs.load_examples_for_group
+---
+name: generate_docs
+ts: 2026-01-22 20:56:16.357043+00:00
+type: keep_private
+full_path: _internal.generation.docs.generate_docs
+---
+name: GeneratedDocsOutput
+ts: 2026-01-22 20:56:16.357047+00:00
+type: keep_private
+full_path: _internal.generation.docs.GeneratedDocsOutput
+---
+name: SymbolContext
+ts: 2026-01-22 20:56:16.357050+00:00
+type: keep_private
+full_path: _internal.generation.docs.SymbolContext
+---
+name: MD_CONFIG
+ts: 2026-01-22 20:56:16.357053+00:00
+type: keep_private
+full_path: _internal.generation.docs_constants.MD_CONFIG
+---
+name: YAML_CONFIG
+ts: 2026-01-22 20:56:16.357056+00:00
+type: keep_private
+full_path: _internal.generation.docs_constants.YAML_CONFIG
+---
+name: ROOT_DIR
+ts: 2026-01-22 20:56:16.357059+00:00
+type: keep_private
+full_path: _internal.generation.docs_constants.ROOT_DIR
+---
+name: copy_readme_as_index
+ts: 2026-01-22 20:56:16.357062+00:00
+type: keep_private
+full_path: _internal.generation.docs_mkdocs.copy_readme_as_index
+---
+name: group_dir_name_for_nav
+ts: 2026-01-22 20:56:16.357065+00:00
+type: keep_private
+full_path: _internal.generation.docs_mkdocs.group_dir_name_for_nav
+---
+name: extract_complex_symbols
+ts: 2026-01-22 20:56:16.357068+00:00
+type: keep_private
+full_path: _internal.generation.docs_mkdocs.extract_complex_symbols
+---
+name: generate_mkdocs_nav
+ts: 2026-01-22 20:56:16.357070+00:00
+type: keep_private
+full_path: _internal.generation.docs_mkdocs.generate_mkdocs_nav
+---
+name: write_mkdocs_yml
+ts: 2026-01-22 20:56:16.357075+00:00
+type: keep_private
+full_path: _internal.generation.docs_mkdocs.write_mkdocs_yml
+---
+name: write_docs_files
+ts: 2026-01-22 20:56:16.357078+00:00
+type: keep_private
+full_path: _internal.generation.docs_mkdocs.write_docs_files
+---
+name: MkdocsSection
+ts: 2026-01-22 20:56:16.357081+00:00
+type: keep_private
+full_path: _internal.generation.docs_mkdocs.MkdocsSection
+---
+name: format_signature
+ts: 2026-01-22 20:56:16.357084+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.format_signature
+---
+name: format_docstring
+ts: 2026-01-22 20:56:16.357087+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.format_docstring
+---
+name: render_env_var_table
+ts: 2026-01-22 20:56:16.357090+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.render_env_var_table
+---
+name: should_show_field_table
+ts: 2026-01-22 20:56:16.357094+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.should_show_field_table
+---
+name: render_field_table
+ts: 2026-01-22 20:56:16.357097+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.render_field_table
+---
+name: render_since_badge
+ts: 2026-01-22 20:56:16.357100+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.render_since_badge
+---
+name: render_stability_badge
+ts: 2026-01-22 20:56:16.357103+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.render_stability_badge
+---
+name: calculate_source_link
+ts: 2026-01-22 20:56:16.357107+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.calculate_source_link
+---
+name: render_inline_symbol
+ts: 2026-01-22 20:56:16.357110+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.render_inline_symbol
+---
+name: render_symbol_page
+ts: 2026-01-22 20:56:16.357113+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.render_symbol_page
+---
+name: render_changes_section
+ts: 2026-01-22 20:56:16.357116+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.render_changes_section
+---
+name: render_example_section
+ts: 2026-01-22 20:56:16.357119+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.render_example_section
+---
+name: MEANINGFUL_CHANGE_ACTIONS
+ts: 2026-01-22 20:56:16.357122+00:00
+type: keep_private
+full_path: _internal.generation.docs_version.MEANINGFUL_CHANGE_ACTIONS
+---
+name: UNRELEASED_VERSION
+ts: 2026-01-22 20:56:16.357125+00:00
+type: keep_private
+full_path: _internal.generation.docs_version.UNRELEASED_VERSION
+---
+name: find_release_version
+ts: 2026-01-22 20:56:16.357128+00:00
+type: keep_private
+full_path: _internal.generation.docs_version.find_release_version
+---
+name: get_symbol_stability
+ts: 2026-01-22 20:56:16.357130+00:00
+type: keep_private
+full_path: _internal.generation.docs_version.get_symbol_stability
+---
+name: get_symbol_since_version
+ts: 2026-01-22 20:56:16.357133+00:00
+type: keep_private
+full_path: _internal.generation.docs_version.get_symbol_since_version
+---
+name: get_field_since_version
+ts: 2026-01-22 20:56:16.357136+00:00
+type: keep_private
+full_path: _internal.generation.docs_version.get_field_since_version
+---
+name: build_symbol_changes
+ts: 2026-01-22 20:56:16.357139+00:00
+type: keep_private
+full_path: _internal.generation.docs_version.build_symbol_changes
+---
+name: SymbolChange
+ts: 2026-01-22 20:56:16.357142+00:00
+type: keep_private
+full_path: _internal.generation.docs_version.SymbolChange
+---
+name: PY_CONFIG
+ts: 2026-01-22 20:56:16.357145+00:00
+type: keep_private
+full_path: _internal.generation.example_gen.PY_CONFIG
+---
+name: EXAMPLE_NAME_FIELD
+ts: 2026-01-22 20:56:16.357148+00:00
+type: keep_private
+full_path: _internal.generation.example_gen.EXAMPLE_NAME_FIELD
+---
+name: EXAMPLE_DESCRIPTION_FIELD
+ts: 2026-01-22 20:56:16.357151+00:00
+type: keep_private
+full_path: _internal.generation.example_gen.EXAMPLE_DESCRIPTION_FIELD
+---
+name: EXPECTED_FIELD
+ts: 2026-01-22 20:56:16.357153+00:00
+type: keep_private
+full_path: _internal.generation.example_gen.EXPECTED_FIELD
+---
+name: EXAMPLE_BASE_FIELDS
+ts: 2026-01-22 20:56:16.357156+00:00
+type: keep_private
+full_path: _internal.generation.example_gen.EXAMPLE_BASE_FIELDS
+---
+name: generate_function_example_class
+ts: 2026-01-22 20:56:16.357159+00:00
+type: keep_private
+full_path: _internal.generation.example_gen.generate_function_example_class
+---
+name: generate_class_example_class
+ts: 2026-01-22 20:56:16.357162+00:00
+type: keep_private
+full_path: _internal.generation.example_gen.generate_class_example_class
+---
+name: generate_group_examples_file
+ts: 2026-01-22 20:56:16.357165+00:00
+type: keep_private
+full_path: _internal.generation.example_gen.generate_group_examples_file
+---
+name: get_example_stability
+ts: 2026-01-22 20:56:16.357167+00:00
+type: keep_private
+full_path: _internal.generation.example_gen.get_example_stability
+---
+name: as_import_line
+ts: 2026-01-22 20:56:16.357170+00:00
+type: keep_private
+full_path: _internal.generation.groups.as_import_line
+---
+name: write_imports
+ts: 2026-01-22 20:56:16.357173+00:00
+type: keep_private
+full_path: _internal.generation.groups.write_imports
+---
+name: write_group
+ts: 2026-01-22 20:56:16.357176+00:00
+type: keep_private
+full_path: _internal.generation.groups.write_group
+---
+name: write_groups
+ts: 2026-01-22 20:56:16.357179+00:00
+type: keep_private
+full_path: _internal.generation.groups.write_groups
+---
+name: write_init
+ts: 2026-01-22 20:56:16.357182+00:00
+type: keep_private
+full_path: _internal.generation.init_file.write_init
+---
+name: update_pyproject_toml
+ts: 2026-01-22 20:56:16.357185+00:00
+type: keep_private
+full_path: _internal.generation.pyproject.update_pyproject_toml
+---
+name: git_commit
+ts: 2026-01-22 20:56:16.357188+00:00
+type: keep_private
+full_path: _internal.git_usage.actions.git_commit
+---
+name: git_show_file
+ts: 2026-01-22 20:56:16.357191+00:00
+type: keep_private
+full_path: _internal.git_usage.actions.git_show_file
+---
+name: pr_number_from_url
+ts: 2026-01-22 20:56:16.357194+00:00
+type: keep_private
+full_path: _internal.git_usage.state.pr_number_from_url
+---
+name: head_merge_pr
+ts: 2026-01-22 20:56:16.357196+00:00
+type: keep_private
+full_path: _internal.git_usage.state.head_merge_pr
+---
+name: last_merge_pr
+ts: 2026-01-22 20:56:16.357199+00:00
+type: keep_private
+full_path: _internal.git_usage.state.last_merge_pr
+---
+name: solve_since_sha
+ts: 2026-01-22 20:56:16.357202+00:00
+type: keep_private
+full_path: _internal.git_usage.state.solve_since_sha
+---
+name: find_pr_info_raw
+ts: 2026-01-22 20:56:16.357205+00:00
+type: keep_private
+full_path: _internal.git_usage.state.find_pr_info_raw
+---
+name: find_pr_info_or_none
+ts: 2026-01-22 20:56:16.357208+00:00
+type: keep_private
+full_path: _internal.git_usage.state.find_pr_info_or_none
+---
+name: find_git_changes
+ts: 2026-01-22 20:56:16.357212+00:00
+type: keep_private
+full_path: _internal.git_usage.state.find_git_changes
+---
+name: GitSince
+ts: 2026-01-22 20:56:16.357215+00:00
+type: keep_private
+full_path: _internal.git_usage.state.GitSince
+---
+name: GitState
+ts: 2026-01-22 20:56:16.357218+00:00
+type: keep_private
+full_path: _internal.git_usage.state.GitState
+---
+name: GitChangesInput
+ts: 2026-01-22 20:56:16.357221+00:00
+type: keep_private
+full_path: _internal.git_usage.state.GitChangesInput
+---
+name: GitCommit
+ts: 2026-01-22 20:56:16.357225+00:00
+type: keep_private
+full_path: _internal.git_usage.state.GitCommit
+---
+name: PRInfo
+ts: 2026-01-22 20:56:16.357227+00:00
+type: keep_private
+full_path: _internal.git_usage.state.PRInfo
+---
+name: GitChanges
+ts: 2026-01-22 20:56:16.357232+00:00
+type: keep_private
+full_path: _internal.git_usage.state.GitChanges
+---
+name: remove_credentials
+ts: 2026-01-22 20:56:16.357235+00:00
+type: keep_private
+full_path: _internal.git_usage.url.remove_credentials
+---
+name: normalize_repo_url
+ts: 2026-01-22 20:56:16.357238+00:00
+type: keep_private
+full_path: _internal.git_usage.url.normalize_repo_url
+---
+name: read_remote_url
+ts: 2026-01-22 20:56:16.357241+00:00
+type: keep_private
+full_path: _internal.git_usage.url.read_remote_url
+---
+name: SKIPPED
+ts: 2026-01-22 20:56:16.357244+00:00
+type: keep_private
+full_path: _internal.interactive.SKIPPED
+---
+name: as_choices
+ts: 2026-01-22 20:56:16.357247+00:00
+type: keep_private
+full_path: _internal.interactive.as_choices
+---
+name: new_public_group_constructor
+ts: 2026-01-22 20:56:16.357250+00:00
+type: keep_private
+full_path: _internal.interactive.new_public_group_constructor
+---
+name: select_commit_fix
+ts: 2026-01-22 20:56:16.357252+00:00
+type: keep_private
+full_path: _internal.interactive.select_commit_fix
+---
+name: select_commit_rephrased
+ts: 2026-01-22 20:56:16.357256+00:00
+type: keep_private
+full_path: _internal.interactive.select_commit_rephrased
+---
+name: select_group_name
+ts: 2026-01-22 20:56:16.357260+00:00
+type: keep_private
+full_path: _internal.interactive.select_group_name
+---
+name: select_group_name_or_skip
+ts: 2026-01-22 20:56:16.357263+00:00
+type: keep_private
+full_path: _internal.interactive.select_group_name_or_skip
+---
+name: has_group_conflict
+ts: 2026-01-22 20:56:16.357266+00:00
+type: keep_private
+full_path: _internal.interactive.has_group_conflict
+---
+name: select_group
+ts: 2026-01-22 20:56:16.357269+00:00
+type: keep_private
+full_path: _internal.interactive.select_group
+---
+name: select_multiple_refs
+ts: 2026-01-22 20:56:16.357272+00:00
+type: keep_private
+full_path: _internal.interactive.select_multiple_refs
+---
+name: select_multiple_ref_state
+ts: 2026-01-22 20:56:16.357275+00:00
+type: keep_private
+full_path: _internal.interactive.select_multiple_ref_state
+---
+name: select_ref
+ts: 2026-01-22 20:56:16.357278+00:00
+type: keep_private
+full_path: _internal.interactive.select_ref
+---
+name: confirm_create_alias
+ts: 2026-01-22 20:56:16.357280+00:00
+type: keep_private
+full_path: _internal.interactive.confirm_create_alias
+---
+name: confirm_delete
+ts: 2026-01-22 20:56:16.357283+00:00
+type: keep_private
+full_path: _internal.interactive.confirm_delete
+---
+name: select_private_symbols
+ts: 2026-01-22 20:56:16.357286+00:00
+type: keep_private
+full_path: _internal.interactive.select_private_symbols
+---
+name: CommitFixAction
+ts: 2026-01-22 20:56:16.357289+00:00
+type: keep_private
+full_path: _internal.interactive.CommitFixAction
+---
+name: PkgCodeState
+ts: 2026-01-22 20:56:16.357332+00:00
+type: keep_private
+full_path: _internal.models.code_state.PkgCodeState
+---
+name: ensure_disk_path_updated
+ts: 2026-01-22 20:56:16.357335+00:00
+type: keep_private
+full_path: _internal.models.groups.ensure_disk_path_updated
+---
+name: PublicGroup
+ts: 2026-01-22 20:56:16.357339+00:00
+type: keep_private
+full_path: _internal.models.groups.PublicGroup
+---
+name: PublicGroups
+ts: 2026-01-22 20:56:16.357342+00:00
+type: keep_private
+full_path: _internal.models.groups.PublicGroups
+---
+name: PkgFileBase
+ts: 2026-01-22 20:56:16.357345+00:00
+type: keep_private
+full_path: _internal.models.py_files.PkgFileBase
+---
+name: PkgSrcFile
+ts: 2026-01-22 20:56:16.357348+00:00
+type: keep_private
+full_path: _internal.models.py_files.PkgSrcFile
+---
+name: PkgTestFile
+ts: 2026-01-22 20:56:16.357351+00:00
+type: keep_private
+full_path: _internal.models.py_files.PkgTestFile
+---
+name: SymbolType
+ts: 2026-01-22 20:56:16.357354+00:00
+type: keep_private
+full_path: _internal.models.py_symbols.SymbolType
+---
+name: RefSymbol
+ts: 2026-01-22 20:56:16.357357+00:00
+type: keep_private
+full_path: _internal.models.py_symbols.RefSymbol
+---
+name: RefStateType
+ts: 2026-01-22 20:56:16.357360+00:00
+type: keep_private
+full_path: _internal.models.ref_state.RefStateType
+---
+name: RefState
+ts: 2026-01-22 20:56:16.357363+00:00
+type: keep_private
+full_path: _internal.models.ref_state.RefState
+---
+name: RefStateWithSymbol
+ts: 2026-01-22 20:56:16.357365+00:00
+type: keep_private
+full_path: _internal.models.ref_state.RefStateWithSymbol
+---
+name: SymbolRefId
+ts: 2026-01-22 20:56:16.357368+00:00
+type: keep_private
+full_path: _internal.models.types.SymbolRefId
+---
+name: PyIdentifier
+ts: 2026-01-22 20:56:16.357371+00:00
+type: keep_private
+full_path: _internal.models.types.PyIdentifier
+---
+name: ref_id_format
+ts: 2026-01-22 20:56:16.357374+00:00
+type: keep_private
+full_path: _internal.models.types.ref_id_format
+---
+name: as_module_path
+ts: 2026-01-22 20:56:16.357377+00:00
+type: keep_private
+full_path: _internal.models.types.as_module_path
+---
+name: is_root_identifier
+ts: 2026-01-22 20:56:16.357380+00:00
+type: keep_private
+full_path: _internal.models.types.is_root_identifier
+---
+name: is_test_file
+ts: 2026-01-22 20:56:16.357382+00:00
+type: keep_private
+full_path: _internal.models.types.is_test_file
+---
+name: is_dunder_file
+ts: 2026-01-22 20:56:16.357385+00:00
+type: keep_private
+full_path: _internal.models.types.is_dunder_file
+---
+name: ref_id_module
+ts: 2026-01-22 20:56:16.357388+00:00
+type: keep_private
+full_path: _internal.models.types.ref_id_module
+---
+name: ref_id_name
+ts: 2026-01-22 20:56:16.357391+00:00
+type: keep_private
+full_path: _internal.models.types.ref_id_name
+---
+name: ref_id
+ts: 2026-01-22 20:56:16.357394+00:00
+type: keep_private
+full_path: _internal.models.types.ref_id
+---
+name: qualified_name
+ts: 2026-01-22 20:56:16.357397+00:00
+type: keep_private
+full_path: _internal.models.types.qualified_name
+---
+name: PkgExtState
+ts: 2026-01-22 20:56:16.357400+00:00
+type: keep_private
+full_path: _internal.pkg_state.PkgExtState
+---
+name: DEFAULT_LINE_LENGTH
+ts: 2026-01-22 20:56:16.357403+00:00
+type: keep_private
+full_path: _internal.py_format.DEFAULT_LINE_LENGTH
+---
+name: TRACKED_SYMBOL_TYPES
+ts: 2026-01-22 20:56:16.357406+00:00
+type: keep_private
+full_path: _internal.reference_handling.added.TRACKED_SYMBOL_TYPES
+---
+name: PkgSettings
+ts: 2026-01-22 20:56:16.357409+00:00
+type: keep_private
+full_path: _internal.settings.PkgSettings
+---
+name: PkgVersion
+ts: 2026-01-22 20:56:16.357412+00:00
+type: keep_private
+full_path: _internal.version_bump.PkgVersion
+---
+name: PkgExtWarning
+ts: 2026-01-22 20:56:16.357415+00:00
+type: keep_private
+full_path: _internal.warnings.PkgExtWarning
+---
+name: PkgExtExperimentalWarning
+ts: 2026-01-22 20:56:16.357418+00:00
+type: keep_private
+full_path: _internal.warnings.PkgExtExperimentalWarning
+---
+name: PkgExtDeprecationWarning
+ts: 2026-01-22 20:56:16.357421+00:00
+type: keep_private
+full_path: _internal.warnings.PkgExtDeprecationWarning
+---
+name: post_merge
+ts: 2026-01-22 21:04:03.569326+00:00
+type: make_public
+details: promoted from private (_internal.cli.workflow_cmds.post_merge)
+full_path: _internal.cli.workflow_cmds.post_merge
+group: workflows
+---
+name: pre_change
+ts: 2026-01-22 21:04:53.217365+00:00
+type: make_public
+details: promoted from private (_internal.cli.workflow_cmds.pre_change)
+full_path: _internal.cli.workflow_cmds.pre_change
+group: workflows
+---
+name: pre_commit
+ts: 2026-01-22 21:06:06.266657+00:00
+type: make_public
+details: promoted from private (_internal.cli.workflow_cmds.pre_commit)
+full_path: _internal.cli.workflow_cmds.pre_commit
+group: workflows
+---
+name: workflows
+ts: 2026-01-22 21:10:17.465172+00:00
+type: group_module
+module_path: _internal.cli.workflow_cmds
+---
+name: __ROOT__
+ts: 2026-01-23 05:55:55.958984+00:00
+type: group_module
+module_path: _internal.settings
+---
+name: PkgSettings
+ts: 2026-01-23 05:55:55.960102+00:00
+type: make_public
+details: promoted from private (_internal.settings.PkgSettings)
+full_path: _internal.settings.PkgSettings
+group: __ROOT__
+---
+name: is_cli_command
+ts: 2026-01-23 06:34:19.207793+00:00
+type: keep_private
+full_path: _internal.signature_parser.is_cli_command
+---
+name: extract_cli_params
+ts: 2026-01-23 06:34:19.207869+00:00
+type: keep_private
+full_path: _internal.signature_parser.extract_cli_params
+---
+name: render_cli_params_table
+ts: 2026-01-23 06:34:39.154915+00:00
+type: keep_private
+full_path: _internal.generation.docs_render.render_cli_params_table
+---
+name: api_dump
+ts: 2026-01-23 06:35:18.888155+00:00
+type: group_module
+module_path: _internal.models.api_dump
+---
+name: CLIParamInfo
+ts: 2026-01-23 06:35:18.889516+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.CLIParamInfo
+group: api_dump
+---
+name: CLICommandDump
+ts: 2026-01-23 06:35:18.890980+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.CLICommandDump
+group: api_dump
+---
+name: ParamKind
+ts: 2026-01-23 06:37:17.967779+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.ParamKind
+group: api_dump
+---
+name: ParamDefault
+ts: 2026-01-23 06:37:17.969463+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.ParamDefault
+group: api_dump
+---
+name: FuncParamInfo
+ts: 2026-01-23 06:37:17.971274+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.FuncParamInfo
+group: api_dump
+---
+name: CallableSignature
+ts: 2026-01-23 06:37:17.972704+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.CallableSignature
+group: api_dump
+---
+name: ClassFieldInfo
+ts: 2026-01-23 06:37:17.974558+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.ClassFieldInfo
+group: api_dump
+---
+name: FunctionDump
+ts: 2026-01-23 06:37:17.975893+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.FunctionDump
+group: api_dump
+---
+name: ClassDump
+ts: 2026-01-23 06:37:17.977206+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.ClassDump
+group: api_dump
+---
+name: ExceptionDump
+ts: 2026-01-23 06:37:17.978538+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.ExceptionDump
+group: api_dump
+---
+name: TypeAliasDump
+ts: 2026-01-23 06:37:17.979915+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.TypeAliasDump
+group: api_dump
+---
+name: GlobalVarDump
+ts: 2026-01-23 06:37:17.981401+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.GlobalVarDump
+group: api_dump
+---
+name: GroupDump
+ts: 2026-01-23 06:37:17.982655+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.GroupDump
+group: api_dump
+---
+name: PublicApiDump
+ts: 2026-01-23 06:37:17.984017+00:00
+type: make_public
+details: created in _internal/models/api_dump.py
+full_path: _internal.models.api_dump.PublicApiDump
+group: api_dump
+---
+name: SymbolDumpBase
+ts: 2026-01-23 06:37:17.984082+00:00
+type: keep_private
+full_path: _internal.models.api_dump.SymbolDumpBase
+---
+name: stability
+ts: 2026-01-23 06:39:46.046281+00:00
+type: group_module
+module_path: _internal.cli.stability_cmds
+---
+name: exp
+ts: 2026-01-23 06:39:46.047686+00:00
+type: make_public
+details: CLI command in _internal/cli/stability_cmds.py
+full_path: _internal.cli.stability_cmds.exp
+group: stability
+---
+name: ga
+ts: 2026-01-23 06:39:46.050634+00:00
+type: make_public
+details: CLI command in _internal/cli/stability_cmds.py
+full_path: _internal.cli.stability_cmds.ga
+group: stability
+---
+name: dep
+ts: 2026-01-23 06:39:46.053696+00:00
+type: make_public
+details: CLI command in _internal/cli/stability_cmds.py
+full_path: _internal.cli.stability_cmds.dep
+group: stability
+---
+name: generate
+ts: 2026-01-23 07:03:05.461297+00:00
+type: group_module
+module_path: _internal.cli.gen_cmds
+---
+name: gen_examples
+ts: 2026-01-23 07:03:05.468599+00:00
+type: make_public
+details: CLI command in _internal/cli/gen_cmds.py
+full_path: _internal.cli.gen_cmds.gen_examples
+group: generate
+---
+name: gen_tests
+ts: 2026-01-23 07:03:05.472520+00:00
+type: make_public
+details: CLI command in _internal/cli/gen_cmds.py
+full_path: _internal.cli.gen_cmds.gen_tests
+group: generate
+---
+name: gen_docs
+ts: 2026-01-23 07:03:05.476039+00:00
+type: make_public
+details: CLI command in _internal/cli/gen_cmds.py
+full_path: _internal.cli.gen_cmds.gen_docs
+group: generate
+---
+name: api_commands
+ts: 2026-01-23 07:22:11.776461+00:00
+type: group_module
+module_path: _internal.cli.api_cmds
+---
+name: dump_api
+ts: 2026-01-23 07:22:11.777926+00:00
+type: make_public
+details: CLI command in _internal/cli/api_cmds.py
+full_path: _internal.cli.api_cmds.dump_api
+group: api_commands
+---
+name: diff_api
+ts: 2026-01-23 07:22:11.780428+00:00
+type: make_public
+details: CLI command in _internal/cli/api_cmds.py
+full_path: _internal.cli.api_cmds.diff_api
+group: api_commands
+---
+name: reconcile_groups_with_changelog
+ts: 2026-01-23 07:22:17.346546+00:00
+type: keep_private
+full_path: _internal.cli.workflows.reconcile_groups_with_changelog
+---
+name: changelog
+ts: 2026-01-23 07:40:09.844398+00:00
+type: group_module
+module_path: _internal.cli.changelog_cmds
+---
+name: release_notes
+ts: 2026-01-23 07:40:09.847166+00:00
+type: make_public
+details: CLI command in _internal/cli/changelog_cmds.py
+full_path: _internal.cli.changelog_cmds.release_notes
+group: changelog
+---
+name: find_release_action
+ts: 2026-01-23 07:40:13.825979+00:00
+type: keep_private
+full_path: _internal.cli.changelog_cmds.find_release_action
+---
+name: chore
+ts: 2026-01-23 07:43:38.593450+00:00
+type: make_public
+details: CLI command in _internal/cli/changelog_cmds.py
+full_path: _internal.cli.changelog_cmds.chore
+group: changelog
+---
+name: promote
+ts: 2026-01-23 07:43:38.595857+00:00
+type: make_public
+details: CLI command in _internal/cli/changelog_cmds.py
+full_path: _internal.cli.changelog_cmds.promote
+group: changelog
+---
+name: write_generated_modules
+ts: 2026-01-23 09:40:50.195582+00:00
+type: keep_private
+full_path: _internal.cli.workflows.write_generated_modules
