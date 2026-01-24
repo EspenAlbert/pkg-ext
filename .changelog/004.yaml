@@ -15,3 +15,8 @@ author: Espen Albert
 changelog_message: 'fix: Implements stable representation and memory address stripping for improved output consistency'
 message: 'fix: Implements stable representation and memory address stripping for improved output consistency'
 short_sha: b2ed78
+---
+name: 0.2.1
+ts: 2026-01-24 21:48:18.355883+00:00
+type: release
+old_version: 0.2.0

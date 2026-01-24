@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 2026-01-24T21-48Z
+
+### Api_Dump
+- fix: Implements stable representation and memory address stripping for improved output consistency [b2ed78](https://github.com/EspenAlbert/pkg-ext/commit/b2ed78)
+
+
 ## 0.2.0 2026-01-24T21-18Z
 
 ### __Root__
