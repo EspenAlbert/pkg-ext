@@ -33,12 +33,12 @@
 
 ```python
 class CLICommandDump(SymbolDumpBase):
-    name: str = PydanticUndefined
-    module_path: str = PydanticUndefined
+    name: str
+    module_path: str
     docstring: str = ''
     line_number: int | None
     type: Literal[cli_command] = 'cli_command'
-    signature: CallableSignature = PydanticUndefined
+    signature: CallableSignature
     cli_params: list[CLIParamInfo] = ...
 ```
 
@@ -46,12 +46,12 @@ A typer CLI command with rich parameter metadata.
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | 0.1.0 |
-| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| name | `str` | - | 0.1.0 |
+| module_path | `str` | - | 0.1.0 |
 | docstring | `str` | `''` | 0.1.0 |
 | line_number | `int | None` | - | 0.1.0 |
 | type | `Literal[cli_command]` | `'cli_command'` | 0.1.0 |
-| signature | `CallableSignature` | `PydanticUndefined` | 0.1.0 |
+| signature | `CallableSignature` | - | 0.1.0 |
 | cli_params | `list[CLIParamInfo]` | `...` | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext clicommanddump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext cliparaminfo_def === -->
@@ -63,7 +63,7 @@ A typer CLI command with rich parameter metadata.
 
 ```python
 class CLIParamInfo(Entity):
-    param_name: str = PydanticUndefined
+    param_name: str
     type_annotation: str | None
     flags: list[str] = ...
     help: str | None
@@ -79,7 +79,7 @@ CLI parameter metadata from typer OptionInfo/ArgumentInfo.
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| param_name | `str` | `PydanticUndefined` | 0.1.0 |
+| param_name | `str` | - | 0.1.0 |
 | type_annotation | `str | None` | - | 0.1.0 |
 | flags | `list[str]` | `...` | 0.1.0 |
 | help | `str | None` | - | 0.1.0 |
@@ -119,8 +119,8 @@ class CallableSignature(Entity):
 
 ```python
 class ClassDump(SymbolDumpBase):
-    name: str = PydanticUndefined
-    module_path: str = PydanticUndefined
+    name: str
+    module_path: str
     docstring: str = ''
     line_number: int | None
     type: Literal[class] = 'class'
@@ -131,8 +131,8 @@ class ClassDump(SymbolDumpBase):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | 0.1.0 |
-| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| name | `str` | - | 0.1.0 |
+| module_path | `str` | - | 0.1.0 |
 | docstring | `str` | `''` | 0.1.0 |
 | line_number | `int | None` | - | 0.1.0 |
 | type | `Literal[class]` | `'class'` | 0.1.0 |
@@ -149,7 +149,7 @@ class ClassDump(SymbolDumpBase):
 
 ```python
 class ClassFieldInfo(Entity):
-    name: str = PydanticUndefined
+    name: str
     type_annotation: str | None
     type_imports: list[str] = ...
     default: ParamDefault | None
@@ -162,7 +162,7 @@ class ClassFieldInfo(Entity):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | 0.1.0 |
+| name | `str` | - | 0.1.0 |
 | type_annotation | `str | None` | - | 0.1.0 |
 | type_imports | `list[str]` | `...` | 0.1.0 |
 | default | `ParamDefault | None` | - | 0.1.0 |
@@ -181,8 +181,8 @@ class ClassFieldInfo(Entity):
 
 ```python
 class ExceptionDump(SymbolDumpBase):
-    name: str = PydanticUndefined
-    module_path: str = PydanticUndefined
+    name: str
+    module_path: str
     docstring: str = ''
     line_number: int | None
     type: Literal[exception] = 'exception'
@@ -192,8 +192,8 @@ class ExceptionDump(SymbolDumpBase):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | 0.1.0 |
-| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| name | `str` | - | 0.1.0 |
+| module_path | `str` | - | 0.1.0 |
 | docstring | `str` | `''` | 0.1.0 |
 | line_number | `int | None` | - | 0.1.0 |
 | type | `Literal[exception]` | `'exception'` | 0.1.0 |
@@ -209,8 +209,8 @@ class ExceptionDump(SymbolDumpBase):
 
 ```python
 class FuncParamInfo(Entity):
-    name: str = PydanticUndefined
-    kind: ParamKind = PydanticUndefined
+    name: str
+    kind: ParamKind
     type_annotation: str | None
     type_imports: list[str] = ...
     default: ParamDefault | None
@@ -218,8 +218,8 @@ class FuncParamInfo(Entity):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | 0.1.0 |
-| kind | `ParamKind` | `PydanticUndefined` | 0.1.0 |
+| name | `str` | - | 0.1.0 |
+| kind | `ParamKind` | - | 0.1.0 |
 | type_annotation | `str | None` | - | 0.1.0 |
 | type_imports | `list[str]` | `...` | 0.1.0 |
 | default | `ParamDefault | None` | - | 0.1.0 |
@@ -233,22 +233,22 @@ class FuncParamInfo(Entity):
 
 ```python
 class FunctionDump(SymbolDumpBase):
-    name: str = PydanticUndefined
-    module_path: str = PydanticUndefined
+    name: str
+    module_path: str
     docstring: str = ''
     line_number: int | None
     type: Literal[function] = 'function'
-    signature: CallableSignature = PydanticUndefined
+    signature: CallableSignature
 ```
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | 0.1.0 |
-| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| name | `str` | - | 0.1.0 |
+| module_path | `str` | - | 0.1.0 |
 | docstring | `str` | `''` | 0.1.0 |
 | line_number | `int | None` | - | 0.1.0 |
 | type | `Literal[function]` | `'function'` | 0.1.0 |
-| signature | `CallableSignature` | `PydanticUndefined` | 0.1.0 |
+| signature | `CallableSignature` | - | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext functiondump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext globalvardump_def === -->
 <a id="globalvardump_def"></a>
@@ -259,8 +259,8 @@ class FunctionDump(SymbolDumpBase):
 
 ```python
 class GlobalVarDump(SymbolDumpBase):
-    name: str = PydanticUndefined
-    module_path: str = PydanticUndefined
+    name: str
+    module_path: str
     docstring: str = ''
     line_number: int | None
     type: Literal[global_var] = 'global_var'
@@ -270,8 +270,8 @@ class GlobalVarDump(SymbolDumpBase):
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | 0.1.0 |
-| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| name | `str` | - | 0.1.0 |
+| module_path | `str` | - | 0.1.0 |
 | docstring | `str` | `''` | 0.1.0 |
 | line_number | `int | None` | - | 0.1.0 |
 | type | `Literal[global_var]` | `'global_var'` | 0.1.0 |
@@ -287,13 +287,13 @@ class GlobalVarDump(SymbolDumpBase):
 
 ```python
 class GroupDump(Entity):
-    name: str = PydanticUndefined
+    name: str
     symbols: list[Annotated[FunctionDump | CLICommandDump | ClassDump | ExceptionDump | TypeAliasDump | GlobalVarDump, annotation=NoneType required=True discriminator='type']] = ...
 ```
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | 0.1.0 |
+| name | `str` | - | 0.1.0 |
 | symbols | `list[Annotated[FunctionDump | CLICommandDump | ClassDump | ExceptionDump | TypeAliasDump | GlobalVarDump, annotation=NoneType required=True discriminator='type']]` | `...` | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext groupdump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext paramdefault_def === -->
@@ -305,13 +305,13 @@ class GroupDump(Entity):
 
 ```python
 class ParamDefault(Entity):
-    value_repr: str = PydanticUndefined
+    value_repr: str
     is_factory: bool = False
 ```
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| value_repr | `str` | `PydanticUndefined` | 0.1.0 |
+| value_repr | `str` | - | 0.1.0 |
 | is_factory | `bool` | `False` | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext paramdefault_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext paramkind_def === -->
@@ -335,18 +335,18 @@ class ParamKind(StrEnum):
 
 ```python
 class PublicApiDump(Entity):
-    pkg_import_name: str = PydanticUndefined
-    version: str = PydanticUndefined
+    pkg_import_name: str
+    version: str
     groups: list[GroupDump] = ...
-    dumped_at: datetime = PydanticUndefined
+    dumped_at: datetime
 ```
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| pkg_import_name | `str` | `PydanticUndefined` | 0.1.0 |
-| version | `str` | `PydanticUndefined` | 0.1.0 |
+| pkg_import_name | `str` | - | 0.1.0 |
+| version | `str` | - | 0.1.0 |
 | groups | `list[GroupDump]` | `...` | 0.1.0 |
-| dumped_at | `datetime` | `PydanticUndefined` | 0.1.0 |
+| dumped_at | `datetime` | - | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext publicapidump_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext typealiasdump_def === -->
 <a id="typealiasdump_def"></a>
@@ -357,20 +357,20 @@ class PublicApiDump(Entity):
 
 ```python
 class TypeAliasDump(SymbolDumpBase):
-    name: str = PydanticUndefined
-    module_path: str = PydanticUndefined
+    name: str
+    module_path: str
     docstring: str = ''
     line_number: int | None
     type: Literal[type_alias] = 'type_alias'
-    alias_target: str = PydanticUndefined
+    alias_target: str
 ```
 
 | Field | Type | Default | Since |
 |---|---|---|---|
-| name | `str` | `PydanticUndefined` | 0.1.0 |
-| module_path | `str` | `PydanticUndefined` | 0.1.0 |
+| name | `str` | - | 0.1.0 |
+| module_path | `str` | - | 0.1.0 |
 | docstring | `str` | `''` | 0.1.0 |
 | line_number | `int | None` | - | 0.1.0 |
 | type | `Literal[type_alias]` | `'type_alias'` | 0.1.0 |
-| alias_target | `str` | `PydanticUndefined` | 0.1.0 |
+| alias_target | `str` | - | 0.1.0 |
 <!-- === OK_EDIT: pkg-ext typealiasdump_def === -->
