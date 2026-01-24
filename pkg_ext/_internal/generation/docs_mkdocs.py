@@ -27,16 +27,58 @@ class MkdocsSection(StrEnum):
     extensions = "extensions"
 
 
+MARKDOWN_LINK_PATTERN = re.compile(r"\[(?P<text>[^\]]+)\]\((?P<url>[^)]+)\)")
+REPO_ROOT_FILE_PATTERNS = ("*.md", "LICENSE*", "SECURITY*", "CODE_OF_CONDUCT*")
+
+
 def _strip_docs_prefix(content: str) -> str:
     return re.sub(r"\]\(docs/([^)]+)\)", r"](\1)", content)
 
 
-def copy_readme_as_index(state_dir: Path, docs_dir: Path, pkg_name: str) -> Path:
+def _find_repo_root_files(state_dir: Path) -> set[str]:
+    files: set[str] = set()
+    for pattern in REPO_ROOT_FILE_PATTERNS:
+        files.update(f.name for f in state_dir.glob(pattern) if f.is_file())
+    return files
+
+
+def transform_repo_root_links(
+    content: str,
+    repo_url: str,
+    default_branch: str,
+    repo_root_files: set[str],
+) -> str:
+    def replace_link(match: re.Match[str]) -> str:
+        text = match.group("text")
+        url = match.group("url")
+        if url.startswith(("http://", "https://", "#", "/")):
+            return match.group(0)
+        normalized = url.lstrip("./")
+        if "/" in normalized:
+            return match.group(0)
+        if normalized in repo_root_files:
+            github_url = f"{repo_url}/blob/{default_branch}/{normalized}"
+            return f"[{text}]({github_url})"
+        return match.group(0)
+
+    return MARKDOWN_LINK_PATTERN.sub(replace_link, content)
+
+
+def copy_readme_as_index(
+    state_dir: Path,
+    docs_dir: Path,
+    pkg_name: str,
+    repo_url: str = "",
+    default_branch: str = "main",
+) -> Path:
     index_path = docs_dir / "index.md"
     for name in ("readme.md", "README.md", "Readme.md"):
         readme = state_dir / name
         if readme.exists():
             content = _strip_docs_prefix(readme.read_text())
+            if repo_url:
+                repo_root_files = _find_repo_root_files(state_dir)
+                content = transform_repo_root_links(content, repo_url, default_branch, repo_root_files)
             file_utils.ensure_parents_write_text(index_path, content)
             return index_path
     file_utils.ensure_parents_write_text(index_path, f"# {pkg_name}\n")

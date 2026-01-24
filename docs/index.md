@@ -418,4 +418,4 @@ jobs:
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, workflow, and git hooks.
+See [CONTRIBUTING.md](https://github.com/EspenAlbert/pkg-ext/blob/main/CONTRIBUTING.md) for development setup, workflow, and git hooks.

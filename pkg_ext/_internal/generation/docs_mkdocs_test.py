@@ -9,6 +9,7 @@ from pkg_ext._internal.generation.docs_mkdocs import (
     copy_readme_as_index,
     extract_complex_symbols,
     generate_mkdocs_nav,
+    transform_repo_root_links,
     write_docs_files,
     write_mkdocs_yml,
 )
@@ -31,6 +32,38 @@ def test_copy_readme_fallback(tmp_path: Path):
     docs_dir = tmp_path / "docs"
     index = copy_readme_as_index(state_dir, docs_dir, "my_pkg")
     assert index.read_text() == "# my_pkg\n"
+
+
+def test_transform_repo_root_links_converts_root_files():
+    content = "See [CONTRIBUTING.md](CONTRIBUTING.md) for details."
+    repo_url = "https://github.com/user/repo"
+    result = transform_repo_root_links(content, repo_url, "main", {"CONTRIBUTING.md"})
+    assert result == "See [CONTRIBUTING.md](https://github.com/user/repo/blob/main/CONTRIBUTING.md) for details."
+
+
+def test_transform_repo_root_links_handles_dot_slash():
+    content = "See [CONTRIBUTING.md](./CONTRIBUTING.md) for details."
+    repo_url = "https://github.com/user/repo"
+    result = transform_repo_root_links(content, repo_url, "main", {"CONTRIBUTING.md"})
+    assert result == "See [CONTRIBUTING.md](https://github.com/user/repo/blob/main/CONTRIBUTING.md) for details."
+
+
+def test_transform_repo_root_links_preserves_absolute_urls():
+    content = "See [docs](https://example.com) and [anchor](#section)."
+    result = transform_repo_root_links(content, "https://github.com/user/repo", "main", {"docs"})
+    assert content == result
+
+
+def test_transform_repo_root_links_preserves_path_with_directory():
+    content = "See [api docs](docs/api.md) for details."
+    result = transform_repo_root_links(content, "https://github.com/user/repo", "main", {"api.md"})
+    assert content == result
+
+
+def test_transform_repo_root_links_preserves_unknown_files():
+    content = "See [unknown.md](unknown.md) for details."
+    result = transform_repo_root_links(content, "https://github.com/user/repo", "main", {"CONTRIBUTING.md"})
+    assert content == result
 
 
 def test_generate_mkdocs_nav():

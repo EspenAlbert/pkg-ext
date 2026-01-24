@@ -8,6 +8,8 @@ from zero_3rdparty import file_utils
 
 from pkg_ext._internal.changelog.actions import BumpType
 from pkg_ext._internal.config import ProjectConfig, load_project_config, load_user_config
+from pkg_ext._internal.errors import RemoteURLNotFound
+from pkg_ext._internal.git_usage import read_remote_url
 
 T = TypeVar("T")
 
@@ -54,6 +56,8 @@ class PkgSettings(BaseSettings):
     ignored_symbols: frozenset[str] = frozenset()
     format_command: tuple[str, ...] = ProjectConfig.DEFAULT_FORMAT_COMMAND
     max_bump_type: BumpType | None = None
+    default_branch: str = ProjectConfig.DEFAULT_BRANCH
+    repo_url: str = ""
 
     def _with_dev_suffix(self, path: Path) -> Path:
         if self.dev_mode:
@@ -149,6 +153,13 @@ class PkgSettings(BaseSettings):
         return public_groups  # type: ignore
 
 
+def _read_repo_url_safe(repo_root: Path) -> str:
+    try:
+        return read_remote_url(repo_root)
+    except RemoteURLNotFound:
+        return ""
+
+
 def pkg_settings(
     repo_root: Path,
     pkg_path: str,
@@ -187,4 +198,6 @@ def pkg_settings(
         ignored_symbols=ignored_symbols if ignored_symbols is not None else frozenset(project_config.ignored_symbols),
         format_command=project_config.format_command,
         max_bump_type=project_config.get_max_bump(),
+        default_branch=project_config.default_branch,
+        repo_url=_read_repo_url_safe(repo_root),
     )
