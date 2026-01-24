@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import inspect
-import re
 from dataclasses import is_dataclass
 from datetime import UTC, datetime
 from pydoc import locate
@@ -29,6 +28,8 @@ from pkg_ext._internal.signature_parser import (
     parse_class_fields,
     parse_direct_bases,
     parse_signature,
+    stable_repr,
+    strip_memory_addresses,
 )
 
 
@@ -106,8 +107,6 @@ def dump_exception(cls: type, ref: RefSymbol) -> ExceptionDump:
     )
 
 
-_FUNC_REPR_PATTERN = re.compile(r"<function (\w+) at 0x[0-9a-f]+>")
-
 # Generic docstrings from builtin typing constructs that should be filtered out
 _GENERIC_DOCSTRING_PREFIXES = (
     "Type variable.",
@@ -128,8 +127,7 @@ def _format_value_stable(value: Any) -> str:
     """Format a value with stable output (no memory addresses)."""
     if callable(value) and not isinstance(value, type):
         return as_name(value)
-    raw = repr(value)
-    return _FUNC_REPR_PATTERN.sub(r"\1", raw)
+    return stable_repr(value)
 
 
 def _format_type_alias_target(alias: Any) -> str:
@@ -144,7 +142,7 @@ def _format_type_alias_target(alias: Any) -> str:
         meta_reprs = [_format_value_stable(m) for m in metadata]
         return f"typing.Annotated[{base_repr}, {', '.join(meta_reprs)}]"
     raw = str(alias)
-    return _FUNC_REPR_PATTERN.sub(r"\1", raw)
+    return strip_memory_addresses(raw)
 
 
 def dump_type_alias(alias: Any, ref: RefSymbol) -> TypeAliasDump:
@@ -163,7 +161,7 @@ def dump_global_var(value: Any, ref: RefSymbol) -> GlobalVarDump:
         name=ref.name,
         module_path=ref.module_path,
         docstring="",  # Global vars don't have docstrings
-        value_repr=repr(value) if value is not None else None,
+        value_repr=stable_repr(value) if value is not None else None,
     )
 
 

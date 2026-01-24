@@ -3,6 +3,7 @@ from __future__ import annotations
 import dataclasses
 import enum
 import inspect
+import re
 import types
 import typing
 from contextlib import suppress
@@ -28,6 +29,30 @@ _PARAM_KIND_MAP = {
     inspect.Parameter.KEYWORD_ONLY: ParamKind.KEYWORD_ONLY,
     inspect.Parameter.VAR_KEYWORD: ParamKind.VAR_KEYWORD,
 }
+
+# Pattern to detect memory-address based repr like <object object at 0x100346830>
+_MEMORY_ADDRESS_PATTERN = re.compile(r"^<(?P<type_info>.+) at 0x[0-9a-fA-F]+>$")
+# Pattern to strip memory addresses from any string (for embedded references)
+_MEMORY_ADDRESS_INLINE = re.compile(r"<(?P<type_info>[^<>]+) at 0x[0-9a-fA-F]+>")
+
+
+def strip_memory_addresses(s: str) -> str:
+    """Remove memory addresses from any string containing <... at 0x...> patterns."""
+    return _MEMORY_ADDRESS_INLINE.sub(r"<\g<type_info>>", s)
+
+
+def stable_repr(value: Any) -> str:
+    """Return a stable repr for a value, normalizing memory addresses.
+
+    Sentinel objects like `object()` produce repr strings with memory addresses
+    (e.g., `<object object at 0x100346830>`) that change between Python runs.
+    This function normalizes such reprs to a stable form like `<object>`.
+    """
+    raw_repr = repr(value)
+    if match := _MEMORY_ADDRESS_PATTERN.match(raw_repr):
+        type_info = match.group("type_info")
+        return f"<{type_info}>"
+    return raw_repr
 
 
 def _annotation_str(annotation: Any) -> str | None:
@@ -161,8 +186,8 @@ def parse_param_default(param: inspect.Parameter) -> ParamDefault | None:
         if isinstance(param.default, FieldInfo):
             if param.default.default_factory is not None:
                 return ParamDefault(value_repr="...", is_factory=True)
-            return ParamDefault(value_repr=repr(param.default.default))
-    return ParamDefault(value_repr=repr(param.default))
+            return ParamDefault(value_repr=stable_repr(param.default.default))
+    return ParamDefault(value_repr=stable_repr(param.default))
 
 
 def _parse_func_param(param: inspect.Parameter, resolved_annotation: Any | None = None) -> FuncParamInfo:
@@ -209,7 +234,7 @@ def _parse_field_default(field: Any) -> ParamDefault | None:
         if field.default_factory is not None:
             return ParamDefault(value_repr="...", is_factory=True)
         if field.default is not None and field.default is not PydanticUndefined:
-            return ParamDefault(value_repr=repr(field.default))
+            return ParamDefault(value_repr=stable_repr(field.default))
     return None
 
 
@@ -283,7 +308,7 @@ def _parse_dataclass_fields(cls: type) -> list[ClassFieldInfo]:
         is_class_var = get_origin(annotation) is ClassVar
         default: ParamDefault | None = None
         if f.default is not dataclasses.MISSING:
-            default = ParamDefault(value_repr=repr(f.default))
+            default = ParamDefault(value_repr=stable_repr(f.default))
         elif f.default_factory is not dataclasses.MISSING:
             default = ParamDefault(value_repr="...", is_factory=True)
         fields.append(
@@ -385,7 +410,7 @@ def extract_cli_params(func: Callable) -> list[CLIParamInfo]:
         is_arg = isinstance(info, ArgumentInfo)
         default_repr: str | None = None
         if not _is_required(info):
-            default_repr = repr(info.default)
+            default_repr = stable_repr(info.default)
         params.append(
             CLIParamInfo(
                 param_name=name,
