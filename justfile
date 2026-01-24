@@ -1,6 +1,5 @@
 # path-sync copy -n python-template
 
-# === OK_EDIT: path-sync header ===
 # Custom variables and setup
 REPO_URL := "https://github.com/EspenAlbert/pkg-ext"
 
