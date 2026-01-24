@@ -30,7 +30,7 @@ class FuncParamInfo(Entity):
 
 | Version | Change |
 |---------|--------|
+| 0.2.0 | field 'kind' default removed (was: PydanticUndefined) |
+| 0.2.0 | field 'name' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |
-| unreleased | field 'kind' default removed (was: PydanticUndefined) |
-| unreleased | field 'name' default removed (was: PydanticUndefined) |
 <!-- === OK_EDIT: pkg-ext funcparaminfo_changes === -->

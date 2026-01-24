@@ -28,8 +28,8 @@ class PublicApiDump(Entity):
 
 | Version | Change |
 |---------|--------|
+| 0.2.0 | field 'pkg_import_name' default removed (was: PydanticUndefined) |
+| 0.2.0 | field 'version' default removed (was: PydanticUndefined) |
+| 0.2.0 | field 'dumped_at' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |
-| unreleased | field 'pkg_import_name' default removed (was: PydanticUndefined) |
-| unreleased | field 'version' default removed (was: PydanticUndefined) |
-| unreleased | field 'dumped_at' default removed (was: PydanticUndefined) |
 <!-- === OK_EDIT: pkg-ext publicapidump_changes === -->

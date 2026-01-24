@@ -42,6 +42,6 @@ CLI parameter metadata from typer OptionInfo/ArgumentInfo.
 
 | Version | Change |
 |---------|--------|
+| 0.2.0 | field 'param_name' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |
-| unreleased | field 'param_name' default removed (was: PydanticUndefined) |
 <!-- === OK_EDIT: pkg-ext cliparaminfo_changes === -->

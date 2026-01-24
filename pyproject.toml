@@ -2,7 +2,7 @@
 
 [project]
 name = "pkg-ext"
-version = "0.1.1"
+version = "0.2.0"
 description = "Python package public API management, versioning, and changelog generation"
 requires-python = ">=3.13"
 license = "MIT"

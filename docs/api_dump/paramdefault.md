@@ -24,6 +24,6 @@ class ParamDefault(Entity):
 
 | Version | Change |
 |---------|--------|
+| 0.2.0 | field 'value_repr' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |
-| unreleased | field 'value_repr' default removed (was: PydanticUndefined) |
 <!-- === OK_EDIT: pkg-ext paramdefault_changes === -->

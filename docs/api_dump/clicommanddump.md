@@ -36,8 +36,8 @@ A typer CLI command with rich parameter metadata.
 
 | Version | Change |
 |---------|--------|
+| 0.2.0 | field 'module_path' default removed (was: PydanticUndefined) |
+| 0.2.0 | field 'signature' default removed (was: PydanticUndefined) |
+| 0.2.0 | field 'name' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |
-| unreleased | field 'module_path' default removed (was: PydanticUndefined) |
-| unreleased | field 'signature' default removed (was: PydanticUndefined) |
-| unreleased | field 'name' default removed (was: PydanticUndefined) |
 <!-- === OK_EDIT: pkg-ext clicommanddump_changes === -->
