@@ -79,4 +79,6 @@ class PkgSettings(BaseSettings):
 | Version | Change |
 |---------|--------|
 | 0.1.0 | Made public |
+| unreleased | added optional field 'repo_url' (default: '') |
+| unreleased | added optional field 'default_branch' (default: 'main') |
 <!-- === OK_EDIT: pkg-ext pkgsettings_changes === -->
