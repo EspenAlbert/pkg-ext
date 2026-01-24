@@ -203,11 +203,12 @@ def parse_direct_bases(cls: type) -> list[str]:
 
 def _parse_field_default(field: Any) -> ParamDefault | None:
     from pydantic.fields import FieldInfo
+    from pydantic_core import PydanticUndefined
 
     if isinstance(field, FieldInfo):
         if field.default_factory is not None:
             return ParamDefault(value_repr="...", is_factory=True)
-        if field.default is not None:
+        if field.default is not None and field.default is not PydanticUndefined:
             return ParamDefault(value_repr=repr(field.default))
     return None
 

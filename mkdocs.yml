@@ -17,7 +17,20 @@ nav:
     - Overview: _root/index.md
     - PkgSettings: _root/pkgsettings.md
   - api_commands: api_commands/index.md
-  - api_dump: api_dump/index.md
+  - api_dump:
+    - Overview: api_dump/index.md
+    - CLICommandDump: api_dump/clicommanddump.md
+    - CLIParamInfo: api_dump/cliparaminfo.md
+    - ClassDump: api_dump/classdump.md
+    - ClassFieldInfo: api_dump/classfieldinfo.md
+    - ExceptionDump: api_dump/exceptiondump.md
+    - FuncParamInfo: api_dump/funcparaminfo.md
+    - FunctionDump: api_dump/functiondump.md
+    - GlobalVarDump: api_dump/globalvardump.md
+    - GroupDump: api_dump/groupdump.md
+    - ParamDefault: api_dump/paramdefault.md
+    - PublicApiDump: api_dump/publicapidump.md
+    - TypeAliasDump: api_dump/typealiasdump.md
   - changelog: changelog/index.md
   - generate: generate/index.md
   - stability: stability/index.md
