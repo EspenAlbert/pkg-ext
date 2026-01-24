@@ -11,6 +11,8 @@ from pkg_ext._internal.signature_parser import (
     parse_class_fields,
     parse_direct_bases,
     parse_signature,
+    stable_repr,
+    strip_memory_addresses,
 )
 
 
@@ -117,3 +119,42 @@ def test_extract_cli_params():
     assert format_param.choices == ["json", "yaml"]
     verbose_param = next(p for p in params if p.param_name == "verbose")
     assert verbose_param.flags == ["--verbose"]
+
+
+def test_stable_repr_normalizes_memory_addresses():
+    sentinel = object()
+    result = stable_repr(sentinel)
+    assert result == "<object object>"
+    assert "0x" not in result
+
+
+def test_stable_repr_preserves_normal_values():
+    assert stable_repr("hello") == "'hello'"
+    assert stable_repr(42) == "42"
+    assert stable_repr(None) == "None"
+    assert stable_repr([1, 2, 3]) == "[1, 2, 3]"
+
+
+class _CustomSentinel:
+    pass
+
+
+def test_stable_repr_handles_custom_sentinel_class():
+    sentinel = _CustomSentinel()
+    result = stable_repr(sentinel)
+    assert result.startswith("<")
+    assert "_CustomSentinel" in result
+    assert "0x" not in result
+
+
+def test_strip_memory_addresses_handles_embedded_patterns():
+    s = "Callable[[X], <function foo at 0x123abc>]"
+    result = strip_memory_addresses(s)
+    assert result == "Callable[[X], <function foo>]"
+
+
+def test_strip_memory_addresses_handles_multiple_patterns():
+    s = "<object object at 0xabc> and <function bar at 0xdef>"
+    result = strip_memory_addresses(s)
+    assert result == "<object object> and <function bar>"
+    assert "0x" not in result
