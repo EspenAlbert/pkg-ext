@@ -1,0 +1,17 @@
+name: strip_memory_addresses
+ts: 2026-01-24 21:46:39.875408+00:00
+type: keep_private
+full_path: _internal.signature_parser.strip_memory_addresses
+---
+name: stable_repr
+ts: 2026-01-24 21:46:39.875464+00:00
+type: keep_private
+full_path: _internal.signature_parser.stable_repr
+---
+name: api_dump
+ts: 2026-01-24 21:46:45.495390+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix: Implements stable representation and memory address stripping for improved output consistency'
+message: 'fix: Implements stable representation and memory address stripping for improved output consistency'
+short_sha: b2ed78
