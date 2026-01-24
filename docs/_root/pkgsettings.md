@@ -2,7 +2,7 @@
 
 <!-- === DO_NOT_EDIT: pkg-ext pkgsettings_def === -->
 ## class: PkgSettings
-- [source](../../pkg_ext/_internal/settings.py#L23)
+- [source](../../pkg_ext/_internal/settings.py#L25)
 > **Since:** 0.1.0
 
 ```python
@@ -24,6 +24,8 @@ class PkgSettings(BaseSettings):
     ignored_symbols: frozenset[str] = frozenset()
     format_command: tuple[str, Ellipsis] = ('ruff', 'format')
     max_bump_type: BumpType | None
+    default_branch: str = 'main'
+    repo_url: str = ''
 ```
 <!-- === OK_EDIT: pkg-ext pkgsettings_def === -->
 
@@ -77,4 +79,6 @@ class PkgSettings(BaseSettings):
 | Version | Change |
 |---------|--------|
 | 0.1.0 | Made public |
+| unreleased | added optional field 'repo_url' (default: '') |
+| unreleased | added optional field 'default_branch' (default: 'main') |
 <!-- === OK_EDIT: pkg-ext pkgsettings_changes === -->

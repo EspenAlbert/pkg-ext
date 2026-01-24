@@ -429,8 +429,8 @@ def format_diff_results(results: list[DiffResult]) -> str:
 
 def _action_key(
     action: BreakingChangeAction | AdditionalChangeAction,
-) -> tuple[str, str, str, str]:
-    return (action.name, action.group, action.type, action.change_kind or "")
+) -> tuple[str, str, str, str, str]:
+    return (action.name, action.group, action.type, action.change_kind or "", action.field_name or "")
 
 
 def reconcile_auto_actions(

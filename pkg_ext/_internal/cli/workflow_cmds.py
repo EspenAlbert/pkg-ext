@@ -179,7 +179,13 @@ def generate_docs_for_pkg(
     if filter_group:
         dir_name = docs.group_dir_name(api_dump.get_group(filter_group))
         output.path_contents = {k: v for k, v in output.path_contents.items() if k.startswith(dir_name)}
-    docs_mkdocs.copy_readme_as_index(settings.state_dir, docs_dir, settings.pkg_import_name)
+    docs_mkdocs.copy_readme_as_index(
+        settings.state_dir,
+        docs_dir,
+        settings.pkg_import_name,
+        settings.repo_url,
+        settings.default_branch,
+    )
     count = docs_mkdocs.write_docs_files(output, docs_dir)
     complex_symbols = docs_mkdocs.extract_complex_symbols(output, api_dump.groups)
     nav = docs_mkdocs.generate_mkdocs_nav(api_dump, settings.pkg_import_name, complex_symbols)

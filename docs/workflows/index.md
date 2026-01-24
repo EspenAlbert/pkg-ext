@@ -16,7 +16,7 @@
 <a id="post_merge_def"></a>
 
 ### cli_command: `post_merge`
-- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L190)
+- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L196)
 > **Since:** 0.1.0
 
 ```python
@@ -37,7 +37,7 @@ def post_merge(*, explicit_pr: int = 0, push: bool = False, skip_clean_old_entri
 <a id="pre_change_def"></a>
 
 ### cli_command: `pre_change`
-- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L254)
+- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L260)
 > **Since:** 0.1.0
 
 ```python
@@ -63,7 +63,7 @@ Handle new symbols then generate examples and tests.
 <a id="pre_commit_def"></a>
 
 ### cli_command: `pre_commit`
-- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L302)
+- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L308)
 > **Since:** 0.1.0
 
 ```python
