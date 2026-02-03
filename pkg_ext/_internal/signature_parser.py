@@ -222,8 +222,14 @@ def parse_signature(obj: Callable) -> CallableSignature:
     )
 
 
-def parse_direct_bases(cls: type) -> list[str]:
-    return [base.__name__ for base in cls.__bases__ if base is not object]
+_MRO_FILTER = frozenset({"object", "ABC", "Protocol", "Generic"})
+
+
+def parse_mro_bases(cls: type) -> tuple[list[str], int]:
+    """Return (MRO bases, count of direct bases)."""
+    mro = [c.__name__ for c in cls.__mro__[1:] if c.__name__ not in _MRO_FILTER]
+    num_direct = sum(1 for base in cls.__bases__ if base is not object)
+    return mro, num_direct
 
 
 def _parse_field_default(field: Any) -> ParamDefault | None:

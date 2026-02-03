@@ -306,6 +306,7 @@ During `pre-commit`, pkg-ext compares `{pkg}.api.yaml` (baseline from last relea
 | Required field added | Yes | `required_field_added` |
 | Field removed | Yes | `field_removed` |
 | Base class removed | Yes | `base_class_removed` |
+| Base class added | No | `base_class_added` |
 | Optional parameter added | No | `optional_param_added` |
 | Default added | No | `default_added` |
 | Default changed | No | `default_changed` |

@@ -2,9 +2,12 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+import pytest
+
 from pkg_ext._internal.api_diff import (
     ChangeKind,
     DiffResult,
+    _compare_bases,
     compare_api_dumps,
     compare_fields,
     compare_params,
@@ -271,6 +274,25 @@ def test_diff_result_to_action_includes_field_name():
     action = diff.to_changelog_action()
     assert isinstance(action, AdditionalChangeAction)
     assert action.field_name == "new_field"
+
+
+@pytest.mark.parametrize(
+    "baseline_direct,dev_direct,dev_mro_bases,expected_kinds",
+    [
+        # Base moved to intermediate (still in MRO) -> only reports added
+        (["BaseModel"], ["PRFieldsBase"], ["PRFieldsBase", "BaseModel"], [ChangeKind.BASE_CLASS_ADDED]),
+        # Base truly removed (not in MRO) -> BASE_CLASS_REMOVED
+        (["BaseModel"], [], [], [ChangeKind.BASE_CLASS_REMOVED]),
+        # New base added -> BASE_CLASS_ADDED
+        ([], ["NewBase"], ["NewBase"], [ChangeKind.BASE_CLASS_ADDED]),
+        # No change
+        (["Base"], ["Base"], ["Base"], []),
+    ],
+    ids=["base_in_mro", "base_removed", "base_added", "no_change"],
+)
+def test_compare_bases_mro_aware(baseline_direct, dev_direct, dev_mro_bases, expected_kinds):
+    results = _compare_bases(baseline_direct, dev_direct, dev_mro_bases, "TestClass", "group")
+    assert [r.change_kind for r in results] == expected_kinds
 
 
 def test_reconcile_preserves_timestamp_and_removes_stale():
