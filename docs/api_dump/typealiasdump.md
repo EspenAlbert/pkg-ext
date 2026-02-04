@@ -32,6 +32,8 @@ class TypeAliasDump(SymbolDumpBase):
 
 | Version | Change |
 |---------|--------|
+| unreleased | field 'line_number' default added: None |
+| unreleased | added base class 'SymbolDumpBase' |
 | 0.2.0 | field 'alias_target' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'module_path' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'name' default removed (was: PydanticUndefined) |

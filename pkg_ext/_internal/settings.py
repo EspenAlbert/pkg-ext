@@ -15,7 +15,7 @@ T = TypeVar("T")
 
 
 def default_commit_fix_prefixes() -> tuple[str, ...]:
-    return ("fix:",)
+    return ("fix:", "fix(")
 
 
 def default_commit_diff_suffixes() -> tuple[str, ...]:

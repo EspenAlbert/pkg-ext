@@ -410,3 +410,19 @@ change_kind: default_added
 details: 'field ''type_annotation'' default added: None'
 field_name: type_annotation
 group: api_dump
+---
+name: api_dump
+ts: 2026-02-04 07:11:33.306410+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(pkg-ext): capture None as explicit default in pydantic field parsing'
+message: 'fix(pkg-ext): capture None as explicit default in pydantic field parsing'
+short_sha: 833c63
+---
+name: generate
+ts: 2026-02-04 07:11:43.889646+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(docs_version): correct sorting logic for symbol changes to prioritize unreleased versions'
+message: 'fix(docs_version): correct sorting logic for symbol changes to prioritize unreleased versions'
+short_sha: 757c70

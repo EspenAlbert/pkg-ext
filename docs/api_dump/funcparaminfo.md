@@ -30,6 +30,9 @@ class FuncParamInfo(Entity):
 
 | Version | Change |
 |---------|--------|
+| unreleased | field 'type_annotation' default added: None |
+| unreleased | field 'default' default added: None |
+| unreleased | added base class 'Entity' |
 | 0.2.0 | field 'kind' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'name' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |

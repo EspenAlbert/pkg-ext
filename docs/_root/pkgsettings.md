@@ -78,6 +78,9 @@ class PkgSettings(BaseSettings):
 
 | Version | Change |
 |---------|--------|
+| unreleased | field 'after_file_write_hooks' default added: None |
+| unreleased | field 'max_bump_type' default added: None |
+| unreleased | added base class 'BaseSettings' |
 | 0.2.0 | field 'repo_root' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'pkg_directory' default removed (was: PydanticUndefined) |
 | 0.1.1 | added optional field 'repo_url' (default: '') |

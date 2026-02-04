@@ -35,6 +35,12 @@ class ExceptionDump(SymbolDumpBase):
 
 | Version | Change |
 |---------|--------|
+| unreleased | field 'init_signature' default added: None |
+| unreleased | field 'line_number' default added: None |
+| unreleased | added optional field 'num_direct_bases' (default: 0) |
+| unreleased | added optional field 'mro_bases' (default: ...) |
+| unreleased | removed field 'direct_bases' |
+| unreleased | added base class 'SymbolDumpBase' |
 | 0.2.0 | field 'module_path' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'name' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |
