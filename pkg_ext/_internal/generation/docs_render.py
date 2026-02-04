@@ -305,6 +305,7 @@ def calculate_source_link(
 def render_inline_symbol(
     ctx: SymbolContext,
     changelog_actions: Sequence[ChangelogAction] | None = None,
+    changes: list[SymbolChange] | None = None,
     *,
     symbol_doc_path: Path | None = None,
     pkg_src_dir: Path | None = None,
@@ -346,6 +347,9 @@ def render_inline_symbol(
         if should_show_field_table(symbol.fields, field_versions):
             if table := render_field_table(symbol.fields, field_versions):
                 lines.extend(["", table])
+
+    if changes:
+        lines.extend(["", _render_changes_content(changes)])
 
     return "\n".join(lines)
 
@@ -422,10 +426,7 @@ def render_symbol_page(
     return "\n".join(parts)
 
 
-def render_changes_section(changes: list[SymbolChange], symbol_name: str) -> str:
-    if not changes:
-        return ""
-    section_id = f"{slug(symbol_name)}_changes"
+def _render_changes_content(changes: list[SymbolChange]) -> str:
     lines = [
         "### Changes",
         "",
@@ -434,7 +435,14 @@ def render_changes_section(changes: list[SymbolChange], symbol_name: str) -> str
     ]
     for c in changes:
         lines.append(f"| {c.version} | {c.description} |")
-    return wrap_section("\n".join(lines), section_id, PKG_EXT_TOOL_NAME, MD_CONFIG)
+    return "\n".join(lines)
+
+
+def render_changes_section(changes: list[SymbolChange], symbol_name: str) -> str:
+    if not changes:
+        return ""
+    section_id = f"{slug(symbol_name)}_changes"
+    return wrap_section(_render_changes_content(changes), section_id, PKG_EXT_TOOL_NAME, MD_CONFIG)
 
 
 def _format_example_value(value: Any) -> str:

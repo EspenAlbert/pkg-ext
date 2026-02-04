@@ -7,7 +7,7 @@
 
 ```python
 class PkgSettings(BaseSettings):
-    after_file_write_hooks: tuple[str, Ellipsis] | None
+    after_file_write_hooks: tuple[str, Ellipsis] | None = None
     changelog_cleanup_count: int = 30
     changelog_keep_count: int = 10
     commit_fix_diff_suffixes: tuple[str, Ellipsis] = ...
@@ -23,7 +23,7 @@ class PkgSettings(BaseSettings):
     keep_prerelease: bool = False
     ignored_symbols: frozenset[str] = frozenset()
     format_command: tuple[str, Ellipsis] = ('ruff', 'format')
-    max_bump_type: BumpType | None
+    max_bump_type: BumpType | None = None
     default_branch: str = 'main'
     repo_url: str = ''
 ```
@@ -78,6 +78,9 @@ class PkgSettings(BaseSettings):
 
 | Version | Change |
 |---------|--------|
+| unreleased | field 'after_file_write_hooks' default added: None |
+| unreleased | field 'max_bump_type' default added: None |
+| unreleased | added base class 'BaseSettings' |
 | 0.2.0 | field 'repo_root' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'pkg_directory' default removed (was: PydanticUndefined) |
 | 0.1.1 | added optional field 'repo_url' (default: '') |

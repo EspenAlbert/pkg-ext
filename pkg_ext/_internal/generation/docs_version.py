@@ -129,4 +129,4 @@ def build_symbol_changes(symbol_name: str, changelog_actions: Sequence[Changelog
         elif isinstance(action, MEANINGFUL_CHANGE_ACTIONS):
             if desc := _action_description(action):
                 changes.append(SymbolChange(version=version, description=desc, ts=action.ts))
-    return sorted(changes, key=lambda c: (c.version != UNRELEASED_VERSION, c.ts), reverse=True)
+    return sorted(changes, key=lambda c: (c.version == UNRELEASED_VERSION, c.ts), reverse=True)

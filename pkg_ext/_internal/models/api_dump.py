@@ -86,15 +86,25 @@ class CLICommandDump(SymbolDumpBase):
 
 class ClassDump(SymbolDumpBase):
     type: Literal[SymbolType.CLASS] = SymbolType.CLASS
-    direct_bases: list[str] = Field(default_factory=list)
+    mro_bases: list[str] = Field(default_factory=list)
+    num_direct_bases: int = 0
     init_signature: CallableSignature | None = None
     fields: list[ClassFieldInfo] | None = None
+
+    @property
+    def direct_bases(self) -> list[str]:
+        return self.mro_bases[: self.num_direct_bases]
 
 
 class ExceptionDump(SymbolDumpBase):
     type: Literal[SymbolType.EXCEPTION] = SymbolType.EXCEPTION
-    direct_bases: list[str] = Field(default_factory=list)
+    mro_bases: list[str] = Field(default_factory=list)
+    num_direct_bases: int = 0
     init_signature: CallableSignature | None = None
+
+    @property
+    def direct_bases(self) -> list[str]:
+        return self.mro_bases[: self.num_direct_bases]
 
 
 class TypeAliasDump(SymbolDumpBase):

@@ -100,7 +100,8 @@ def test_format_signature_class_with_fields():
     cls = ClassDump(
         name="MySettings",
         module_path="pkg.mod",
-        direct_bases=["BaseSettings"],
+        mro_bases=["BaseSettings"],
+        num_direct_bases=1,
         fields=[
             ClassFieldInfo(
                 name="host",
@@ -115,7 +116,7 @@ def test_format_signature_class_with_fields():
 
 
 def test_format_signature_exception():
-    exc = ExceptionDump(name="MyError", module_path="pkg.mod", direct_bases=["ValueError"])
+    exc = ExceptionDump(name="MyError", module_path="pkg.mod", mro_bases=["ValueError"], num_direct_bases=1)
     assert "class MyError(ValueError):" in format_signature(exc)
 
 

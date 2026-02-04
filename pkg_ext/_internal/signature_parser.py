@@ -9,6 +9,8 @@ import typing
 from contextlib import suppress
 from typing import Any, Callable, ClassVar, Literal, Union, get_args, get_origin, get_type_hints
 
+from pydantic.fields import FieldInfo
+from pydantic_core import PydanticUndefined
 from typer.models import ArgumentInfo, ParameterInfo
 
 from pkg_ext._internal.models.api_dump import (
@@ -222,18 +224,21 @@ def parse_signature(obj: Callable) -> CallableSignature:
     )
 
 
-def parse_direct_bases(cls: type) -> list[str]:
-    return [base.__name__ for base in cls.__bases__ if base is not object]
+_MRO_FILTER = frozenset({"object", "ABC", "Protocol", "Generic"})
+
+
+def parse_mro_bases(cls: type) -> tuple[list[str], int]:
+    """Return (MRO bases, count of direct bases)."""
+    mro = [c.__name__ for c in cls.__mro__[1:] if c.__name__ not in _MRO_FILTER]
+    num_direct = sum(1 for base in cls.__bases__ if base is not object)
+    return mro, num_direct
 
 
 def _parse_field_default(field: Any) -> ParamDefault | None:
-    from pydantic.fields import FieldInfo
-    from pydantic_core import PydanticUndefined
-
     if isinstance(field, FieldInfo):
         if field.default_factory is not None:
             return ParamDefault(value_repr="...", is_factory=True)
-        if field.default is not None and field.default is not PydanticUndefined:
+        if field.default is not PydanticUndefined:
             return ParamDefault(value_repr=stable_repr(field.default))
     return None
 

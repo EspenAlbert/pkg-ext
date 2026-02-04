@@ -32,6 +32,12 @@ def post_merge(*, explicit_pr: int = 0, push: bool = False, skip_clean_old_entri
 | `--push` | `bool` | `False` | Push commit and tag |
 | `--skip-clean` | `bool` | `False` | Skip cleaning old entries |
 | `--force-reason` | `str` | `''` | Force release with this reason (creates ChoreAction if no changelog entries) |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext post_merge_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext pre_change_def === -->
 <a id="pre_change_def"></a>
@@ -58,6 +64,12 @@ Handle new symbols then generate examples and tests.
 | `--skip-docs` | `bool` | `False` | Skip doc regeneration |
 | `--skip-open` | `bool | None` | *required* | Skip opening files in editor |
 | `--keep-private` | `bool` | `False` | Automatically keep all new symbols private without prompting |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext pre_change_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext pre_commit_def === -->
 <a id="pre_commit_def"></a>
@@ -80,4 +92,10 @@ Update changelog and regenerate docs (bot mode, writes to -dev files).
 | `--git-since` | `GitSince` | `<GitSince.DEFAULT: 'default'>` | Will use git log to look for 'fix' commits to include in the changelog [no_git_changes, last_git_tag, pr_base_branch, default] |
 | `--skip-docs` | `bool` | `False` | Skip doc regeneration |
 | `--skip-dirty-check` | `bool` | `False` | Skip dirty file check (for tests) |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext pre_commit_def === -->

@@ -33,6 +33,12 @@ Generate documentation from public API.
 |---|---|---|---|
 | `-o`, `--output-dir` | `Path | None` | *required* | Output directory (default: docs/) |
 | `-g`, `--group` | `str | None` | *required* | Generate for specific group only |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext gen_docs_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext gen_examples_def === -->
 <a id="gen_examples_def"></a>
@@ -53,6 +59,12 @@ Generate example files for public API functions.
 | Flag | Type | Default | Description |
 |---|---|---|---|
 | `-g`, `--group` | `str | None` | *required* | Generate for specific group only |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext gen_examples_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext gen_tests_def === -->
 <a id="gen_tests_def"></a>
@@ -73,4 +85,10 @@ Generate parameterized test files from examples.
 | Flag | Type | Default | Description |
 |---|---|---|---|
 | `-g`, `--group` | `str | None` | *required* | Generate for specific group only |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext gen_tests_def === -->

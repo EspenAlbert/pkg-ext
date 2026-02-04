@@ -9,7 +9,7 @@ from pkg_ext._internal.signature_parser import (
     extract_cli_params,
     is_cli_command,
     parse_class_fields,
-    parse_direct_bases,
+    parse_mro_bases,
     parse_signature,
     stable_repr,
     strip_memory_addresses,
@@ -23,6 +23,7 @@ def sample_func(a: int, b: str = "hello", *args, kwonly: bool = False, **kwargs)
 class SampleModel(BaseModel):
     name: str
     count: int = Field(default=0, description="A count field")
+    optional_tags: list[str] | None = None
 
     @computed_field
     @property
@@ -62,6 +63,15 @@ def test_parse_pydantic_model_fields():
     assert computed.is_computed
 
 
+def test_parse_pydantic_none_default():
+    fields = parse_class_fields(SampleModel)
+    assert fields
+    optional_field = next(f for f in fields if f.name == "optional_tags")
+    assert optional_field.default is not None
+    assert optional_field.default.value_repr == "None"
+    assert not optional_field.default.is_factory
+
+
 def test_parse_dataclass_fields():
     fields = parse_class_fields(SampleDataclass)
     assert fields
@@ -71,9 +81,10 @@ def test_parse_dataclass_fields():
     assert value_field.default.value_repr == "10"
 
 
-def test_parse_direct_bases():
-    bases = parse_direct_bases(ChildClass)
-    assert "SampleModel" in bases
+def test_parse_mro_bases():
+    mro, num_direct = parse_mro_bases(ChildClass)
+    assert "SampleModel" in mro
+    assert num_direct == 1
 
 
 class OutputFormat(StrEnum):

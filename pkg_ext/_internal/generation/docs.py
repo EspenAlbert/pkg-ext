@@ -46,9 +46,12 @@ class SymbolContext:
     has_examples: bool = False
     has_env_vars: bool = False
     has_meaningful_changes: bool = False
+    is_primary: bool = False
 
     @property
-    def is_complex(self) -> bool:
+    def needs_own_page(self) -> bool:
+        if self.is_primary:
+            return False
         return self.has_examples or self.has_env_vars or self.has_meaningful_changes
 
     @property
@@ -70,23 +73,26 @@ def has_env_vars(symbol: SymbolDump) -> bool:
 
 def build_symbol_context(
     symbol: SymbolDump,
+    group_name: str,
     example_symbols: set[str],
     changelog_actions: list[ChangelogAction],
 ) -> SymbolContext:
     has_changes = any(
         action.name == symbol.name and isinstance(action, MEANINGFUL_CHANGE_ACTIONS) for action in changelog_actions
     )
+    is_primary = symbol.name.lower() == group_name.lower()
     return SymbolContext(
         symbol=symbol,
         has_examples=symbol.name in example_symbols,
         has_env_vars=has_env_vars(symbol),
         has_meaningful_changes=has_changes,
+        is_primary=is_primary,
     )
 
 
 def render_symbol_entry(ctx: SymbolContext) -> str:
     name = ctx.symbol.name
-    if ctx.is_complex:
+    if ctx.needs_own_page:
         return f"- [{name}](./{slug(name)}.md)"
     return f"- [`{name}`](#{slug(name)}_def)"
 
@@ -101,23 +107,31 @@ def render_group_index(
     pkg_src_dir: Path | None = None,
     pkg_import_name: str | None = None,
 ) -> str:
-    header = f"# {group.name}\n"
-    if group_config.docstring:
-        header += f"\n{group_config.docstring}\n"
-    sorted_contexts = sorted(contexts, key=lambda c: c.symbol.name)
-    symbol_entries = [render_symbol_entry(c) for c in sorted_contexts]
-    symbol_list = "\n".join(symbol_entries)
-
     dir_name = group_dir_name(group)
     index_path = docs_dir / dir_name / "index.md" if docs_dir else None
 
+    primary_ctx = next((c for c in contexts if c.is_primary), None)
+    other_contexts = sorted([c for c in contexts if not c.is_primary], key=lambda c: c.symbol.name)
+    sorted_contexts = [primary_ctx, *other_contexts] if primary_ctx else other_contexts
+
+    header_name = primary_ctx.symbol.name if primary_ctx else group.name
+    header = f"# {header_name}\n"
+    if group_config.docstring:
+        header += f"\n{group_config.docstring}\n"
+
+    symbol_entries = [render_symbol_entry(c) for c in sorted_contexts]
+    symbol_list = "\n".join(symbol_entries)
+
     inline_sections = []
+    changelog_actions_list = list(changelog_actions) if changelog_actions else []
     for ctx in sorted_contexts:
-        if not ctx.is_complex:
+        if not ctx.needs_own_page:
             section_id = f"{slug(ctx.symbol.name)}_def"
+            symbol_changes = build_symbol_changes(ctx.symbol.name, changelog_actions_list)
             inline_content = render_inline_symbol(
                 ctx,
                 changelog_actions,
+                symbol_changes,
                 symbol_doc_path=index_path,
                 pkg_src_dir=pkg_src_dir,
                 pkg_import_name=pkg_import_name,
@@ -129,7 +143,9 @@ def render_group_index(
         "",
         wrap_section(symbol_list, "symbols", PKG_EXT_TOOL_NAME, MD_CONFIG),
     ]
-    if inline_sections:
+
+    other_inline_contexts = [c for c in other_contexts if not c.needs_own_page]
+    if other_inline_contexts:
         parts.extend(
             (
                 "",
@@ -143,6 +159,8 @@ def render_group_index(
                 *inline_sections,
             )
         )
+    elif inline_sections:
+        parts.extend(("", *inline_sections))
 
     return "\n".join(parts)
 
@@ -186,7 +204,7 @@ def generate_docs(
         dir_name = group_dir_name(group)
         group_examples = example_symbols.get(group.name, set())
         group_config = config.groups.get(group.name, GroupConfig())
-        contexts = [build_symbol_context(s, group_examples, changelog_actions) for s in group.symbols]
+        contexts = [build_symbol_context(s, group.name, group_examples, changelog_actions) for s in group.symbols]
         index_path = f"{dir_name}/index.md"
         path_contents[index_path] = render_group_index(
             group,
@@ -203,7 +221,7 @@ def generate_docs(
             loaded_examples = load_examples_for_group(pkg_import_name, group.name)
 
         for ctx in contexts:
-            if ctx.is_complex:
+            if ctx.needs_own_page:
                 symbol_path = f"{dir_name}/{ctx.page_filename}"
                 if docs_dir and pkg_src_dir:
                     symbol_doc_path = docs_dir / symbol_path

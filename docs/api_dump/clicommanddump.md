@@ -10,7 +10,7 @@ class CLICommandDump(SymbolDumpBase):
     name: str
     module_path: str
     docstring: str = ''
-    line_number: int | None
+    line_number: int | None = None
     type: Literal[cli_command] = 'cli_command'
     signature: CallableSignature
     cli_params: list[CLIParamInfo] = ...
@@ -36,6 +36,8 @@ A typer CLI command with rich parameter metadata.
 
 | Version | Change |
 |---------|--------|
+| unreleased | field 'line_number' default added: None |
+| unreleased | added base class 'SymbolDumpBase' |
 | 0.2.0 | field 'module_path' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'signature' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'name' default removed (was: PydanticUndefined) |

@@ -30,6 +30,12 @@ def release_notes(*, tag_name: str = ...):
 | Flag | Type | Default | Description |
 |---|---|---|---|
 | `--tag` | `str` | *required* | tag to find release notes for |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext release_notes_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext chore_def === -->
 <a id="chore_def"></a>
@@ -51,6 +57,12 @@ Create a ChoreAction for internal changes that warrant a release.
 |---|---|---|---|
 | `--description`, `-d` | `str` | *required* | Description of internal changes (e.g., 'CI improvements', 'Dependency updates') |
 | `--pr` | `int` | `0` | PR number (auto-detected from current branch if not provided) |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext chore_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext promote_def === -->
 <a id="promote_def"></a>
@@ -76,4 +88,10 @@ Promote symbols to public API (private or undecided).
 | `--pattern`, `-p` | `str | None` | *required* | Filter by name pattern (e.g., 'dump_*') |
 | `--undecided`, `-u` | `bool` | `False` | Include symbols without changelog entry (not yet decided) |
 | `--pr` | `int` | `0` | PR number (auto-detected if not provided) |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext promote_def === -->

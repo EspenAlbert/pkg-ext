@@ -39,6 +39,7 @@ class ChangeKind(StrEnum):
     DEFAULT_CHANGED = "default_changed"
     DEFAULT_ADDED = "default_added"
     OPTIONAL_FIELD_ADDED = "optional_field_added"
+    BASE_CLASS_ADDED = "base_class_added"
 
     @property
     def is_breaking(self) -> bool:
@@ -314,27 +315,36 @@ def compare_function(baseline: FunctionDump, dev: FunctionDump, group: str) -> l
     return results
 
 
-def _compare_bases(baseline: list[str], dev: list[str], symbol_name: str, group: str) -> list[DiffResult]:
-    return [
-        _diff(
-            symbol_name,
-            group,
-            ChangeKind.BASE_CLASS_REMOVED,
-            f"removed base class '{base}'",
-        )
-        for base in set(baseline) - set(dev)
+def _compare_bases(
+    baseline_direct: list[str],
+    dev_direct: list[str],
+    dev_mro_bases: list[str],
+    symbol_name: str,
+    group: str,
+) -> list[DiffResult]:
+    removed_direct = set(baseline_direct) - set(dev_direct)
+    added_direct = set(dev_direct) - set(baseline_direct)
+    # Only report removed if truly removed (not in MRO anymore)
+    results = [
+        _diff(symbol_name, group, ChangeKind.BASE_CLASS_REMOVED, f"removed base class '{base}'")
+        for base in removed_direct
+        if not (dev_mro_bases and base in dev_mro_bases)
     ]
+    results.extend(
+        _diff(symbol_name, group, ChangeKind.BASE_CLASS_ADDED, f"added base class '{base}'") for base in added_direct
+    )
+    return results
 
 
 def compare_class(baseline: ClassDump, dev: ClassDump, group: str) -> list[DiffResult]:
-    results = _compare_bases(baseline.direct_bases, dev.direct_bases, baseline.name, group)
+    results = _compare_bases(baseline.direct_bases, dev.direct_bases, dev.mro_bases, baseline.name, group)
     if baseline.fields and dev.fields:
         results.extend(compare_fields(baseline.fields, dev.fields, baseline.name, group))
     return results
 
 
 def compare_exception(baseline: ExceptionDump, dev: ExceptionDump, group: str) -> list[DiffResult]:
-    results = _compare_bases(baseline.direct_bases, dev.direct_bases, baseline.name, group)
+    results = _compare_bases(baseline.direct_bases, dev.direct_bases, dev.mro_bases, baseline.name, group)
     if baseline.init_signature and dev.init_signature:
         results.extend(
             compare_params(

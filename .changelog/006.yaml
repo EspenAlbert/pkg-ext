@@ -1,0 +1,428 @@
+name: parse_mro_bases
+ts: 2026-02-04 06:54:40.459531+00:00
+type: keep_private
+full_path: _internal.signature_parser.parse_mro_bases
+---
+name: PkgSettings
+ts: 2026-02-04 06:54:41.524996+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'BaseSettings'
+group: __ROOT__
+---
+name: PkgSettings
+ts: 2026-02-04 06:54:41.525009+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''max_bump_type'' default added: None'
+field_name: max_bump_type
+group: __ROOT__
+---
+name: PkgSettings
+ts: 2026-02-04 06:54:41.525013+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''after_file_write_hooks'' default added: None'
+field_name: after_file_write_hooks
+group: __ROOT__
+---
+name: CLICommandDump
+ts: 2026-02-04 06:54:41.525016+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'SymbolDumpBase'
+group: api_dump
+---
+name: CLICommandDump
+ts: 2026-02-04 06:54:41.525019+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''line_number'' default added: None'
+field_name: line_number
+group: api_dump
+---
+name: FuncParamInfo
+ts: 2026-02-04 06:54:41.525022+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'Entity'
+group: api_dump
+---
+name: FuncParamInfo
+ts: 2026-02-04 06:54:41.525024+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''default'' default added: None'
+field_name: default
+group: api_dump
+---
+name: FuncParamInfo
+ts: 2026-02-04 06:54:41.525027+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''type_annotation'' default added: None'
+field_name: type_annotation
+group: api_dump
+---
+name: ClassDump
+ts: 2026-02-04 06:54:41.525029+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'SymbolDumpBase'
+group: api_dump
+---
+name: ClassDump
+ts: 2026-02-04 06:54:41.525033+00:00
+type: breaking_change
+auto_generated: true
+change_kind: field_removed
+details: removed field 'direct_bases'
+field_name: direct_bases
+group: api_dump
+---
+name: ClassDump
+ts: 2026-02-04 06:54:41.525038+00:00
+type: additional_change
+auto_generated: true
+change_kind: optional_field_added
+details: 'added optional field ''mro_bases'' (default: ...)'
+field_name: mro_bases
+group: api_dump
+---
+name: ClassDump
+ts: 2026-02-04 06:54:41.525045+00:00
+type: additional_change
+auto_generated: true
+change_kind: optional_field_added
+details: 'added optional field ''num_direct_bases'' (default: 0)'
+field_name: num_direct_bases
+group: api_dump
+---
+name: ClassDump
+ts: 2026-02-04 06:54:41.525049+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''fields'' default added: None'
+field_name: fields
+group: api_dump
+---
+name: ClassDump
+ts: 2026-02-04 06:54:41.525051+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''line_number'' default added: None'
+field_name: line_number
+group: api_dump
+---
+name: ClassDump
+ts: 2026-02-04 06:54:41.525053+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''init_signature'' default added: None'
+field_name: init_signature
+group: api_dump
+---
+name: FunctionDump
+ts: 2026-02-04 06:54:41.525056+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'SymbolDumpBase'
+group: api_dump
+---
+name: FunctionDump
+ts: 2026-02-04 06:54:41.525058+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''line_number'' default added: None'
+field_name: line_number
+group: api_dump
+---
+name: PublicApiDump
+ts: 2026-02-04 06:54:41.525060+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'Entity'
+group: api_dump
+---
+name: TypeAliasDump
+ts: 2026-02-04 06:54:41.525063+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'SymbolDumpBase'
+group: api_dump
+---
+name: TypeAliasDump
+ts: 2026-02-04 06:54:41.525065+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''line_number'' default added: None'
+field_name: line_number
+group: api_dump
+---
+name: ParamKind
+ts: 2026-02-04 06:54:41.525067+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'StrEnum'
+group: api_dump
+---
+name: ParamDefault
+ts: 2026-02-04 06:54:41.525070+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'Entity'
+group: api_dump
+---
+name: CLIParamInfo
+ts: 2026-02-04 06:54:41.525073+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'Entity'
+group: api_dump
+---
+name: CLIParamInfo
+ts: 2026-02-04 06:54:41.525075+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''envvar'' default added: None'
+field_name: envvar
+group: api_dump
+---
+name: CLIParamInfo
+ts: 2026-02-04 06:54:41.525078+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''choices'' default added: None'
+field_name: choices
+group: api_dump
+---
+name: CLIParamInfo
+ts: 2026-02-04 06:54:41.525080+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''help'' default added: None'
+field_name: help
+group: api_dump
+---
+name: CLIParamInfo
+ts: 2026-02-04 06:54:41.525082+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''default_repr'' default added: None'
+field_name: default_repr
+group: api_dump
+---
+name: CLIParamInfo
+ts: 2026-02-04 06:54:41.525084+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''type_annotation'' default added: None'
+field_name: type_annotation
+group: api_dump
+---
+name: CallableSignature
+ts: 2026-02-04 06:54:41.525087+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'Entity'
+group: api_dump
+---
+name: CallableSignature
+ts: 2026-02-04 06:54:41.525089+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''return_annotation'' default added: None'
+field_name: return_annotation
+group: api_dump
+---
+name: GlobalVarDump
+ts: 2026-02-04 06:54:41.525092+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'SymbolDumpBase'
+group: api_dump
+---
+name: GlobalVarDump
+ts: 2026-02-04 06:54:41.525094+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''annotation'' default added: None'
+field_name: annotation
+group: api_dump
+---
+name: GlobalVarDump
+ts: 2026-02-04 06:54:41.525096+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''line_number'' default added: None'
+field_name: line_number
+group: api_dump
+---
+name: GlobalVarDump
+ts: 2026-02-04 06:54:41.525098+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''value_repr'' default added: None'
+field_name: value_repr
+group: api_dump
+---
+name: ExceptionDump
+ts: 2026-02-04 06:54:41.525100+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'SymbolDumpBase'
+group: api_dump
+---
+name: ExceptionDump
+ts: 2026-02-04 06:54:41.525103+00:00
+type: breaking_change
+auto_generated: true
+change_kind: field_removed
+details: removed field 'direct_bases'
+field_name: direct_bases
+group: api_dump
+---
+name: ExceptionDump
+ts: 2026-02-04 06:54:41.525109+00:00
+type: additional_change
+auto_generated: true
+change_kind: optional_field_added
+details: 'added optional field ''mro_bases'' (default: ...)'
+field_name: mro_bases
+group: api_dump
+---
+name: ExceptionDump
+ts: 2026-02-04 06:54:41.525111+00:00
+type: additional_change
+auto_generated: true
+change_kind: optional_field_added
+details: 'added optional field ''num_direct_bases'' (default: 0)'
+field_name: num_direct_bases
+group: api_dump
+---
+name: ExceptionDump
+ts: 2026-02-04 06:54:41.525114+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''line_number'' default added: None'
+field_name: line_number
+group: api_dump
+---
+name: ExceptionDump
+ts: 2026-02-04 06:54:41.525116+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''init_signature'' default added: None'
+field_name: init_signature
+group: api_dump
+---
+name: GroupDump
+ts: 2026-02-04 06:54:41.525118+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'Entity'
+group: api_dump
+---
+name: ClassFieldInfo
+ts: 2026-02-04 06:54:41.525121+00:00
+type: additional_change
+auto_generated: true
+change_kind: base_class_added
+details: added base class 'Entity'
+group: api_dump
+---
+name: ClassFieldInfo
+ts: 2026-02-04 06:54:41.525123+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''description'' default added: None'
+field_name: description
+group: api_dump
+---
+name: ClassFieldInfo
+ts: 2026-02-04 06:54:41.525125+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''deprecated'' default added: None'
+field_name: deprecated
+group: api_dump
+---
+name: ClassFieldInfo
+ts: 2026-02-04 06:54:41.525127+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''env_vars'' default added: None'
+field_name: env_vars
+group: api_dump
+---
+name: ClassFieldInfo
+ts: 2026-02-04 06:54:41.525129+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''default'' default added: None'
+field_name: default
+group: api_dump
+---
+name: ClassFieldInfo
+ts: 2026-02-04 06:54:41.525131+00:00
+type: additional_change
+auto_generated: true
+change_kind: default_added
+details: 'field ''type_annotation'' default added: None'
+field_name: type_annotation
+group: api_dump
+---
+name: api_dump
+ts: 2026-02-04 07:11:33.306410+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(pkg-ext): capture None as explicit default in pydantic field parsing'
+message: 'fix(pkg-ext): capture None as explicit default in pydantic field parsing'
+short_sha: 833c63
+---
+name: generate
+ts: 2026-02-04 07:11:43.889646+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(docs_version): correct sorting logic for symbol changes to prioritize unreleased versions'
+message: 'fix(docs_version): correct sorting logic for symbol changes to prioritize unreleased versions'
+short_sha: 757c70

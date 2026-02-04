@@ -2,7 +2,7 @@
 
 <!-- === DO_NOT_EDIT: pkg-ext publicapidump_def === -->
 ## class: PublicApiDump
-- [source](../../pkg_ext/_internal/models/api_dump.py#L128)
+- [source](../../pkg_ext/_internal/models/api_dump.py#L138)
 > **Since:** 0.1.0
 
 ```python
@@ -28,6 +28,7 @@ class PublicApiDump(Entity):
 
 | Version | Change |
 |---------|--------|
+| unreleased | added base class 'Entity' |
 | 0.2.0 | field 'pkg_import_name' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'version' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'dumped_at' default removed (was: PydanticUndefined) |

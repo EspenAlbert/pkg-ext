@@ -8,14 +8,14 @@
 ```python
 class ClassFieldInfo(Entity):
     name: str
-    type_annotation: str | None
+    type_annotation: str | None = None
     type_imports: list[str] = ...
-    default: ParamDefault | None
+    default: ParamDefault | None = None
     is_class_var: bool = False
     is_computed: bool = False
-    description: str | None
-    deprecated: str | None
-    env_vars: list[str] | None
+    description: str | None = None
+    deprecated: str | None = None
+    env_vars: list[str] | None = None
 ```
 <!-- === OK_EDIT: pkg-ext classfieldinfo_def === -->
 
@@ -38,6 +38,12 @@ class ClassFieldInfo(Entity):
 
 | Version | Change |
 |---------|--------|
+| unreleased | field 'type_annotation' default added: None |
+| unreleased | field 'default' default added: None |
+| unreleased | field 'env_vars' default added: None |
+| unreleased | field 'deprecated' default added: None |
+| unreleased | field 'description' default added: None |
+| unreleased | added base class 'Entity' |
 | 0.2.0 | field 'name' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext classfieldinfo_changes === -->

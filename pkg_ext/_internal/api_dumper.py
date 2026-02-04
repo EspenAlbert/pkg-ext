@@ -26,7 +26,7 @@ from pkg_ext._internal.signature_parser import (
     extract_cli_params,
     is_cli_command,
     parse_class_fields,
-    parse_direct_bases,
+    parse_mro_bases,
     parse_signature,
     stable_repr,
     strip_memory_addresses,
@@ -85,11 +85,13 @@ def dump_class(cls: type, ref: RefSymbol) -> ClassDump:
     fields = parse_class_fields(cls)
     # Skip init_signature when fields present (dataclass/pydantic - init params match fields)
     init_sig = None if fields else parse_signature(cls.__init__)
+    mro_bases, num_direct = parse_mro_bases(cls)
     return ClassDump(
         name=ref.name,
         module_path=ref.module_path,
         docstring=_get_class_docstring(cls),
-        direct_bases=parse_direct_bases(cls),
+        mro_bases=mro_bases,
+        num_direct_bases=num_direct,
         init_signature=init_sig,
         fields=fields,
         line_number=_get_line_number(cls),
@@ -97,11 +99,13 @@ def dump_class(cls: type, ref: RefSymbol) -> ClassDump:
 
 
 def dump_exception(cls: type, ref: RefSymbol) -> ExceptionDump:
+    mro_bases, num_direct = parse_mro_bases(cls)
     return ExceptionDump(
         name=ref.name,
         module_path=ref.module_path,
         docstring=cls.__doc__ or "",
-        direct_bases=parse_direct_bases(cls),
+        mro_bases=mro_bases,
+        num_direct_bases=num_direct,
         init_signature=parse_signature(cls.__init__),
         line_number=_get_line_number(cls),
     )

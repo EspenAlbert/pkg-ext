@@ -8,15 +8,15 @@
 ```python
 class CLIParamInfo(Entity):
     param_name: str
-    type_annotation: str | None
+    type_annotation: str | None = None
     flags: list[str] = ...
-    help: str | None
-    default_repr: str | None
+    help: str | None = None
+    default_repr: str | None = None
     required: bool = False
-    envvar: str | None
+    envvar: str | None = None
     is_argument: bool = False
     hidden: bool = False
-    choices: list[str] | None
+    choices: list[str] | None = None
 ```
 
 CLI parameter metadata from typer OptionInfo/ArgumentInfo.
@@ -42,6 +42,12 @@ CLI parameter metadata from typer OptionInfo/ArgumentInfo.
 
 | Version | Change |
 |---------|--------|
+| unreleased | field 'type_annotation' default added: None |
+| unreleased | field 'default_repr' default added: None |
+| unreleased | field 'help' default added: None |
+| unreleased | field 'choices' default added: None |
+| unreleased | field 'envvar' default added: None |
+| unreleased | added base class 'Entity' |
 | 0.2.0 | field 'param_name' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext cliparaminfo_changes === -->

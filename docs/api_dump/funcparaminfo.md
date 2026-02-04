@@ -9,9 +9,9 @@
 class FuncParamInfo(Entity):
     name: str
     kind: ParamKind
-    type_annotation: str | None
+    type_annotation: str | None = None
     type_imports: list[str] = ...
-    default: ParamDefault | None
+    default: ParamDefault | None = None
 ```
 <!-- === OK_EDIT: pkg-ext funcparaminfo_def === -->
 
@@ -30,6 +30,9 @@ class FuncParamInfo(Entity):
 
 | Version | Change |
 |---------|--------|
+| unreleased | field 'type_annotation' default added: None |
+| unreleased | field 'default' default added: None |
+| unreleased | added base class 'Entity' |
 | 0.2.0 | field 'kind' default removed (was: PydanticUndefined) |
 | 0.2.0 | field 'name' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |

@@ -95,7 +95,7 @@ class ProjectConfig(Entity):
     tag_prefix: str = ""
     default_branch: str = DEFAULT_BRANCH
     file_header: str = DEFAULT_FILE_HEADER
-    commit_fix_prefixes: tuple[str, ...] = ("fix:",)
+    commit_fix_prefixes: tuple[str, ...] = ("fix:", "fix(")
     commit_diff_suffixes: tuple[str, ...] = (".py",)
     changelog_cleanup_count: int = DEFAULT_CHANGELOG_CLEANUP_COUNT
     changelog_keep_count: int = DEFAULT_CHANGELOG_KEEP_COUNT

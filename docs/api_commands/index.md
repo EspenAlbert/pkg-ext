@@ -31,6 +31,12 @@ Show API changes between baseline and dev dump.
 | Flag | Type | Default | Description |
 |---|---|---|---|
 | `--baseline` | `str | None` | *required* | Git tag/ref to compare against (default: {pkg}.api.yaml file) |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext diff_api_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext dump_api_def === -->
 <a id="dump_api_def"></a>
@@ -52,4 +58,10 @@ Dump public API to YAML for diffing and breaking change detection.
 |---|---|---|---|
 | `-o`, `--output` | `Path | None` | *required* | Output file path |
 | `--dev` | `bool` | `False` | Write to -dev file (gitignored for local comparison) |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext dump_api_def === -->
