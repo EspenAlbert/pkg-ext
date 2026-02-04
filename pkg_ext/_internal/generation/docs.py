@@ -123,12 +123,15 @@ def render_group_index(
     symbol_list = "\n".join(symbol_entries)
 
     inline_sections = []
+    changelog_actions_list = list(changelog_actions) if changelog_actions else []
     for ctx in sorted_contexts:
         if not ctx.needs_own_page:
             section_id = f"{slug(ctx.symbol.name)}_def"
+            symbol_changes = build_symbol_changes(ctx.symbol.name, changelog_actions_list)
             inline_content = render_inline_symbol(
                 ctx,
                 changelog_actions,
+                symbol_changes,
                 symbol_doc_path=index_path,
                 pkg_src_dir=pkg_src_dir,
                 pkg_import_name=pkg_import_name,
