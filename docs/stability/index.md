@@ -33,6 +33,12 @@ Mark target as deprecated.
 |---|---|---|---|
 | `--target`, `-t` | `str` | *required* | Target: group \| group.symbol \| group.symbol.arg |
 | `--replacement`, `-r` | `str | None` | *required* | Replacement suggestion |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext dep_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext exp_def === -->
 <a id="exp_def"></a>
@@ -53,6 +59,12 @@ Mark target as experimental.
 | Flag | Type | Default | Description |
 |---|---|---|---|
 | `--target`, `-t` | `str` | *required* | Target: group \| group.symbol \| group.symbol.arg |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext exp_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext ga_def === -->
 <a id="ga_def"></a>
@@ -73,4 +85,10 @@ Graduate target to GA (general availability).
 | Flag | Type | Default | Description |
 |---|---|---|---|
 | `--target`, `-t` | `str` | *required* | Target: group \| group.symbol \| group.symbol.arg |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext ga_def === -->

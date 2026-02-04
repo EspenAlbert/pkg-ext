@@ -8,15 +8,15 @@
 ```python
 class CLIParamInfo(Entity):
     param_name: str
-    type_annotation: str | None
+    type_annotation: str | None = None
     flags: list[str] = ...
-    help: str | None
-    default_repr: str | None
+    help: str | None = None
+    default_repr: str | None = None
     required: bool = False
-    envvar: str | None
+    envvar: str | None = None
     is_argument: bool = False
     hidden: bool = False
-    choices: list[str] | None
+    choices: list[str] | None = None
 ```
 
 CLI parameter metadata from typer OptionInfo/ArgumentInfo.

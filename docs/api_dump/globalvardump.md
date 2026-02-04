@@ -2,7 +2,7 @@
 
 <!-- === DO_NOT_EDIT: pkg-ext globalvardump_def === -->
 ## class: GlobalVarDump
-- [source](../../pkg_ext/_internal/models/api_dump.py#L105)
+- [source](../../pkg_ext/_internal/models/api_dump.py#L115)
 > **Since:** 0.1.0
 
 ```python
@@ -10,10 +10,10 @@ class GlobalVarDump(SymbolDumpBase):
     name: str
     module_path: str
     docstring: str = ''
-    line_number: int | None
+    line_number: int | None = None
     type: Literal[global_var] = 'global_var'
-    annotation: str | None
-    value_repr: str | None
+    annotation: str | None = None
+    value_repr: str | None = None
 ```
 <!-- === OK_EDIT: pkg-ext globalvardump_def === -->
 

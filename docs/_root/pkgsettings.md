@@ -7,7 +7,7 @@
 
 ```python
 class PkgSettings(BaseSettings):
-    after_file_write_hooks: tuple[str, Ellipsis] | None
+    after_file_write_hooks: tuple[str, Ellipsis] | None = None
     changelog_cleanup_count: int = 30
     changelog_keep_count: int = 10
     commit_fix_diff_suffixes: tuple[str, Ellipsis] = ...
@@ -23,7 +23,7 @@ class PkgSettings(BaseSettings):
     keep_prerelease: bool = False
     ignored_symbols: frozenset[str] = frozenset()
     format_command: tuple[str, Ellipsis] = ('ruff', 'format')
-    max_bump_type: BumpType | None
+    max_bump_type: BumpType | None = None
     default_branch: str = 'main'
     repo_url: str = ''
 ```

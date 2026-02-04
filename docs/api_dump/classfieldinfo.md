@@ -8,14 +8,14 @@
 ```python
 class ClassFieldInfo(Entity):
     name: str
-    type_annotation: str | None
+    type_annotation: str | None = None
     type_imports: list[str] = ...
-    default: ParamDefault | None
+    default: ParamDefault | None = None
     is_class_var: bool = False
     is_computed: bool = False
-    description: str | None
-    deprecated: str | None
-    env_vars: list[str] | None
+    description: str | None = None
+    deprecated: str | None = None
+    env_vars: list[str] | None = None
 ```
 <!-- === OK_EDIT: pkg-ext classfieldinfo_def === -->
 

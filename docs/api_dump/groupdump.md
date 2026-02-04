@@ -2,7 +2,7 @@
 
 <!-- === DO_NOT_EDIT: pkg-ext groupdump_def === -->
 ## class: GroupDump
-- [source](../../pkg_ext/_internal/models/api_dump.py#L117)
+- [source](../../pkg_ext/_internal/models/api_dump.py#L127)
 > **Since:** 0.1.0
 
 ```python

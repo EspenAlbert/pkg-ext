@@ -2,7 +2,7 @@
 
 <!-- === DO_NOT_EDIT: pkg-ext exceptiondump_def === -->
 ## class: ExceptionDump
-- [source](../../pkg_ext/_internal/models/api_dump.py#L94)
+- [source](../../pkg_ext/_internal/models/api_dump.py#L99)
 > **Since:** 0.1.0
 
 ```python
@@ -10,10 +10,11 @@ class ExceptionDump(SymbolDumpBase):
     name: str
     module_path: str
     docstring: str = ''
-    line_number: int | None
+    line_number: int | None = None
     type: Literal[exception] = 'exception'
-    direct_bases: list[str] = ...
-    init_signature: CallableSignature | None
+    mro_bases: list[str] = ...
+    num_direct_bases: int = 0
+    init_signature: CallableSignature | None = None
 ```
 <!-- === OK_EDIT: pkg-ext exceptiondump_def === -->
 

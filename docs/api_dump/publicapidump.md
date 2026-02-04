@@ -2,7 +2,7 @@
 
 <!-- === DO_NOT_EDIT: pkg-ext publicapidump_def === -->
 ## class: PublicApiDump
-- [source](../../pkg_ext/_internal/models/api_dump.py#L128)
+- [source](../../pkg_ext/_internal/models/api_dump.py#L138)
 > **Since:** 0.1.0
 
 ```python

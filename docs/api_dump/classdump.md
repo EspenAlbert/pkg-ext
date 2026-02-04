@@ -10,11 +10,12 @@ class ClassDump(SymbolDumpBase):
     name: str
     module_path: str
     docstring: str = ''
-    line_number: int | None
+    line_number: int | None = None
     type: Literal[class] = 'class'
-    direct_bases: list[str] = ...
-    init_signature: CallableSignature | None
-    fields: list[ClassFieldInfo] | None
+    mro_bases: list[str] = ...
+    num_direct_bases: int = 0
+    init_signature: CallableSignature | None = None
+    fields: list[ClassFieldInfo] | None = None
 ```
 <!-- === OK_EDIT: pkg-ext classdump_def === -->
 

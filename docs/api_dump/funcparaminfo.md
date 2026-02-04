@@ -9,9 +9,9 @@
 class FuncParamInfo(Entity):
     name: str
     kind: ParamKind
-    type_annotation: str | None
+    type_annotation: str | None = None
     type_imports: list[str] = ...
-    default: ParamDefault | None
+    default: ParamDefault | None = None
 ```
 <!-- === OK_EDIT: pkg-ext funcparaminfo_def === -->
 

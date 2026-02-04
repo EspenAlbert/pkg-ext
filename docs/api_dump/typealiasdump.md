@@ -2,7 +2,7 @@
 
 <!-- === DO_NOT_EDIT: pkg-ext typealiasdump_def === -->
 ## class: TypeAliasDump
-- [source](../../pkg_ext/_internal/models/api_dump.py#L100)
+- [source](../../pkg_ext/_internal/models/api_dump.py#L110)
 > **Since:** 0.1.0
 
 ```python
@@ -10,7 +10,7 @@ class TypeAliasDump(SymbolDumpBase):
     name: str
     module_path: str
     docstring: str = ''
-    line_number: int | None
+    line_number: int | None = None
     type: Literal[type_alias] = 'type_alias'
     alias_target: str
 ```

@@ -10,7 +10,7 @@ class CLICommandDump(SymbolDumpBase):
     name: str
     module_path: str
     docstring: str = ''
-    line_number: int | None
+    line_number: int | None = None
     type: Literal[cli_command] = 'cli_command'
     signature: CallableSignature
     cli_params: list[CLIParamInfo] = ...

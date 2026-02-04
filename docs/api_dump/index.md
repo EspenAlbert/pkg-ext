@@ -34,15 +34,21 @@
 ```python
 class CallableSignature(Entity):
     parameters: list[FuncParamInfo] = ...
-    return_annotation: str | None
+    return_annotation: str | None = None
     return_type_imports: list[str] = ...
 ```
 
 | Field | Type | Default | Since |
 |---|---|---|---|
 | parameters | `list[FuncParamInfo]` | `...` | 0.1.0 |
-| return_annotation | `str | None` | - | 0.1.0 |
+| return_annotation | `str | None` | `None` | 0.1.0 |
 | return_type_imports | `list[str]` | `...` | 0.1.0 |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext callablesignature_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext paramkind_def === -->
 <a id="paramkind_def"></a>
@@ -55,4 +61,10 @@ class CallableSignature(Entity):
 class ParamKind(StrEnum):
     ...
 ```
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext paramkind_def === -->
