@@ -23,6 +23,7 @@ def sample_func(a: int, b: str = "hello", *args, kwonly: bool = False, **kwargs)
 class SampleModel(BaseModel):
     name: str
     count: int = Field(default=0, description="A count field")
+    optional_tags: list[str] | None = None
 
     @computed_field
     @property
@@ -60,6 +61,15 @@ def test_parse_pydantic_model_fields():
     assert "double_count" in field_names
     computed = next(f for f in fields if f.name == "double_count")
     assert computed.is_computed
+
+
+def test_parse_pydantic_none_default():
+    fields = parse_class_fields(SampleModel)
+    assert fields
+    optional_field = next(f for f in fields if f.name == "optional_tags")
+    assert optional_field.default is not None
+    assert optional_field.default.value_repr == "None"
+    assert not optional_field.default.is_factory
 
 
 def test_parse_dataclass_fields():

@@ -9,6 +9,8 @@ import typing
 from contextlib import suppress
 from typing import Any, Callable, ClassVar, Literal, Union, get_args, get_origin, get_type_hints
 
+from pydantic.fields import FieldInfo
+from pydantic_core import PydanticUndefined
 from typer.models import ArgumentInfo, ParameterInfo
 
 from pkg_ext._internal.models.api_dump import (
@@ -233,13 +235,10 @@ def parse_mro_bases(cls: type) -> tuple[list[str], int]:
 
 
 def _parse_field_default(field: Any) -> ParamDefault | None:
-    from pydantic.fields import FieldInfo
-    from pydantic_core import PydanticUndefined
-
     if isinstance(field, FieldInfo):
         if field.default_factory is not None:
             return ParamDefault(value_repr="...", is_factory=True)
-        if field.default is not None and field.default is not PydanticUndefined:
+        if field.default is not PydanticUndefined:
             return ParamDefault(value_repr=stable_repr(field.default))
     return None
 
