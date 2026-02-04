@@ -26,7 +26,7 @@ class CallableSignature(Entity):
 
 | Version | Change |
 |---------|--------|
-| unreleased | field 'return_annotation' default added: None |
-| unreleased | added base class 'Entity' |
+| 0.3.0 | field 'return_annotation' default added: None |
+| 0.3.0 | added base class 'Entity' |
 | 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext callablesignature_changes === -->

@@ -1,5 +1,5 @@
 pkg_import_name: pkg_ext
-version: 0.2.1
+version: 0.3.0
 groups:
 - name: __ROOT__
   symbols:
@@ -8,12 +8,17 @@ groups:
     docstring: ''
     line_number: 25
     type: class
-    direct_bases:
+    mro_bases:
     - BaseSettings
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: after_file_write_hooks
       type_annotation: tuple[str, Ellipsis] | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
       env_vars:
@@ -171,6 +176,9 @@ groups:
       type_annotation: BumpType | None
       type_imports:
       - pkg_ext._internal.changelog.actions.BumpType
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
       env_vars:
@@ -280,8 +288,12 @@ groups:
     docstring: A typer CLI command with rich parameter metadata.
     line_number: 79
     type: class
-    direct_bases:
+    mro_bases:
     - SymbolDumpBase
+    - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: name
       type_annotation: str
@@ -304,6 +316,9 @@ groups:
     - name: line_number
       type_annotation: int | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: type
@@ -334,8 +349,11 @@ groups:
     docstring: CLI parameter metadata from typer OptionInfo/ArgumentInfo.
     line_number: 64
     type: class
-    direct_bases:
+    mro_bases:
     - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: param_name
       type_annotation: str
@@ -345,6 +363,9 @@ groups:
     - name: type_annotation
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: flags
@@ -358,11 +379,17 @@ groups:
     - name: help
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: default_repr
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: required
@@ -376,6 +403,9 @@ groups:
     - name: envvar
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: is_argument
@@ -397,6 +427,9 @@ groups:
     - name: choices
       type_annotation: list[str] | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
   - name: CallableSignature
@@ -404,8 +437,11 @@ groups:
     docstring: ''
     line_number: 34
     type: class
-    direct_bases:
+    mro_bases:
     - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: parameters
       type_annotation: list[FuncParamInfo]
@@ -419,6 +455,9 @@ groups:
     - name: return_annotation
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: return_type_imports
@@ -434,8 +473,12 @@ groups:
     docstring: ''
     line_number: 87
     type: class
-    direct_bases:
+    mro_bases:
     - SymbolDumpBase
+    - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: name
       type_annotation: str
@@ -458,6 +501,9 @@ groups:
     - name: line_number
       type_annotation: int | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: type
@@ -468,7 +514,7 @@ groups:
         is_factory: false
       is_class_var: false
       is_computed: false
-    - name: direct_bases
+    - name: mro_bases
       type_annotation: list[str]
       type_imports: []
       default:
@@ -476,16 +522,30 @@ groups:
         is_factory: true
       is_class_var: false
       is_computed: false
+    - name: num_direct_bases
+      type_annotation: int
+      type_imports: []
+      default:
+        value_repr: '0'
+        is_factory: false
+      is_class_var: false
+      is_computed: false
     - name: init_signature
       type_annotation: CallableSignature | None
       type_imports:
       - pkg_ext._internal.models.api_dump.CallableSignature
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: fields
       type_annotation: list[ClassFieldInfo] | None
       type_imports:
       - pkg_ext._internal.models.api_dump.ClassFieldInfo
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
   - name: ClassFieldInfo
@@ -493,8 +553,11 @@ groups:
     docstring: ''
     line_number: 40
     type: class
-    direct_bases:
+    mro_bases:
     - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: name
       type_annotation: str
@@ -504,6 +567,9 @@ groups:
     - name: type_annotation
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: type_imports
@@ -518,6 +584,9 @@ groups:
       type_annotation: ParamDefault | None
       type_imports:
       - pkg_ext._internal.models.api_dump.ParamDefault
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: is_class_var
@@ -539,25 +608,38 @@ groups:
     - name: description
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: deprecated
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: env_vars
       type_annotation: list[str] | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
   - name: ExceptionDump
     module_path: _internal.models.api_dump
     docstring: ''
-    line_number: 94
+    line_number: 99
     type: class
-    direct_bases:
+    mro_bases:
     - SymbolDumpBase
+    - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: name
       type_annotation: str
@@ -580,6 +662,9 @@ groups:
     - name: line_number
       type_annotation: int | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: type
@@ -590,7 +675,7 @@ groups:
         is_factory: false
       is_class_var: false
       is_computed: false
-    - name: direct_bases
+    - name: mro_bases
       type_annotation: list[str]
       type_imports: []
       default:
@@ -598,10 +683,21 @@ groups:
         is_factory: true
       is_class_var: false
       is_computed: false
+    - name: num_direct_bases
+      type_annotation: int
+      type_imports: []
+      default:
+        value_repr: '0'
+        is_factory: false
+      is_class_var: false
+      is_computed: false
     - name: init_signature
       type_annotation: CallableSignature | None
       type_imports:
       - pkg_ext._internal.models.api_dump.CallableSignature
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
   - name: FuncParamInfo
@@ -609,8 +705,11 @@ groups:
     docstring: ''
     line_number: 26
     type: class
-    direct_bases:
+    mro_bases:
     - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: name
       type_annotation: str
@@ -626,6 +725,9 @@ groups:
     - name: type_annotation
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: type_imports
@@ -640,6 +742,9 @@ groups:
       type_annotation: ParamDefault | None
       type_imports:
       - pkg_ext._internal.models.api_dump.ParamDefault
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
   - name: FunctionDump
@@ -647,8 +752,12 @@ groups:
     docstring: ''
     line_number: 59
     type: class
-    direct_bases:
+    mro_bases:
     - SymbolDumpBase
+    - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: name
       type_annotation: str
@@ -671,6 +780,9 @@ groups:
     - name: line_number
       type_annotation: int | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: type
@@ -690,10 +802,14 @@ groups:
   - name: GlobalVarDump
     module_path: _internal.models.api_dump
     docstring: ''
-    line_number: 105
+    line_number: 115
     type: class
-    direct_bases:
+    mro_bases:
     - SymbolDumpBase
+    - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: name
       type_annotation: str
@@ -716,6 +832,9 @@ groups:
     - name: line_number
       type_annotation: int | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: type
@@ -729,20 +848,29 @@ groups:
     - name: annotation
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: value_repr
       type_annotation: str | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
   - name: GroupDump
     module_path: _internal.models.api_dump
     docstring: ''
-    line_number: 117
+    line_number: 127
     type: class
-    direct_bases:
+    mro_bases:
     - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: name
       type_annotation: str
@@ -768,8 +896,11 @@ groups:
     docstring: ''
     line_number: 21
     type: class
-    direct_bases:
+    mro_bases:
     - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: value_repr
       type_annotation: str
@@ -789,8 +920,11 @@ groups:
     docstring: ''
     line_number: 13
     type: class
-    direct_bases:
+    mro_bases:
     - StrEnum
+    - str
+    - Enum
+    num_direct_bases: 1
     init_signature:
       parameters:
       - name: self
@@ -806,10 +940,13 @@ groups:
   - name: PublicApiDump
     module_path: _internal.models.api_dump
     docstring: ''
-    line_number: 128
+    line_number: 138
     type: class
-    direct_bases:
+    mro_bases:
     - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: pkg_import_name
       type_annotation: str
@@ -839,10 +976,14 @@ groups:
   - name: TypeAliasDump
     module_path: _internal.models.api_dump
     docstring: ''
-    line_number: 100
+    line_number: 110
     type: class
-    direct_bases:
+    mro_bases:
     - SymbolDumpBase
+    - Entity
+    - _Model
+    - BaseModel
+    num_direct_bases: 1
     fields:
     - name: name
       type_annotation: str
@@ -865,6 +1006,9 @@ groups:
     - name: line_number
       type_annotation: int | None
       type_imports: []
+      default:
+        value_repr: None
+        is_factory: false
       is_class_var: false
       is_computed: false
     - name: type
@@ -1564,4 +1708,4 @@ groups:
       required: false
       is_argument: false
       hidden: false
-dumped_at: 2026-01-24 21:48:18.296563+00:00
+dumped_at: 2026-02-04 07:14:06.224484+00:00

@@ -1,5 +1,63 @@
 # Changelog
 
+## 0.3.0 2026-02-04T07-14Z
+
+### __Root__
+- `__ROOT__.PkgSettings`: added base class 'BaseSettings'
+- `__ROOT__.PkgSettings`: field 'max_bump_type' default added: None
+- `__ROOT__.PkgSettings`: field 'after_file_write_hooks' default added: None
+
+### Api_Dump
+- BREAKING `api_dump.ClassDump`: removed field 'direct_bases'
+- BREAKING `api_dump.ExceptionDump`: removed field 'direct_bases'
+- `api_dump.CLICommandDump`: added base class 'SymbolDumpBase'
+- `api_dump.CLICommandDump`: field 'line_number' default added: None
+- `api_dump.FuncParamInfo`: added base class 'Entity'
+- `api_dump.FuncParamInfo`: field 'default' default added: None
+- `api_dump.FuncParamInfo`: field 'type_annotation' default added: None
+- `api_dump.ClassDump`: added base class 'SymbolDumpBase'
+- `api_dump.ClassDump`: added optional field 'mro_bases' (default: ...)
+- `api_dump.ClassDump`: added optional field 'num_direct_bases' (default: 0)
+- `api_dump.ClassDump`: field 'fields' default added: None
+- `api_dump.ClassDump`: field 'line_number' default added: None
+- `api_dump.ClassDump`: field 'init_signature' default added: None
+- `api_dump.FunctionDump`: added base class 'SymbolDumpBase'
+- `api_dump.FunctionDump`: field 'line_number' default added: None
+- `api_dump.PublicApiDump`: added base class 'Entity'
+- `api_dump.TypeAliasDump`: added base class 'SymbolDumpBase'
+- `api_dump.TypeAliasDump`: field 'line_number' default added: None
+- `api_dump.ParamKind`: added base class 'StrEnum'
+- `api_dump.ParamDefault`: added base class 'Entity'
+- `api_dump.CLIParamInfo`: added base class 'Entity'
+- `api_dump.CLIParamInfo`: field 'envvar' default added: None
+- `api_dump.CLIParamInfo`: field 'choices' default added: None
+- `api_dump.CLIParamInfo`: field 'help' default added: None
+- `api_dump.CLIParamInfo`: field 'default_repr' default added: None
+- `api_dump.CLIParamInfo`: field 'type_annotation' default added: None
+- `api_dump.CallableSignature`: added base class 'Entity'
+- `api_dump.CallableSignature`: field 'return_annotation' default added: None
+- `api_dump.GlobalVarDump`: added base class 'SymbolDumpBase'
+- `api_dump.GlobalVarDump`: field 'annotation' default added: None
+- `api_dump.GlobalVarDump`: field 'line_number' default added: None
+- `api_dump.GlobalVarDump`: field 'value_repr' default added: None
+- `api_dump.ExceptionDump`: added base class 'SymbolDumpBase'
+- `api_dump.ExceptionDump`: added optional field 'mro_bases' (default: ...)
+- `api_dump.ExceptionDump`: added optional field 'num_direct_bases' (default: 0)
+- `api_dump.ExceptionDump`: field 'line_number' default added: None
+- `api_dump.ExceptionDump`: field 'init_signature' default added: None
+- `api_dump.GroupDump`: added base class 'Entity'
+- `api_dump.ClassFieldInfo`: added base class 'Entity'
+- `api_dump.ClassFieldInfo`: field 'description' default added: None
+- `api_dump.ClassFieldInfo`: field 'deprecated' default added: None
+- `api_dump.ClassFieldInfo`: field 'env_vars' default added: None
+- `api_dump.ClassFieldInfo`: field 'default' default added: None
+- `api_dump.ClassFieldInfo`: field 'type_annotation' default added: None
+- fix(pkg-ext): capture None as explicit default in pydantic field parsing [833c63](https://github.com/EspenAlbert/pkg-ext/commit/833c63)
+
+### Generate
+- fix(docs_version): correct sorting logic for symbol changes to prioritize unreleased versions [757c70](https://github.com/EspenAlbert/pkg-ext/commit/757c70)
+
+
 ## 0.2.1 2026-01-24T21-48Z
 
 ### Api_Dump

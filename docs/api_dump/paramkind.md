@@ -16,6 +16,6 @@ class ParamKind(StrEnum):
 
 | Version | Change |
 |---------|--------|
-| unreleased | added base class 'StrEnum' |
+| 0.3.0 | added base class 'StrEnum' |
 | 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext paramkind_changes === -->

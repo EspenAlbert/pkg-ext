@@ -38,12 +38,12 @@ class ClassFieldInfo(Entity):
 
 | Version | Change |
 |---------|--------|
-| unreleased | field 'type_annotation' default added: None |
-| unreleased | field 'default' default added: None |
-| unreleased | field 'env_vars' default added: None |
-| unreleased | field 'deprecated' default added: None |
-| unreleased | field 'description' default added: None |
-| unreleased | added base class 'Entity' |
+| 0.3.0 | field 'type_annotation' default added: None |
+| 0.3.0 | field 'default' default added: None |
+| 0.3.0 | field 'env_vars' default added: None |
+| 0.3.0 | field 'deprecated' default added: None |
+| 0.3.0 | field 'description' default added: None |
+| 0.3.0 | added base class 'Entity' |
 | 0.2.0 | field 'name' default removed (was: PydanticUndefined) |
 | 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext classfieldinfo_changes === -->
