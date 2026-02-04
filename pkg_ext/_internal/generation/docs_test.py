@@ -77,7 +77,7 @@ def test_symbol_context_complexity():
 def test_build_symbol_context_only_make_public_not_complex():
     func = _func_dump("my_func")
     action = MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime.now(UTC))
-    ctx = build_symbol_context(func, set(), [action])
+    ctx = build_symbol_context(func, "config", set(), [action])
     assert not ctx.has_meaningful_changes
     assert not ctx.is_complex
 
@@ -85,9 +85,22 @@ def test_build_symbol_context_only_make_public_not_complex():
 def test_build_symbol_context_fix_action_is_complex():
     func = _func_dump("my_func")
     action = FixAction(name="my_func", short_sha="abc123", message="fix", ts=datetime.now(UTC))
-    ctx = build_symbol_context(func, set(), [action])
+    ctx = build_symbol_context(func, "config", set(), [action])
     assert ctx.has_meaningful_changes
     assert ctx.is_complex
+
+
+def test_build_symbol_context_primary_not_complex():
+    func = _func_dump("config")
+    ctx = build_symbol_context(func, "config", set(), [])
+    assert ctx.is_primary
+    assert not ctx.is_complex
+
+
+def test_symbol_context_primary_overrides_complex():
+    ctx = SymbolContext(symbol=_func_dump("copy"), has_examples=True, is_primary=True)
+    assert ctx.is_primary
+    assert not ctx.is_complex
 
 
 def test_render_group_index_has_valid_sections():
@@ -150,3 +163,44 @@ def test_generate_docs_creates_index_and_complex_pages(project_config: ProjectCo
     assert "config/index.md" in result.path_contents
     assert "config/envclass.md" in result.path_contents
     assert "config/simple_func.md" not in result.path_contents
+
+
+def test_render_group_index_with_primary_symbol():
+    func = _func_dump("copy")
+    other = _func_dump("helper")
+    group = GroupDump(name="copy", symbols=[func, other])
+    contexts = [
+        SymbolContext(symbol=func, is_primary=True),
+        SymbolContext(symbol=other),
+    ]
+    content = render_group_index(group, contexts, GroupConfig())
+
+    sections = parse_sections(content, PKG_EXT_TOOL_NAME, MD_CONFIG)
+    section_ids = {s.id for s in sections}
+    assert "header" in section_ids
+    assert "copy_def" in section_ids
+    assert "related_header" in section_ids
+    assert "# copy" in content
+    assert "[`helper`](#helper_def)" in content
+
+
+def test_generate_docs_primary_symbol_no_separate_file(project_config: ProjectConfig):
+    api_dump = PublicApiDump(
+        pkg_import_name="my_pkg",
+        version="1.0.0",
+        dumped_at=datetime.now(UTC),
+        groups=[
+            GroupDump(
+                name="copy",
+                symbols=[
+                    _func_dump("copy"),
+                    _class_dump("CopyOptions", env_var="COPY_VAR"),
+                ],
+            )
+        ],
+    )
+    result = generate_docs(api_dump, project_config, {}, [])
+    assert "copy/index.md" in result.path_contents
+    assert "copy/copy.md" not in result.path_contents
+    assert "copy/copyoptions.md" in result.path_contents
+    assert "# copy" in result.path_contents["copy/index.md"]
