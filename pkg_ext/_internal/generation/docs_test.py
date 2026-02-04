@@ -62,16 +62,16 @@ def test_has_env_vars():
 
 def test_symbol_context_complexity():
     simple = SymbolContext(symbol=_func_dump("simple"))
-    assert not simple.is_complex
+    assert not simple.needs_own_page
 
     with_examples = SymbolContext(symbol=_func_dump("ex"), has_examples=True)
-    assert with_examples.is_complex
+    assert with_examples.needs_own_page
 
     with_env = SymbolContext(symbol=_class_dump("env", "VAR"), has_env_vars=True)
-    assert with_env.is_complex
+    assert with_env.needs_own_page
 
     with_changes = SymbolContext(symbol=_func_dump("ch"), has_meaningful_changes=True)
-    assert with_changes.is_complex
+    assert with_changes.needs_own_page
 
 
 def test_build_symbol_context_only_make_public_not_complex():
@@ -79,7 +79,7 @@ def test_build_symbol_context_only_make_public_not_complex():
     action = MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime.now(UTC))
     ctx = build_symbol_context(func, "config", set(), [action])
     assert not ctx.has_meaningful_changes
-    assert not ctx.is_complex
+    assert not ctx.needs_own_page
 
 
 def test_build_symbol_context_fix_action_is_complex():
@@ -87,20 +87,20 @@ def test_build_symbol_context_fix_action_is_complex():
     action = FixAction(name="my_func", short_sha="abc123", message="fix", ts=datetime.now(UTC))
     ctx = build_symbol_context(func, "config", set(), [action])
     assert ctx.has_meaningful_changes
-    assert ctx.is_complex
+    assert ctx.needs_own_page
 
 
 def test_build_symbol_context_primary_not_complex():
     func = _func_dump("config")
     ctx = build_symbol_context(func, "config", set(), [])
     assert ctx.is_primary
-    assert not ctx.is_complex
+    assert not ctx.needs_own_page
 
 
 def test_symbol_context_primary_overrides_complex():
     ctx = SymbolContext(symbol=_func_dump("copy"), has_examples=True, is_primary=True)
     assert ctx.is_primary
-    assert not ctx.is_complex
+    assert not ctx.needs_own_page
 
 
 def test_render_group_index_has_valid_sections():
@@ -179,8 +179,9 @@ def test_render_group_index_with_primary_symbol():
     section_ids = {s.id for s in sections}
     assert "header" in section_ids
     assert "copy_def" in section_ids
-    assert "related_header" in section_ids
+    assert "symbol_details_header" in section_ids
     assert "# copy" in content
+    assert "[`copy`](#copy_def)" in content
     assert "[`helper`](#helper_def)" in content
 
 

@@ -49,7 +49,7 @@ class SymbolContext:
     is_primary: bool = False
 
     @property
-    def is_complex(self) -> bool:
+    def needs_own_page(self) -> bool:
         if self.is_primary:
             return False
         return self.has_examples or self.has_env_vars or self.has_meaningful_changes
@@ -92,7 +92,7 @@ def build_symbol_context(
 
 def render_symbol_entry(ctx: SymbolContext) -> str:
     name = ctx.symbol.name
-    if ctx.is_complex:
+    if ctx.needs_own_page:
         return f"- [{name}](./{slug(name)}.md)"
     return f"- [`{name}`](#{slug(name)}_def)"
 
@@ -112,28 +112,19 @@ def render_group_index(
 
     primary_ctx = next((c for c in contexts if c.is_primary), None)
     other_contexts = sorted([c for c in contexts if not c.is_primary], key=lambda c: c.symbol.name)
+    sorted_contexts = [primary_ctx, *other_contexts] if primary_ctx else other_contexts
 
-    if primary_ctx:
-        return _render_primary_group_index(
-            primary_ctx,
-            other_contexts,
-            group_config,
-            changelog_actions,
-            index_path=index_path,
-            pkg_src_dir=pkg_src_dir,
-            pkg_import_name=pkg_import_name,
-        )
-
-    header = f"# {group.name}\n"
+    header_name = primary_ctx.symbol.name if primary_ctx else group.name
+    header = f"# {header_name}\n"
     if group_config.docstring:
         header += f"\n{group_config.docstring}\n"
-    sorted_contexts = sorted(contexts, key=lambda c: c.symbol.name)
+
     symbol_entries = [render_symbol_entry(c) for c in sorted_contexts]
     symbol_list = "\n".join(symbol_entries)
 
     inline_sections = []
     for ctx in sorted_contexts:
-        if not ctx.is_complex:
+        if not ctx.needs_own_page:
             section_id = f"{slug(ctx.symbol.name)}_def"
             inline_content = render_inline_symbol(
                 ctx,
@@ -163,67 +154,6 @@ def render_group_index(
                 *inline_sections,
             )
         )
-
-    return "\n".join(parts)
-
-
-def _render_primary_group_index(
-    primary_ctx: SymbolContext,
-    other_contexts: list[SymbolContext],
-    group_config: GroupConfig,
-    changelog_actions: Sequence[ChangelogAction] | None = None,
-    *,
-    index_path: Path | None = None,
-    pkg_src_dir: Path | None = None,
-    pkg_import_name: str | None = None,
-) -> str:
-    symbol = primary_ctx.symbol
-    header = f"# {symbol.name}\n"
-    if group_config.docstring:
-        header += f"\n{group_config.docstring}\n"
-
-    primary_content = render_inline_symbol(
-        primary_ctx,
-        changelog_actions,
-        symbol_doc_path=index_path,
-        pkg_src_dir=pkg_src_dir,
-        pkg_import_name=pkg_import_name,
-    )
-    section_id = f"{slug(symbol.name)}_def"
-
-    parts = [
-        wrap_section(header, "header", PKG_EXT_TOOL_NAME, MD_CONFIG),
-        "",
-        wrap_section(primary_content, section_id, PKG_EXT_TOOL_NAME, MD_CONFIG),
-    ]
-
-    if other_contexts:
-        symbol_entries = [render_symbol_entry(c) for c in other_contexts]
-        symbol_list = "\n".join(symbol_entries)
-        parts.extend(
-            [
-                "",
-                wrap_section("## Related", "related_header", PKG_EXT_TOOL_NAME, MD_CONFIG),
-                "",
-                wrap_section(symbol_list, "symbols", PKG_EXT_TOOL_NAME, MD_CONFIG),
-            ]
-        )
-
-        inline_sections = []
-        for ctx in other_contexts:
-            if not ctx.is_complex:
-                ctx_section_id = f"{slug(ctx.symbol.name)}_def"
-                inline_content = render_inline_symbol(
-                    ctx,
-                    changelog_actions,
-                    symbol_doc_path=index_path,
-                    pkg_src_dir=pkg_src_dir,
-                    pkg_import_name=pkg_import_name,
-                )
-                inline_sections.append(wrap_section(inline_content, ctx_section_id, PKG_EXT_TOOL_NAME, MD_CONFIG))
-
-        if inline_sections:
-            parts.extend(["", *inline_sections])
 
     return "\n".join(parts)
 
@@ -284,7 +214,7 @@ def generate_docs(
             loaded_examples = load_examples_for_group(pkg_import_name, group.name)
 
         for ctx in contexts:
-            if ctx.is_complex:
+            if ctx.needs_own_page:
                 symbol_path = f"{dir_name}/{ctx.page_filename}"
                 if docs_dir and pkg_src_dir:
                     symbol_doc_path = docs_dir / symbol_path
