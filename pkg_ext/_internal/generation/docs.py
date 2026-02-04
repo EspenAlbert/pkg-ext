@@ -143,7 +143,9 @@ def render_group_index(
         "",
         wrap_section(symbol_list, "symbols", PKG_EXT_TOOL_NAME, MD_CONFIG),
     ]
-    if inline_sections:
+
+    other_inline_contexts = [c for c in other_contexts if not c.needs_own_page]
+    if other_inline_contexts:
         parts.extend(
             (
                 "",
@@ -157,6 +159,8 @@ def render_group_index(
                 *inline_sections,
             )
         )
+    elif inline_sections:
+        parts.extend(("", *inline_sections))
 
     return "\n".join(parts)
 
