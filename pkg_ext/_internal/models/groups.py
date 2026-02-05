@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from functools import total_ordering, wraps
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, ClassVar, TypeVar
@@ -11,10 +12,12 @@ from zero_3rdparty import file_utils
 from pkg_ext._internal.errors import InvalidGroupSelectionError, NoPublicGroupMatch
 
 from .py_symbols import RefSymbol
-from .types import PyIdentifier, SymbolRefId
+from .types import PyIdentifier, SymbolRefId, ref_id_module, ref_id_name
 
 if TYPE_CHECKING:  # why type checking? Can we not use the root import?
     from pkg_ext._internal.config import ProjectConfig
+
+logger = logging.getLogger(__name__)
 
 T = TypeVar("T", bound=Callable)
 
@@ -141,6 +144,43 @@ class PublicGroups(Entity):
             group.dependencies = group_cfg.dependencies.copy()
             group.docs_exclude = group_cfg.docs_exclude.copy()
             group.docstring = group_cfg.docstring
+
+    def reconcile_moved_refs(self, name_to_current_id: dict[str, SymbolRefId]) -> int:
+        """Auto-fix refs that have moved to different modules.
+
+        When a symbol moves from one module to another, owned_refs becomes stale.
+        This method detects such moves by matching symbol names and updates the paths.
+
+        Args:
+            name_to_current_id: Mapping from symbol short name to current local_id.
+
+        Returns:
+            Number of refs that were updated.
+        """
+        total_updated = 0
+        for group in self.groups:
+            updated_refs: set[SymbolRefId] = set()
+            for ref_id in list(group.owned_refs):
+                ref_name = ref_id_name(ref_id)
+                current_id = name_to_current_id.get(ref_name)
+
+                if current_id is None:
+                    # Symbol deleted - keep in set, will be handled by removed_refs flow
+                    updated_refs.add(ref_id)
+                elif current_id != ref_id:
+                    # Symbol moved to different module
+                    logger.warning(f"Symbol moved: {ref_id} → {current_id} (group: {group.name})")
+                    updated_refs.add(current_id)
+                    group.owned_modules.add(ref_id_module(current_id))
+                    total_updated += 1
+                else:
+                    # Still valid at same path
+                    updated_refs.add(ref_id)
+            group.owned_refs = updated_refs
+
+        if total_updated:
+            self.write()
+        return total_updated
 
     def write(self) -> None:
         if (storage_path := self.storage_path) is None:

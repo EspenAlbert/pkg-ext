@@ -72,3 +72,60 @@ def test_tool_state_update_state(settings):
     dump_changelog_actions(changelog_filepath(settings.changelog_dir, 1), actions)
     state, _ = parse_changelog(settings)
     assert [group.name for group in state.groups.groups_no_root] == ["git_inferred"]
+
+
+def test_reconcile_moved_refs_no_changes(_public_groups):
+    """When all refs are at their expected paths, no changes are made."""
+    _public_groups.get_or_create_group("my_group").owned_refs.add("_internal.models.MyClass")
+    name_to_current = {"MyClass": "_internal.models.MyClass"}
+
+    updated = _public_groups.reconcile_moved_refs(name_to_current)
+
+    assert updated == 0
+    assert "_internal.models.MyClass" in _public_groups.name_to_group["my_group"].owned_refs
+
+
+def test_reconcile_moved_refs_updates_moved_symbol(_public_groups, caplog):
+    """When a symbol moves to a different module, the ref is updated."""
+    group = _public_groups.get_or_create_group("my_group")
+    group.owned_refs.add("_internal.old_module.MyClass")
+    group.owned_modules.add("_internal.old_module")
+    name_to_current = {"MyClass": "_internal.new_module.MyClass"}
+
+    updated = _public_groups.reconcile_moved_refs(name_to_current)
+
+    assert updated == 1
+    assert "_internal.new_module.MyClass" in group.owned_refs
+    assert "_internal.old_module.MyClass" not in group.owned_refs
+    assert "_internal.new_module" in group.owned_modules
+    assert "Symbol moved:" in caplog.text
+
+
+def test_reconcile_moved_refs_keeps_deleted_symbol(_public_groups):
+    """When a symbol is deleted (not in code), the ref is kept for removed_refs flow."""
+    group = _public_groups.get_or_create_group("my_group")
+    group.owned_refs.add("_internal.models.DeletedClass")
+    name_to_current = {}  # Symbol not in code
+
+    updated = _public_groups.reconcile_moved_refs(name_to_current)
+
+    assert updated == 0
+    assert "_internal.models.DeletedClass" in group.owned_refs
+
+
+def test_reconcile_moved_refs_multiple_groups(_public_groups, caplog):
+    """Reconciliation works across multiple groups."""
+    group1 = _public_groups.get_or_create_group("group1")
+    group2 = _public_groups.get_or_create_group("group2")
+    group1.owned_refs.add("_internal.old.Func1")
+    group2.owned_refs.add("_internal.old.Func2")
+    name_to_current = {
+        "Func1": "_internal.new.Func1",
+        "Func2": "_internal.new.Func2",
+    }
+
+    updated = _public_groups.reconcile_moved_refs(name_to_current)
+
+    assert updated == 2
+    assert "_internal.new.Func1" in group1.owned_refs
+    assert "_internal.new.Func2" in group2.owned_refs
