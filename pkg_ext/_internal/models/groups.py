@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from functools import total_ordering, wraps
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, ClassVar, TypeVar
@@ -11,10 +12,12 @@ from zero_3rdparty import file_utils
 from pkg_ext._internal.errors import InvalidGroupSelectionError, NoPublicGroupMatch
 
 from .py_symbols import RefSymbol
-from .types import PyIdentifier, SymbolRefId
+from .types import PyIdentifier, SymbolRefId, ref_id_name
 
 if TYPE_CHECKING:  # why type checking? Can we not use the root import?
     from pkg_ext._internal.config import ProjectConfig
+
+logger = logging.getLogger(__name__)
 
 T = TypeVar("T", bound=Callable)
 
@@ -141,6 +144,64 @@ class PublicGroups(Entity):
             group.dependencies = group_cfg.dependencies.copy()
             group.docs_exclude = group_cfg.docs_exclude.copy()
             group.docstring = group_cfg.docstring
+
+    def reconcile_moved_refs(self, import_id_refs: dict[str, RefSymbol]) -> int:
+        """Auto-fix refs that have moved to different modules."""
+        name_to_candidates: dict[str, list[RefSymbol]] = {}
+        for ref in import_id_refs.values():
+            name_to_candidates.setdefault(ref.name, []).append(ref)
+
+        total_updated = 0
+        for group in self.groups:
+            updated_refs: set[SymbolRefId] = set()
+            for ref_id in list(group.owned_refs):
+                ref_name = ref_id_name(ref_id)
+                candidates = name_to_candidates.get(ref_name, [])
+
+                if not candidates:
+                    updated_refs.add(ref_id)  # deleted - keep for removed_refs flow
+                elif len(candidates) == 1:
+                    current_id = candidates[0].local_id
+                    if current_id != ref_id:
+                        logger.warning(f"Symbol moved: {ref_id} -> {current_id} (group: {group.name})")
+                        updated_refs.add(current_id)
+                        total_updated += 1
+                    else:
+                        updated_refs.add(ref_id)
+                elif resolved := self._resolve_ambiguous_ref(group, ref_id, candidates):
+                    if resolved != ref_id:
+                        logger.warning(f"Symbol moved: {ref_id} -> {resolved} (group: {group.name})")
+                        total_updated += 1
+                    updated_refs.add(resolved)
+                else:
+                    updated_refs.add(ref_id)  # unresolved - keep stale ref
+            group.owned_refs = updated_refs
+
+        if total_updated:
+            self.write()
+        return total_updated
+
+    def _resolve_ambiguous_ref(
+        self, group: PublicGroup, stale_ref_id: SymbolRefId, candidates: list[RefSymbol]
+    ) -> SymbolRefId | None:
+        # Prefer candidate in group's owned_modules
+        for c in candidates:
+            if c.module_path in group.owned_modules:
+                return c.local_id
+
+        # Exclude candidates owned by other groups
+        other_group_refs = {ref for g in self.groups if g.name != group.name for ref in g.owned_refs}
+        remaining = [c for c in candidates if c.local_id not in other_group_refs]
+        if len(remaining) == 1:
+            return remaining[0].local_id
+
+        # Cannot disambiguate - log and return None
+        ref_name = ref_id_name(stale_ref_id)
+        logger.warning(
+            f"Cannot resolve '{ref_name}' in group '{group.name}': "
+            f"{len(candidates)} candidates, {len(remaining)} after exclusion"
+        )
+        return None
 
     def write(self) -> None:
         if (storage_path := self.storage_path) is None:

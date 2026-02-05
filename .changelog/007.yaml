@@ -1,0 +1,7 @@
+name: workflows
+ts: 2026-02-05 11:41:30.277527+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(pkg-ext): clarify behavior of owned_modules during symbol movement updates in tests and implementation'
+message: 'fix(pkg-ext): clarify behavior of owned_modules during symbol movement updates in tests and implementation'
+short_sha: f44f0c
