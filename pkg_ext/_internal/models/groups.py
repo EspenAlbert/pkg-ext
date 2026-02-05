@@ -145,42 +145,63 @@ class PublicGroups(Entity):
             group.docs_exclude = group_cfg.docs_exclude.copy()
             group.docstring = group_cfg.docstring
 
-    def reconcile_moved_refs(self, name_to_current_id: dict[str, SymbolRefId]) -> int:
-        """Auto-fix refs that have moved to different modules.
+    def reconcile_moved_refs(self, import_id_refs: dict[str, RefSymbol]) -> int:
+        """Auto-fix refs that have moved to different modules."""
+        name_to_candidates: dict[str, list[RefSymbol]] = {}
+        for ref in import_id_refs.values():
+            name_to_candidates.setdefault(ref.name, []).append(ref)
 
-        When a symbol moves from one module to another, owned_refs becomes stale.
-        This method detects such moves by matching symbol names and updates the paths.
-
-        Args:
-            name_to_current_id: Mapping from symbol short name to current local_id.
-
-        Returns:
-            Number of refs that were updated.
-        """
         total_updated = 0
         for group in self.groups:
             updated_refs: set[SymbolRefId] = set()
             for ref_id in list(group.owned_refs):
                 ref_name = ref_id_name(ref_id)
-                current_id = name_to_current_id.get(ref_name)
+                candidates = name_to_candidates.get(ref_name, [])
 
-                if current_id is None:
-                    # Symbol deleted - keep in set, will be handled by removed_refs flow
-                    updated_refs.add(ref_id)
-                elif current_id != ref_id:
-                    # Symbol moved to different module - update ref but not owned_modules
-                    # (owned_modules is for routing new symbols, not tracking individual refs)
-                    logger.warning(f"Symbol moved: {ref_id} → {current_id} (group: {group.name})")
-                    updated_refs.add(current_id)
-                    total_updated += 1
+                if not candidates:
+                    updated_refs.add(ref_id)  # deleted - keep for removed_refs flow
+                elif len(candidates) == 1:
+                    current_id = candidates[0].local_id
+                    if current_id != ref_id:
+                        logger.warning(f"Symbol moved: {ref_id} -> {current_id} (group: {group.name})")
+                        updated_refs.add(current_id)
+                        total_updated += 1
+                    else:
+                        updated_refs.add(ref_id)
+                elif resolved := self._resolve_ambiguous_ref(group, ref_id, candidates):
+                    if resolved != ref_id:
+                        logger.warning(f"Symbol moved: {ref_id} -> {resolved} (group: {group.name})")
+                        total_updated += 1
+                    updated_refs.add(resolved)
                 else:
-                    # Still valid at same path
-                    updated_refs.add(ref_id)
+                    updated_refs.add(ref_id)  # unresolved - keep stale ref
             group.owned_refs = updated_refs
 
         if total_updated:
             self.write()
         return total_updated
+
+    def _resolve_ambiguous_ref(
+        self, group: PublicGroup, stale_ref_id: SymbolRefId, candidates: list[RefSymbol]
+    ) -> SymbolRefId | None:
+        # Prefer candidate in group's owned_modules
+        for c in candidates:
+            if c.module_path in group.owned_modules:
+                return c.local_id
+
+        # Exclude candidates owned by other groups
+        other_group_refs = {ref for g in self.groups if g.name != group.name for ref in g.owned_refs}
+        remaining = [c for c in candidates if c.local_id not in other_group_refs]
+        if len(remaining) == 1:
+            return remaining[0].local_id
+
+        # Cannot disambiguate - log and return None
+        ref_name = ref_id_name(stale_ref_id)
+        logger.warning(
+            f"Cannot resolve '{ref_name}' in group '{group.name}': "
+            f"{len(candidates)} candidates, {len(remaining)} after exclusion"
+        )
+        return None
 
     def write(self) -> None:
         if (storage_path := self.storage_path) is None:
