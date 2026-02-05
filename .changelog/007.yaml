@@ -5,3 +5,8 @@ author: Espen Albert
 changelog_message: 'fix(pkg-ext): clarify behavior of owned_modules during symbol movement updates in tests and implementation'
 message: 'fix(pkg-ext): clarify behavior of owned_modules during symbol movement updates in tests and implementation'
 short_sha: f44f0c
+---
+name: 0.3.1
+ts: 2026-02-05 11:45:09.899878+00:00
+type: release
+old_version: 0.3.0

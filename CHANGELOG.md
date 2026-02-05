@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 2026-02-05T11-45Z
+
+### Workflows
+- fix(pkg-ext): clarify behavior of owned_modules during symbol movement updates in tests and implementation [f44f0c](https://github.com/EspenAlbert/pkg-ext/commit/f44f0c)
+
+
 ## 0.3.0 2026-02-04T07-14Z
 
 ### __Root__
