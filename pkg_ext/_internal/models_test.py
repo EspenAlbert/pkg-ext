@@ -86,7 +86,7 @@ def test_reconcile_moved_refs_no_changes(_public_groups):
 
 
 def test_reconcile_moved_refs_updates_moved_symbol(_public_groups, caplog):
-    """When a symbol moves to a different module, the ref is updated."""
+    """When a symbol moves to a different module, the ref is updated but owned_modules unchanged."""
     group = _public_groups.get_or_create_group("my_group")
     group.owned_refs.add("_internal.old_module.MyClass")
     group.owned_modules.add("_internal.old_module")
@@ -97,7 +97,8 @@ def test_reconcile_moved_refs_updates_moved_symbol(_public_groups, caplog):
     assert updated == 1
     assert "_internal.new_module.MyClass" in group.owned_refs
     assert "_internal.old_module.MyClass" not in group.owned_refs
-    assert "_internal.new_module" in group.owned_modules
+    # owned_modules NOT updated - it's for routing new symbols, not tracking moved refs
+    assert "_internal.new_module" not in group.owned_modules
     assert "Symbol moved:" in caplog.text
 
 

@@ -12,7 +12,7 @@ from zero_3rdparty import file_utils
 from pkg_ext._internal.errors import InvalidGroupSelectionError, NoPublicGroupMatch
 
 from .py_symbols import RefSymbol
-from .types import PyIdentifier, SymbolRefId, ref_id_module, ref_id_name
+from .types import PyIdentifier, SymbolRefId, ref_id_name
 
 if TYPE_CHECKING:  # why type checking? Can we not use the root import?
     from pkg_ext._internal.config import ProjectConfig
@@ -168,10 +168,10 @@ class PublicGroups(Entity):
                     # Symbol deleted - keep in set, will be handled by removed_refs flow
                     updated_refs.add(ref_id)
                 elif current_id != ref_id:
-                    # Symbol moved to different module
+                    # Symbol moved to different module - update ref but not owned_modules
+                    # (owned_modules is for routing new symbols, not tracking individual refs)
                     logger.warning(f"Symbol moved: {ref_id} → {current_id} (group: {group.name})")
                     updated_refs.add(current_id)
-                    group.owned_modules.add(ref_id_module(current_id))
                     total_updated += 1
                 else:
                     # Still valid at same path
