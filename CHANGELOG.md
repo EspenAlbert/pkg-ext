@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2 2026-02-06T06-10Z
+
+### Other Changes
+- Chore: updated dependencies
+
+
 ## 0.3.1 2026-02-05T11-45Z
 
 ### Workflows
