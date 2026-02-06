@@ -467,7 +467,7 @@ wheels = [
 
 [[package]]
 name = "pkg-ext"
-version = "0.3.1"
+version = "0.3.2"
 source = { editable = "." }
 dependencies = [
     { name = "ask-shell" },
@@ -992,9 +992,9 @@ wheels = [
 
 [[package]]
 name = "zero-3rdparty"
-version = "0.103.0"
+version = "0.104.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/80/27/353ee40a407490d8b73a50df8a3575370d84b2bf8cd4609be25895e47982/zero_3rdparty-0.103.0.tar.gz", hash = "sha256:83768e310c8b946aa6bc556516bd040e479805bd00b071ab8ca9ae1801e2bf64", size = 35319, upload-time = "2026-02-06T05:58:18.789Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2f/bb/7568e65358d26fbb60609bd805aa14dd6126f2014887326750cf8340e6f6/zero_3rdparty-0.104.1.tar.gz", hash = "sha256:9da1edb7aa20cc615657c5e04d9d06bf51767a5d7a4034b5878f9be72b2a04e6", size = 35456, upload-time = "2026-02-06T09:57:02.669Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/df/72/39294ae91464b7282251a01f03c23027e4ce289cee81311d21abacd7e1cd/zero_3rdparty-0.103.0-py3-none-any.whl", hash = "sha256:b76dad4886278b6dfb1792f09a40544f823765afc745fbbcb116b2bcd6df3202", size = 44429, upload-time = "2026-02-06T05:58:16.961Z" },
+    { url = "https://files.pythonhosted.org/packages/a2/0b/306a4b821693300a58e5599125755cfb9a07a67fc3eb9bb77cc7e208c858/zero_3rdparty-0.104.1-py3-none-any.whl", hash = "sha256:8f5b6d7282b3739dcc45d609aa19f017f94d97115eb430ea4aa740785a5303ad", size = 44554, upload-time = "2026-02-06T09:57:01.02Z" },
 ]
