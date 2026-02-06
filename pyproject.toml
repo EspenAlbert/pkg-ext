@@ -46,7 +46,6 @@ exclude = [
 tag_prefix = "v"
 max_bump_type = "minor"
 # === OK_EDIT: path-sync pkg-ext ===
-
 # === DO_NOT_EDIT: path-sync ruff ===
 [tool.ruff]
 line-length = 120
@@ -63,14 +62,12 @@ target-version = "py313"
 extend-ignore = ["E501", "UP006", "UP007", "UP035", "UP040", "UP046", "UP047"]
 extend-select = ["Q", "RUF100", "C90", "UP", "I", "T"]
 # === OK_EDIT: path-sync ruff ===
-
 # === DO_NOT_EDIT: path-sync pytest ===
 [tool.pytest.ini_options]
 addopts = "-s -vv --log-cli-level=INFO"
 python_files = ["*_test.py", "test_*.py"]
 asyncio_mode = "auto"
 # === OK_EDIT: path-sync pytest ===
-
 # === DO_NOT_EDIT: path-sync coverage ===
 [tool.coverage.report]
 omit = ["*_test.py"]
