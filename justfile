@@ -29,12 +29,10 @@ test:
 build:
   uv build
 # === OK_EDIT: path-sync standard ===
-
 # === DO_NOT_EDIT: path-sync path-sync ===
 path-sync-validate:
   uv run path-sync validate-no-changes -n python-template
 # === OK_EDIT: path-sync path-sync ===
-
 # === DO_NOT_EDIT: path-sync coverage ===
 cov:
   uv run pytest --cov --cov-report=html
@@ -45,12 +43,10 @@ cov-full:
 open-cov: cov
   open htmlcov/index.html
 # === OK_EDIT: path-sync coverage ===
-
 # === DO_NOT_EDIT: path-sync typing ===
 type-check:
   uv run pyright
 # === OK_EDIT: path-sync typing ===
-
 # === DO_NOT_EDIT: path-sync pkg-ext ===
 pkg-pre-change:
   uv run pkg-ext pre-change
@@ -64,7 +60,6 @@ pkg-post-merge:
 pkg-release-notes tag:
   uv run pkg-ext release-notes --tag {{tag}}
 # === OK_EDIT: path-sync pkg-ext ===
-
 # === DO_NOT_EDIT: path-sync docs ===
 docs-build:
   uv run scripts/fix_source_links.py {{REPO_URL}}
