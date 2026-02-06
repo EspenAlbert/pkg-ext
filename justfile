@@ -51,19 +51,17 @@ type-check:
   uv run pyright
 # === OK_EDIT: path-sync typing ===
 
-# === DO_NOT_EDIT: path-sync pkg-ext ===
 pkg-pre-change *args:
-  uv run --group release pkg-ext pre-change {{args}}
+  uv run pkg-ext pre-change {{args}}
 
 pkg-pre-commit *args:
-  uv run --group release pkg-ext --is-bot pre-commit {{args}}
+  uv run pkg-ext --is-bot pre-commit {{args}}
 
 pkg-post-merge *args:
-  uv run --group release pkg-ext --is-bot post-merge --push {{args}}
+  uv run pkg-ext --is-bot post-merge --push {{args}}
 
 pkg-release-notes tag:
-  uv run --group release pkg-ext release-notes --tag {{tag}}
-# === OK_EDIT: path-sync pkg-ext ===
+  uv run pkg-ext release-notes --tag {{tag}}
 
 # === DO_NOT_EDIT: path-sync docs ===
 docs-build:
