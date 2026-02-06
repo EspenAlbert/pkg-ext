@@ -2,7 +2,6 @@
 # __ROOT__
 
 <!-- === OK_EDIT: pkg-ext header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbols === -->
 - [PkgSettings](./pkgsettings.md)
 <!-- === OK_EDIT: pkg-ext symbols === -->
