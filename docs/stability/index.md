@@ -2,17 +2,14 @@
 # stability
 
 <!-- === OK_EDIT: pkg-ext header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbols === -->
 - [`dep`](#dep_def)
 - [`exp`](#exp_def)
 - [`ga`](#ga_def)
 <!-- === OK_EDIT: pkg-ext symbols === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbol_details_header === -->
 ## Symbol Details
 <!-- === OK_EDIT: pkg-ext symbol_details_header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext dep_def === -->
 <a id="dep_def"></a>
 

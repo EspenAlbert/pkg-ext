@@ -2,17 +2,14 @@
 # changelog
 
 <!-- === OK_EDIT: pkg-ext header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbols === -->
 - [`chore`](#chore_def)
 - [`promote`](#promote_def)
 - [`release_notes`](#release_notes_def)
 <!-- === OK_EDIT: pkg-ext symbols === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbol_details_header === -->
 ## Symbol Details
 <!-- === OK_EDIT: pkg-ext symbol_details_header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext release_notes_def === -->
 <a id="release_notes_def"></a>
 

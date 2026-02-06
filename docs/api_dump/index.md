@@ -2,7 +2,6 @@
 # api_dump
 
 <!-- === OK_EDIT: pkg-ext header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbols === -->
 - [CLICommandDump](./clicommanddump.md)
 - [CLIParamInfo](./cliparaminfo.md)

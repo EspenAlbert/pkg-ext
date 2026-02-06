@@ -2,13 +2,11 @@
 # workflows
 
 <!-- === OK_EDIT: pkg-ext header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbols === -->
 - [`post_merge`](#post_merge_def)
 - [`pre_change`](#pre_change_def)
 - [`pre_commit`](#pre_commit_def)
 <!-- === OK_EDIT: pkg-ext symbols === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbol_details_header === -->
 ## Symbol Details
 <!-- === OK_EDIT: pkg-ext symbol_details_header === -->

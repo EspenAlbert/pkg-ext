@@ -2,16 +2,13 @@
 # api_commands
 
 <!-- === OK_EDIT: pkg-ext header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbols === -->
 - [`diff_api`](#diff_api_def)
 - [`dump_api`](#dump_api_def)
 <!-- === OK_EDIT: pkg-ext symbols === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbol_details_header === -->
 ## Symbol Details
 <!-- === OK_EDIT: pkg-ext symbol_details_header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext diff_api_def === -->
 <a id="diff_api_def"></a>
 

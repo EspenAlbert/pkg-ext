@@ -1,7 +1,6 @@
 # === DO_NOT_EDIT: pkg-ext site ===
 site_name: pkg_ext
 # === OK_EDIT: pkg-ext site ===
-
 # === DO_NOT_EDIT: pkg-ext theme ===
 theme:
   name: material
@@ -9,7 +8,6 @@ theme:
     - navigation.tabs
     - navigation.sections
 # === OK_EDIT: pkg-ext theme ===
-
 # === DO_NOT_EDIT: pkg-ext nav ===
 nav:
   - Home: index.md
@@ -38,7 +36,6 @@ nav:
   - stability: stability/index.md
   - workflows: workflows/index.md
 # === OK_EDIT: pkg-ext nav ===
-
 # === DO_NOT_EDIT: pkg-ext extensions ===
 markdown_extensions:
   - pymdownx.highlight:

@@ -2,17 +2,14 @@
 # generate
 
 <!-- === OK_EDIT: pkg-ext header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbols === -->
 - [`gen_docs`](#gen_docs_def)
 - [`gen_examples`](#gen_examples_def)
 - [`gen_tests`](#gen_tests_def)
 <!-- === OK_EDIT: pkg-ext symbols === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext symbol_details_header === -->
 ## Symbol Details
 <!-- === OK_EDIT: pkg-ext symbol_details_header === -->
-
 <!-- === DO_NOT_EDIT: pkg-ext gen_docs_def === -->
 <a id="gen_docs_def"></a>
 
