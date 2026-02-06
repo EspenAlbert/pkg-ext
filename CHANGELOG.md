@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.3 2026-02-06T10-50Z
+
+### Other Changes
+- Chore: updated dependencies
+- Chore: updated dependencies
+
+
 ## 0.3.2 2026-02-06T06-10Z
 
 ### Other Changes

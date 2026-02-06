@@ -5,3 +5,8 @@ description: updated dependencies
 ts: 2026-02-06 10:49:01.272875+00:00
 type: chore
 description: updated dependencies
+---
+name: 0.3.3
+ts: 2026-02-06 10:50:39.655489+00:00
+type: release
+old_version: 0.3.2

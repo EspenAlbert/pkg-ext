@@ -8,7 +8,7 @@ from pkg_ext import stability
 from pkg_ext import api_dump
 from pkg_ext._internal.settings import PkgSettings
 
-VERSION = "0.3.2"
+VERSION = "0.3.3"
 __all__ = [
     "api_commands",
     "changelog",
