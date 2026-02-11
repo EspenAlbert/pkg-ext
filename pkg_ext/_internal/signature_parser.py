@@ -54,7 +54,7 @@ def stable_repr(value: Any) -> str:
     if match := _MEMORY_ADDRESS_PATTERN.match(raw_repr):
         type_info = match.group("type_info")
         return f"<{type_info}>"
-    return raw_repr
+    return strip_memory_addresses(raw_repr)
 
 
 def _annotation_str(annotation: Any) -> str | None:

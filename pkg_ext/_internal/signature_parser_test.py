@@ -169,3 +169,21 @@ def test_strip_memory_addresses_handles_multiple_patterns():
     result = strip_memory_addresses(s)
     assert result == "<object object> and <function bar>"
     assert "0x" not in result
+
+
+def test_stable_repr_strips_embedded_memory_addresses():
+    """stable_repr should strip memory addresses embedded in complex reprs like AfterValidator."""
+
+    class _FakeValidator:
+        def __init__(self, func):
+            self.func = func
+
+        def __repr__(self):
+            return f"FakeValidator(func=<function {self.func.__name__} at 0xdeadbeef>)"
+
+    def my_func():
+        pass
+
+    result = stable_repr(_FakeValidator(my_func))
+    assert result == "FakeValidator(func=<function my_func>)"
+    assert "0x" not in result
