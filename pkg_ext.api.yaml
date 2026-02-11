@@ -1,5 +1,5 @@
 pkg_import_name: pkg_ext
-version: 0.3.3
+version: 0.3.4
 groups:
 - name: __ROOT__
   symbols:
@@ -1512,7 +1512,7 @@ groups:
   - name: pre_change
     module_path: _internal.cli.workflow_cmds
     docstring: Handle new symbols then generate examples and tests.
-    line_number: 260
+    line_number: 272
     type: cli_command
     signature:
       parameters:
@@ -1643,7 +1643,7 @@ groups:
   - name: pre_commit
     module_path: _internal.cli.workflow_cmds
     docstring: Update changelog and regenerate docs (bot mode, writes to -dev files).
-    line_number: 308
+    line_number: 313
     type: cli_command
     signature:
       parameters:
@@ -1708,4 +1708,4 @@ groups:
       required: false
       is_argument: false
       hidden: false
-dumped_at: 2026-02-06 10:50:39.593098+00:00
+dumped_at: 2026-02-11 06:09:48.558317+00:00

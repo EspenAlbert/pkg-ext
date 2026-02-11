@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.4 2026-02-11T06-09Z
+
+### Generate
+- fix: stable_repr now strips embedded memory addresses from complex reprs [efd3cd](https://github.com/EspenAlbert/pkg-ext/commit/efd3cd)
+
+### Workflows
+- fix(pkg-ext): reorder pre-change to run api-diff before docs generation [0c8ac3](https://github.com/EspenAlbert/pkg-ext/commit/0c8ac3)
+
+
 ## 0.3.3 2026-02-06T10-50Z
 
 ### Other Changes

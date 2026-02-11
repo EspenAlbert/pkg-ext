@@ -13,3 +13,8 @@ author: Espen Albert
 changelog_message: 'fix: stable_repr now strips embedded memory addresses from complex reprs'
 message: 'fix: stable_repr now strips embedded memory addresses from complex reprs'
 short_sha: efd3cd
+---
+name: 0.3.4
+ts: 2026-02-11 06:09:48.620411+00:00
+type: release
+old_version: 0.3.3
