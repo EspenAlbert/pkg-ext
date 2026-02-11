@@ -295,14 +295,14 @@ def pre_change(
         return
     settings.dev_mode = True
     sync_files(api_input, pkg_ctx)
+    write_api_dump(settings, dev_mode=True)
+    pr_info = find_pr_info_or_none(settings.repo_root)
+    run_api_diff(settings, pr_info.pr_number if pr_info else 0)
     if skip_docs:
         logger.info("Skipped docs regeneration")
     else:
         count = generate_docs_for_pkg(settings)
         logger.info(f"Regenerated {count} doc files")
-    write_api_dump(settings, dev_mode=True)
-    pr_info = find_pr_info_or_none(settings.repo_root)
-    run_api_diff(settings, pr_info.pr_number if pr_info else 0)
 
 
 def pre_commit(
