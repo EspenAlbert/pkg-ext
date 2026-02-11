@@ -257,6 +257,18 @@ def post_merge(
         clean_old_entries(settings)
 
 
+def _dump_diff_and_docs(settings: PkgSettings, skip_docs: bool) -> None:
+    """Write API dump, run diff (which may add changelog entries), then regenerate docs."""
+    write_api_dump(settings, dev_mode=True)
+    pr_info = find_pr_info_or_none(settings.repo_root)
+    run_api_diff(settings, pr_info.pr_number if pr_info else 0)
+    if skip_docs:
+        logger.info("Skipped docs regeneration")
+        return
+    count = generate_docs_for_pkg(settings)
+    logger.info(f"Regenerated {count} doc files")
+
+
 def pre_change(
     ctx: typer.Context,
     group: str | None = option_group,
@@ -295,14 +307,7 @@ def pre_change(
         return
     settings.dev_mode = True
     sync_files(api_input, pkg_ctx)
-    if skip_docs:
-        logger.info("Skipped docs regeneration")
-    else:
-        count = generate_docs_for_pkg(settings)
-        logger.info(f"Regenerated {count} doc files")
-    write_api_dump(settings, dev_mode=True)
-    pr_info = find_pr_info_or_none(settings.repo_root)
-    run_api_diff(settings, pr_info.pr_number if pr_info else 0)
+    _dump_diff_and_docs(settings, skip_docs)
 
 
 def pre_commit(
@@ -326,15 +331,7 @@ def pre_commit(
     if not generate_api_workflow(api_input):
         raise typer.Exit(1)
 
-    if skip_docs:
-        logger.info("Skipped docs regeneration")
-    else:
-        count = generate_docs_for_pkg(settings)
-        logger.info(f"Regenerated {count} doc files")
-
-    write_api_dump(settings, dev_mode=True)
-    pr_info = find_pr_info_or_none(settings.repo_root)
-    run_api_diff(settings, pr_info.pr_number if pr_info else 0)
+    _dump_diff_and_docs(settings, skip_docs)
 
     if skip_dirty_check:
         return

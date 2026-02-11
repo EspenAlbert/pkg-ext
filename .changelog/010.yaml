@@ -1,0 +1,15 @@
+name: workflows
+ts: 2026-02-11 05:59:32.845042+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(pkg-ext): reorder pre-change to run api-diff before docs generation'
+message: 'fix(pkg-ext): reorder pre-change to run api-diff before docs generation'
+short_sha: 0c8ac3
+---
+name: generate
+ts: 2026-02-11 05:59:36.483197+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix: stable_repr now strips embedded memory addresses from complex reprs'
+message: 'fix: stable_repr now strips embedded memory addresses from complex reprs'
+short_sha: efd3cd
