@@ -1,5 +1,11 @@
 # Pkg Ext
 
+[![PyPI](https://img.shields.io/pypi/v/pkg-ext)](https://pypi.org/project/pkg-ext/)
+[![GitHub](https://img.shields.io/github/license/EspenAlbert/pkg-ext)](https://github.com/EspenAlbert/pkg-ext)
+[![codecov](https://codecov.io/gh/EspenAlbert/pkg-ext/graph/badge.svg?token=47B15SDYMF)](https://codecov.io/gh/EspenAlbert/pkg-ext)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://espenalbert.github.io/pkg-ext/)
+
+
 A CLI tool for managing Python package public API, versioning, and changelog generation.
 
 ## Overview
