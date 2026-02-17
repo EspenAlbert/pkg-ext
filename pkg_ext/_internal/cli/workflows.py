@@ -198,7 +198,7 @@ def post_merge_commit_workflow(
     git_tag = f"{tag_prefix}{new_version}"
     git_commit(
         repo_path,
-        f"chore: pre-release commit for {git_tag}",
+        f"chore: release commit for {git_tag}",
         tag=git_tag,
         push=push,
     )
