@@ -5,3 +5,8 @@ author: Espen Albert
 changelog_message: 'fix: rename commit message to `chore: release commit for` (removed pre-release)'
 message: 'fix: rename commit message to `chore: release commit for`'
 short_sha: 2857c0
+---
+name: 0.3.5
+ts: 2026-02-17 21:21:23.504721+00:00
+type: release
+old_version: 0.3.4

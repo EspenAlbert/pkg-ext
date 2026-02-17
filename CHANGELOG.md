@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.5 2026-02-17T21-21Z
+
+### Workflows
+- fix: rename commit message to `chore: release commit for` (removed pre-release) [2857c0](https://github.com/EspenAlbert/pkg-ext/commit/2857c0)
+
+
 ## 0.3.4 2026-02-11T06-09Z
 
 ### Generate
