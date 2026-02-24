@@ -2,14 +2,10 @@
 
 import logging
 from pathlib import Path
-from typing import cast
 
 import typer
 from git import InvalidGitRepositoryError, Repo
-from zero_3rdparty.file_utils import ensure_parents_write_text
-from zero_3rdparty.sections import get_comment_config, parse_sections, replace_sections
 
-from pkg_ext._internal import api_dumper, py_format
 from pkg_ext._internal.changelog import parse_changelog_actions
 from pkg_ext._internal.cli.changelog_cmds import _create_chore_action
 from pkg_ext._internal.cli.options import (
@@ -38,9 +34,8 @@ from pkg_ext._internal.cli.workflows import (
     update_changelog_entries,
     write_api_dump,
 )
-from pkg_ext._internal.config import ProjectConfig, load_project_config
-from pkg_ext._internal.examples import filter_group_by_examples_include
-from pkg_ext._internal.generation import docs, docs_mkdocs, test_gen
+from pkg_ext._internal.config import load_project_config
+from pkg_ext._internal.generation import docs, docs_mkdocs
 from pkg_ext._internal.git_usage import GitSince, find_pr_info_or_none, head_merge_pr
 from pkg_ext._internal.models import PublicGroups
 from pkg_ext._internal.settings import PkgSettings
@@ -81,40 +76,6 @@ def check_generated_files_dirty(settings: PkgSettings) -> list[str]:
     modified = [f"{item.a_path} (modified)" for item in repo.index.diff(None) if item.a_path in generated_paths]
     untracked = [f"{path} (untracked)" for path in repo.untracked_files if path in generated_paths]
     return modified + untracked
-
-
-def generate_tests_for_groups(
-    settings: PkgSettings,
-    groups: list[api_dumper.GroupDump],
-    config: ProjectConfig | None = None,
-) -> int:
-    py_config = get_comment_config("file.py")
-    config = config or load_project_config(settings.repo_root)
-    generated_paths: list[Path] = []
-    for group_dump in groups:
-        if not (filtered := filter_group_by_examples_include(group_dump, config)):
-            logger.debug(f"Skipping tests for {group_dump.name}: no symbols in examples_include")
-            continue
-        testable = [s for s in filtered.symbols if isinstance(s, api_dumper.FunctionDump | api_dumper.ClassDump)]
-        if not testable:
-            continue
-        filtered = api_dumper.GroupDump(
-            name=filtered.name,
-            symbols=cast(list[api_dumper.SymbolDump], testable),
-        )
-        path = settings.test_file_path(filtered.name)
-        new_content = test_gen.generate_group_test_file(filtered, settings.pkg_import_name)
-        if path.exists():
-            existing = path.read_text()
-            src_sections = {s.id: s.content for s in parse_sections(new_content, test_gen.TOOL_NAME, py_config)}
-            merged = replace_sections(existing, src_sections, test_gen.TOOL_NAME, py_config)
-            path.write_text(merged)
-        else:
-            ensure_parents_write_text(path, new_content)
-        logger.info(f"Generated tests: {path}")
-        generated_paths.append(path)
-    py_format.format_python_files(generated_paths, settings.format_command)
-    return len(generated_paths)
 
 
 def generate_docs_for_pkg(

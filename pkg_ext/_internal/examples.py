@@ -9,12 +9,11 @@ from typing import TYPE_CHECKING
 from model_lib import Entity
 from model_lib.serialize.yaml_serialize import parse_yaml_str
 
-from pkg_ext._internal.config import GroupConfig, ProjectConfig, load_project_config
+from pkg_ext._internal.config import ProjectConfig, load_project_config
 from pkg_ext._internal.generation.docs_render import format_signature
 from pkg_ext._internal.models.api_dump import (
     ClassDump,
     FunctionDump,
-    GroupDump,
     PublicApiDump,
     SymbolDumpBase,
 )
@@ -44,13 +43,6 @@ def parse_description_comment(path: Path) -> str:
 
 def _load_examples_include(config: ProjectConfig) -> dict[str, list[str]]:
     return {name: group_cfg.examples_include for name, group_cfg in config.groups.items() if group_cfg.examples_include}
-
-
-def filter_group_by_examples_include(group: GroupDump, config: ProjectConfig) -> GroupDump | None:
-    group_cfg = config.groups.get(group.name, GroupConfig())
-    if not group_cfg.examples_include:
-        return None
-    return group.filter_symbols(set(group_cfg.examples_include))
 
 
 def _missing_example_files(settings: PkgSettings, config: ProjectConfig) -> list[tuple[str, str, Path]]:

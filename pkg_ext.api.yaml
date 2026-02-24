@@ -1212,12 +1212,58 @@ groups:
       required: true
       is_argument: false
       hidden: false
+- name: example
+  symbols:
+  - name: check_examples
+    module_path: _internal.cli.example_cmds
+    docstring: Verify all symbols in examples_include have corresponding .md files.
+    line_number: 33
+    type: cli_command
+    signature:
+      parameters:
+      - name: ctx
+        kind: positional_or_keyword
+        type_annotation: Context
+        type_imports:
+        - typer.models.Context
+      return_type_imports: []
+    cli_params: []
+  - name: gen_example_prompt
+    module_path: _internal.cli.example_cmds
+    docstring: Build an AI prompt for missing example docs and copy to clipboard.
+    line_number: 16
+    type: cli_command
+    signature:
+      parameters:
+      - name: ctx
+        kind: positional_or_keyword
+        type_annotation: Context
+        type_imports:
+        - typer.models.Context
+      - name: group
+        kind: positional_or_keyword
+        type_annotation: str | None
+        type_imports: []
+        default:
+          value_repr: <typer.models.OptionInfo object>
+          is_factory: false
+      return_type_imports: []
+    cli_params:
+    - param_name: group
+      type_annotation: str | None
+      flags:
+      - -g
+      - --group
+      help: Generate for specific group only
+      required: true
+      is_argument: false
+      hidden: false
 - name: generate
   symbols:
   - name: gen_docs
     module_path: _internal.cli.gen_cmds
     docstring: Generate documentation from public API.
-    line_number: 42
+    line_number: 15
     type: cli_command
     signature:
       parameters:
@@ -1252,66 +1298,6 @@ groups:
       required: true
       is_argument: false
       hidden: false
-    - param_name: group
-      type_annotation: str | None
-      flags:
-      - -g
-      - --group
-      help: Generate for specific group only
-      required: true
-      is_argument: false
-      hidden: false
-  - name: gen_examples
-    module_path: _internal.cli.gen_cmds
-    docstring: Generate example files for public API functions.
-    line_number: 20
-    type: cli_command
-    signature:
-      parameters:
-      - name: ctx
-        kind: positional_or_keyword
-        type_annotation: Context
-        type_imports:
-        - typer.models.Context
-      - name: group
-        kind: positional_or_keyword
-        type_annotation: str | None
-        type_imports: []
-        default:
-          value_repr: <typer.models.OptionInfo object>
-          is_factory: false
-      return_type_imports: []
-    cli_params:
-    - param_name: group
-      type_annotation: str | None
-      flags:
-      - -g
-      - --group
-      help: Generate for specific group only
-      required: true
-      is_argument: false
-      hidden: false
-  - name: gen_tests
-    module_path: _internal.cli.gen_cmds
-    docstring: Generate parameterized test files from examples.
-    line_number: 31
-    type: cli_command
-    signature:
-      parameters:
-      - name: ctx
-        kind: positional_or_keyword
-        type_annotation: Context
-        type_imports:
-        - typer.models.Context
-      - name: group
-        kind: positional_or_keyword
-        type_annotation: str | None
-        type_imports: []
-        default:
-          value_repr: <typer.models.OptionInfo object>
-          is_factory: false
-      return_type_imports: []
-    cli_params:
     - param_name: group
       type_annotation: str | None
       flags:
@@ -1434,7 +1420,7 @@ groups:
   - name: post_merge
     module_path: _internal.cli.workflow_cmds
     docstring: ''
-    line_number: 196
+    line_number: 121
     type: cli_command
     signature:
       parameters:
@@ -1511,8 +1497,8 @@ groups:
       hidden: false
   - name: pre_change
     module_path: _internal.cli.workflow_cmds
-    docstring: Handle new symbols then generate examples and tests.
-    line_number: 272
+    docstring: Handle new symbols, update changelog, optionally sync files and docs.
+    line_number: 197
     type: cli_command
     signature:
       parameters:
@@ -1643,7 +1629,7 @@ groups:
   - name: pre_commit
     module_path: _internal.cli.workflow_cmds
     docstring: Update changelog and regenerate docs (bot mode, writes to -dev files).
-    line_number: 313
+    line_number: 231
     type: cli_command
     signature:
       parameters:
@@ -1708,4 +1694,4 @@ groups:
       required: false
       is_argument: false
       hidden: false
-dumped_at: 2026-02-17 21:21:23.443902+00:00
+dumped_at: 2026-02-24 22:04:23.947164+00:00
