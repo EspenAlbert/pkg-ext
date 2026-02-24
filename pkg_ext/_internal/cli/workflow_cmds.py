@@ -28,7 +28,6 @@ from pkg_ext._internal.cli.options import (
 from pkg_ext._internal.cli.workflows import (
     GenerateApiInput,
     clean_old_entries,
-    create_api_dump,
     create_ctx,
     create_release_action,
     create_stability_ctx,
@@ -252,7 +251,7 @@ def pre_change(
     skip_open_in_editor: bool | None = option_skip_open_in_editor,
     keep_private: bool = option_keep_private,
 ):
-    """Handle new symbols then generate tests."""
+    """Handle new symbols, update changelog, optionally sync files and docs."""
     settings: PkgSettings = ctx.obj
     if skip_open_in_editor is not None:
         settings.skip_open_in_editor = skip_open_in_editor
@@ -269,11 +268,6 @@ def pre_change(
     pkg_ctx = update_changelog_entries(api_input)
     if not pkg_ctx:
         return
-    api_dump = create_api_dump(settings)
-    groups = [api_dump.get_group(group)] if group else api_dump.groups
-    tests_count = generate_tests_for_groups(settings, groups)
-    logger.info(f"Generated {tests_count} test files")
-
     if not full:
         return
     settings.dev_mode = True
