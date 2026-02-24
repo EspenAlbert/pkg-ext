@@ -176,7 +176,7 @@ def pkg_settings(
     keep_prerelease: bool | None = None,
     ignored_symbols: frozenset[str] | None = None,
 ) -> PkgSettings:
-    # Resolve global settings with proper precedence: CLI arg → Env var → Config file(user or proejct) → Default
+    # Resolve global settings with proper precedence: CLI arg → Env var → Config file(user or project) → Default
     user_config = load_user_config()
     project_config = load_project_config((repo_root / pkg_path).parent)
 

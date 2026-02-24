@@ -16,5 +16,9 @@ def test_add_to_clipboard_with_pbcopy():
 
 def test_add_to_clipboard_no_pbcopy():
     module_name = clipboard.add_to_clipboard.__module__
-    with patch(f"{module_name}.which", return_value=None):
+    with (
+        patch(f"{module_name}.which", return_value=None),
+        patch(f"{module_name}.subprocess") as mock_subprocess,
+    ):
         clipboard.add_to_clipboard("hello")
+        mock_subprocess.run.assert_not_called()

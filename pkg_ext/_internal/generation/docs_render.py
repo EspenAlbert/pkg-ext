@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from textwrap import dedent
 from typing import TYPE_CHECKING
@@ -24,6 +24,7 @@ from pkg_ext._internal.models.api_dump import (
     CLICommandDump,
     CLIParamInfo,
     ExceptionDump,
+    FuncParamInfo,
     FunctionDump,
     GlobalVarDump,
     GroupDump,
@@ -37,7 +38,7 @@ if TYPE_CHECKING:
     from pkg_ext._internal.generation.docs import SymbolContext
 
 
-def _format_param(p) -> str:
+def _format_param(p: FuncParamInfo) -> str:
     parts = [p.name]
     if p.type_annotation:
         parts.append(f": {p.type_annotation}")
@@ -387,7 +388,7 @@ def render_symbol_page(
     changes: list[SymbolChange] | None = None,
     changelog_actions: Sequence[ChangelogAction] | None = None,
     *,
-    has_env_vars_fn=None,
+    has_env_vars_fn: Callable[[ClassDump], bool] | None = None,
     example_link: tuple[str, str] | None = None,
 ) -> str:
     symbol = ctx.symbol

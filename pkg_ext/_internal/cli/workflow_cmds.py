@@ -6,6 +6,7 @@ from pathlib import Path
 import typer
 from git import InvalidGitRepositoryError, Repo
 
+from pkg_ext._internal import api_dumper
 from pkg_ext._internal.changelog import changelog_filepath, parse_changelog_actions
 from pkg_ext._internal.changelog.change_base import (
     consolidate_changelog_files,
@@ -89,8 +90,6 @@ def generate_docs_for_pkg(
     output_dir: Path | None = None,
     filter_group: str | None = None,
 ) -> int:
-    from pkg_ext._internal import api_dumper
-
     pkg_ctx = create_stability_ctx(settings)
     groups = settings.parse_computed_public_groups(PublicGroups)
     version = str(read_current_version(pkg_ctx))

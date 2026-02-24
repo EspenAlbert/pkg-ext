@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-import contextlib
 import logging
 import re
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import yaml
 from model_lib import Entity
 from model_lib.serialize.yaml_serialize import parse_yaml_str
+from pydantic import ValidationError
 
 from pkg_ext._internal.config import ProjectConfig, load_project_config
 from pkg_ext._internal.generation.docs_render import format_signature
@@ -33,11 +34,13 @@ class _ExampleMetadata(Entity):
 def parse_description_comment(path: Path) -> str:
     text = path.read_text()
     if comment_match := _COMMENT_PATTERN.match(text):
-        with contextlib.suppress(Exception):
+        try:
             raw = parse_yaml_str(comment_match.group("body"))
             meta = _ExampleMetadata.model_validate(raw)
             if meta.description:
                 return meta.description
+        except (yaml.YAMLError, ValidationError):
+            pass
     return path.stem
 
 
