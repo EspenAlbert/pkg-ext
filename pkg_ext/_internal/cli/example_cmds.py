@@ -17,6 +17,7 @@ def gen_example_prompt(
     ctx: typer.Context,
     group: str | None = option_group,
 ):
+    """Build an AI prompt for missing example docs and copy to clipboard."""
     settings: PkgSettings = ctx.obj
     api_dump = create_api_dump(settings)
     config = load_project_config(settings.state_dir)
@@ -30,6 +31,7 @@ def gen_example_prompt(
 
 
 def check_examples(ctx: typer.Context):
+    """Verify all symbols in examples_include have corresponding .md files."""
     if os.getenv("SKIP_EXAMPLES_CHECK") == "1":
         logger.info("Skipping examples check (SKIP_EXAMPLES_CHECK=1)")
         return

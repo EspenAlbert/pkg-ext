@@ -38,7 +38,8 @@ from pkg_ext._internal.cli.workflows import (
     update_changelog_entries,
     write_api_dump,
 )
-from pkg_ext._internal.config import GroupConfig, ProjectConfig, load_project_config
+from pkg_ext._internal.config import ProjectConfig, load_project_config
+from pkg_ext._internal.examples import filter_group_by_examples_include
 from pkg_ext._internal.generation import docs, docs_mkdocs, test_gen
 from pkg_ext._internal.git_usage import GitSince, find_pr_info_or_none, head_merge_pr
 from pkg_ext._internal.models import PublicGroups
@@ -82,15 +83,6 @@ def check_generated_files_dirty(settings: PkgSettings) -> list[str]:
     return modified + untracked
 
 
-def _filter_group_by_examples_include(
-    group: api_dumper.GroupDump, config: ProjectConfig
-) -> api_dumper.GroupDump | None:
-    group_cfg = config.groups.get(group.name, GroupConfig())
-    if not group_cfg.examples_include:
-        return None
-    return group.filter_symbols(set(group_cfg.examples_include))
-
-
 def generate_tests_for_groups(
     settings: PkgSettings,
     groups: list[api_dumper.GroupDump],
@@ -100,7 +92,7 @@ def generate_tests_for_groups(
     config = config or load_project_config(settings.repo_root)
     generated_paths: list[Path] = []
     for group_dump in groups:
-        if not (filtered := _filter_group_by_examples_include(group_dump, config)):
+        if not (filtered := filter_group_by_examples_include(group_dump, config)):
             logger.debug(f"Skipping tests for {group_dump.name}: no symbols in examples_include")
             continue
         testable = [s for s in filtered.symbols if isinstance(s, api_dumper.FunctionDump | api_dumper.ClassDump)]

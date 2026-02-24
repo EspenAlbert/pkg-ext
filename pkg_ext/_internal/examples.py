@@ -4,12 +4,12 @@ import logging
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from pkg_ext._internal.config import ProjectConfig, load_project_config
+from pkg_ext._internal.config import GroupConfig, ProjectConfig, load_project_config
+from pkg_ext._internal.generation.docs_render import format_signature
 from pkg_ext._internal.models.api_dump import (
-    CallableSignature,
     ClassDump,
-    ClassFieldInfo,
     FunctionDump,
+    GroupDump,
     PublicApiDump,
     SymbolDumpBase,
 )
@@ -22,6 +22,13 @@ logger = logging.getLogger(__name__)
 
 def _load_examples_include(config: ProjectConfig) -> dict[str, list[str]]:
     return {name: group_cfg.examples_include for name, group_cfg in config.groups.items() if group_cfg.examples_include}
+
+
+def filter_group_by_examples_include(group: GroupDump, config: ProjectConfig) -> GroupDump | None:
+    group_cfg = config.groups.get(group.name, GroupConfig())
+    if not group_cfg.examples_include:
+        return None
+    return group.filter_symbols(set(group_cfg.examples_include))
 
 
 def _missing_example_files(settings: PkgSettings, config: ProjectConfig) -> list[tuple[str, str, Path]]:
@@ -88,39 +95,9 @@ def _find_test_file(symbol: SymbolDumpBase, settings: PkgSettings) -> str:
     return ""
 
 
-def _format_signature(sig: CallableSignature) -> str:
-    params = []
-    for p in sig.parameters:
-        s = p.name
-        if p.type_annotation:
-            s += f": {p.type_annotation}"
-        if p.default:
-            s += f" = {p.default.value_repr}"
-        params.append(s)
-    ret = f" -> {sig.return_annotation}" if sig.return_annotation else ""
-    return f"({', '.join(params)}){ret}"
-
-
-def _format_fields(fields: list[ClassFieldInfo]) -> str:
-    lines = []
-    for f in fields:
-        if f.is_class_var:
-            continue
-        line = f"  {f.name}"
-        if f.type_annotation:
-            line += f": {f.type_annotation}"
-        if f.default:
-            line += f" = {f.default.value_repr}"
-        lines.append(line)
-    return "\n".join(lines)
-
-
 def _format_related_type(rt: SymbolDumpBase) -> str:
-    if isinstance(rt, ClassDump) and rt.fields:
-        return f"### {rt.name}\n```\n{_format_fields(rt.fields)}\n```"
-    if isinstance(rt, FunctionDump):
-        return f"### {rt.name}\n`{rt.name}{_format_signature(rt.signature)}`"
-    return f"### {rt.name}\n{rt.docstring or '(no docstring)'}"
+    sig = format_signature(rt)  # type: ignore[arg-type]
+    return f"### {rt.name}\n```python\n{sig}\n```"
 
 
 def _format_symbol_context(
@@ -130,13 +107,8 @@ def _format_symbol_context(
 ) -> str:
     parts: list[str] = []
 
-    if isinstance(symbol, FunctionDump):
-        parts.append(f"**Signature:**\n`{symbol.name}{_format_signature(symbol.signature)}`")
-    elif isinstance(symbol, ClassDump):
-        if symbol.fields:
-            parts.append(f"**Fields:**\n```\n{_format_fields(symbol.fields)}\n```")
-        if symbol.init_signature:
-            parts.append(f"**Init signature:**\n`{_format_signature(symbol.init_signature)}`")
+    sig = format_signature(symbol)  # type: ignore[arg-type]
+    parts.append(f"**Signature:**\n```python\n{sig}\n```")
 
     if symbol.docstring:
         parts.append(f"**Docstring:**\n{symbol.docstring}")
