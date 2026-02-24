@@ -39,8 +39,8 @@ from pkg_ext._internal.cli.workflows import (
     update_changelog_entries,
     write_api_dump,
 )
-from pkg_ext._internal.config import PKG_EXT_TOOL_NAME, ProjectConfig, load_project_config
-from pkg_ext._internal.generation import docs, docs_mkdocs, example_gen, test_gen
+from pkg_ext._internal.config import GroupConfig, ProjectConfig, load_project_config
+from pkg_ext._internal.generation import docs, docs_mkdocs, test_gen
 from pkg_ext._internal.git_usage import GitSince, find_pr_info_or_none, head_merge_pr
 from pkg_ext._internal.models import PublicGroups
 from pkg_ext._internal.settings import PkgSettings
@@ -83,31 +83,13 @@ def check_generated_files_dirty(settings: PkgSettings) -> list[str]:
     return modified + untracked
 
 
-def generate_examples_for_groups(
-    settings: PkgSettings,
-    groups: list[api_dumper.GroupDump],
-    config: ProjectConfig | None = None,
-) -> int:
-    py_config = get_comment_config("file.py")
-    config = config or load_project_config(settings.repo_root)
-    generated_paths: list[Path] = []
-    for group_dump in groups:
-        if not (filtered := config.filter_group_for_examples(group_dump)):
-            logger.debug(f"Skipping examples for {group_dump.name}: no symbols enabled")
-            continue
-        path = settings.examples_file_path(filtered.name)
-        new_content = example_gen.generate_group_examples_file(filtered, settings.pkg_import_name)
-        if path.exists():
-            existing = path.read_text()
-            src_sections = {s.id: s.content for s in parse_sections(new_content, PKG_EXT_TOOL_NAME, py_config)}
-            merged = replace_sections(existing, src_sections, PKG_EXT_TOOL_NAME, py_config)
-            path.write_text(merged)
-        else:
-            ensure_parents_write_text(path, new_content)
-        logger.info(f"Generated examples: {path}")
-        generated_paths.append(path)
-    py_format.format_python_files(generated_paths, settings.format_command)
-    return len(generated_paths)
+def _filter_group_by_examples_include(
+    group: api_dumper.GroupDump, config: ProjectConfig
+) -> api_dumper.GroupDump | None:
+    group_cfg = config.groups.get(group.name, GroupConfig())
+    if not group_cfg.examples_include:
+        return None
+    return group.filter_symbols(set(group_cfg.examples_include))
 
 
 def generate_tests_for_groups(
@@ -119,10 +101,9 @@ def generate_tests_for_groups(
     config = config or load_project_config(settings.repo_root)
     generated_paths: list[Path] = []
     for group_dump in groups:
-        if not (filtered := config.filter_group_for_examples(group_dump)):
-            logger.debug(f"Skipping tests for {group_dump.name}: no symbols with examples")
+        if not (filtered := _filter_group_by_examples_include(group_dump, config)):
+            logger.debug(f"Skipping tests for {group_dump.name}: no symbols in examples_include")
             continue
-        # Further filter to only testable types (functions/classes)
         testable = [s for s in filtered.symbols if isinstance(s, api_dumper.FunctionDump | api_dumper.ClassDump)]
         if not testable:
             continue
@@ -161,20 +142,12 @@ def generate_docs_for_pkg(
     changelog_actions = parse_changelog_actions(settings.changelog_dir)
     docs_dir = output_dir or settings.docs_dir
 
-    example_symbols: dict[str, set[str]] = {}
-    groups_to_process = [api_dump.get_group(filter_group)] if filter_group else api_dump.groups
-    for group_dump in groups_to_process:
-        loaded = docs.load_examples_for_group(settings.pkg_import_name, group_dump.name)
-        example_symbols[group_dump.name] = set(loaded.keys())
-
     output = docs.generate_docs(
         api_dump=api_dump,
         config=config,
-        example_symbols=example_symbols,
         changelog_actions=changelog_actions,
         docs_dir=docs_dir,
         pkg_src_dir=settings.repo_root,
-        load_examples=True,
     )
     if filter_group:
         dir_name = docs.group_dir_name(api_dump.get_group(filter_group))
@@ -279,7 +252,7 @@ def pre_change(
     skip_open_in_editor: bool | None = option_skip_open_in_editor,
     keep_private: bool = option_keep_private,
 ):
-    """Handle new symbols then generate examples and tests."""
+    """Handle new symbols then generate tests."""
     settings: PkgSettings = ctx.obj
     if skip_open_in_editor is not None:
         settings.skip_open_in_editor = skip_open_in_editor
@@ -298,10 +271,8 @@ def pre_change(
         return
     api_dump = create_api_dump(settings)
     groups = [api_dump.get_group(group)] if group else api_dump.groups
-    examples_count = generate_examples_for_groups(settings, groups)
     tests_count = generate_tests_for_groups(settings, groups)
-    total = examples_count + tests_count
-    logger.info(f"Generated {total} files ({examples_count} examples, {tests_count} tests)")
+    logger.info(f"Generated {tests_count} test files")
 
     if not full:
         return

@@ -107,9 +107,6 @@ class PkgSettings(BaseSettings):
     def warnings_file_path(self) -> Path:
         return self.pkg_directory / self.WARNINGS_FILENAME
 
-    def examples_file_path(self, group_name: str) -> Path:
-        return self.pkg_directory / f"{group_name}_examples.py"
-
     def test_file_path(self, group_name: str) -> Path:
         return self.pkg_directory / f"{group_name}_test.py"
 

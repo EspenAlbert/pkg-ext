@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from zero_3rdparty.sections import slug, wrap_section
 
@@ -18,11 +17,6 @@ from pkg_ext._internal.generation.docs_version import (
     get_field_since_version,
     get_symbol_since_version,
     get_symbol_stability,
-)
-from pkg_ext._internal.generation.example_gen import (
-    EXAMPLE_BASE_FIELDS,
-    EXAMPLE_DESCRIPTION_FIELD,
-    EXAMPLE_NAME_FIELD,
 )
 from pkg_ext._internal.models.api_dump import (
     ClassDump,
@@ -37,7 +31,6 @@ from pkg_ext._internal.models.api_dump import (
     SymbolDump,
     TypeAliasDump,
 )
-from pkg_ext._internal.py_format import format_python_string
 from pkg_ext._internal.signature_parser import CLI_CONTEXT_TYPE_NAMES
 
 if TYPE_CHECKING:
@@ -384,7 +377,6 @@ def render_symbol_page(
     symbol_doc_path: Path,
     pkg_src_dir: Path,
     pkg_import_name: str,
-    examples: list[Any] | None = None,
     changes: list[SymbolChange] | None = None,
     changelog_actions: Sequence[ChangelogAction] | None = None,
     *,
@@ -417,9 +409,6 @@ def render_symbol_page(
             if table := render_field_table(symbol.fields, field_versions):
                 parts.extend(["", "### Fields", "", table])
 
-    for ex in examples or []:
-        parts.extend(["", render_example_section(ex, symbol, pkg_import_name)])
-
     if changes:
         parts.extend(["", render_changes_section(changes, symbol.name)])
 
@@ -443,39 +432,3 @@ def render_changes_section(changes: list[SymbolChange], symbol_name: str) -> str
         return ""
     section_id = f"{slug(symbol_name)}_changes"
     return wrap_section(_render_changes_content(changes), section_id, PKG_EXT_TOOL_NAME, MD_CONFIG)
-
-
-def _format_example_value(value: Any) -> str:
-    if isinstance(value, str):
-        if "\n" in value:
-            return f'"""\\\n{value}"""'
-        return repr(value)
-    if isinstance(value, datetime):
-        return f"datetime({value.year}, {value.month}, {value.day})"
-    return repr(value)
-
-
-def render_example_section(example: Any, symbol: SymbolDump, pkg_import_name: str) -> str:
-    example_name = getattr(example, EXAMPLE_NAME_FIELD, "")
-    description = getattr(example, EXAMPLE_DESCRIPTION_FIELD, "")
-    section_id = f"{slug(symbol.name)}_example_{slug(example_name)}"
-
-    fields = {k: v for k, v in example.model_dump().items() if k not in EXAMPLE_BASE_FIELDS}
-
-    if isinstance(symbol, FunctionDump | CLICommandDump):
-        args = ", ".join(f"{k}={_format_example_value(v)}" for k, v in fields.items())
-        code = f"result = {symbol.name}({args})"
-    elif isinstance(symbol, ClassDump):
-        args = ", ".join(f"{k}={_format_example_value(v)}" for k, v in fields.items())
-        code = f"instance = {symbol.name}({args})"
-    else:
-        code = f"# {symbol.name} example"
-
-    formatted_code = format_python_string(code)
-
-    lines = [f"### Example: {example_name}"]
-    if description:
-        lines.append(description)
-    lines.extend(["", "```python", formatted_code, "```"])
-
-    return wrap_section("\n".join(lines), section_id, PKG_EXT_TOOL_NAME, MD_CONFIG)

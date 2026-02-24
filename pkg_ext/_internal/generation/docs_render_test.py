@@ -1,8 +1,6 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pydantic import BaseModel
-
 from pkg_ext._internal.changelog.actions import (
     ExperimentalAction,
     MakePublicAction,
@@ -16,7 +14,6 @@ from pkg_ext._internal.generation.docs_render import (
     render_changes_section,
     render_cli_params_table,
     render_env_var_table,
-    render_example_section,
     render_field_table,
     render_inline_symbol,
     render_stability_badge,
@@ -188,20 +185,6 @@ def test_render_changes_section():
     ]
     content = render_changes_section(changes, "my_func")
     assert "| 1.0.0 | Made public |" in content
-
-
-class ParseExample(BaseModel):
-    example_name: str = "basic"
-    example_description_md: str = "Parse a string"
-    data: str = "hello"
-
-
-def test_render_example_section():
-    func = _func_dump("parse")
-    example = ParseExample(example_name="basic", data="test")
-    content = render_example_section(example, func, "my_pkg")
-    assert "### Example: basic" in content
-    assert "result = parse(data=" in content
 
 
 # Import SymbolContext here to avoid circular import at module level

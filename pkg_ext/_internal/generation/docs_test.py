@@ -64,9 +64,6 @@ def test_symbol_context_complexity():
     simple = SymbolContext(symbol=_func_dump("simple"))
     assert not simple.needs_own_page
 
-    with_examples = SymbolContext(symbol=_func_dump("ex"), has_examples=True)
-    assert with_examples.needs_own_page
-
     with_env = SymbolContext(symbol=_class_dump("env", "VAR"), has_env_vars=True)
     assert with_env.needs_own_page
 
@@ -77,7 +74,7 @@ def test_symbol_context_complexity():
 def test_build_symbol_context_only_make_public_not_complex():
     func = _func_dump("my_func")
     action = MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime.now(UTC))
-    ctx = build_symbol_context(func, "config", set(), [action])
+    ctx = build_symbol_context(func, "config", [action])
     assert not ctx.has_meaningful_changes
     assert not ctx.needs_own_page
 
@@ -85,20 +82,20 @@ def test_build_symbol_context_only_make_public_not_complex():
 def test_build_symbol_context_fix_action_is_complex():
     func = _func_dump("my_func")
     action = FixAction(name="my_func", short_sha="abc123", message="fix", ts=datetime.now(UTC))
-    ctx = build_symbol_context(func, "config", set(), [action])
+    ctx = build_symbol_context(func, "config", [action])
     assert ctx.has_meaningful_changes
     assert ctx.needs_own_page
 
 
 def test_build_symbol_context_primary_not_complex():
     func = _func_dump("config")
-    ctx = build_symbol_context(func, "config", set(), [])
+    ctx = build_symbol_context(func, "config", [])
     assert ctx.is_primary
     assert not ctx.needs_own_page
 
 
 def test_symbol_context_primary_overrides_complex():
-    ctx = SymbolContext(symbol=_func_dump("copy"), has_examples=True, is_primary=True)
+    ctx = SymbolContext(symbol=_func_dump("copy"), has_meaningful_changes=True, is_primary=True)
     assert ctx.is_primary
     assert not ctx.needs_own_page
 
@@ -158,7 +155,7 @@ def test_generate_docs_creates_index_and_complex_pages(project_config: ProjectCo
             )
         ],
     )
-    result = generate_docs(api_dump, project_config, {}, [])
+    result = generate_docs(api_dump, project_config, [])
     assert isinstance(result, GeneratedDocsOutput)
     assert "config/index.md" in result.path_contents
     assert "config/envclass.md" in result.path_contents
@@ -200,7 +197,7 @@ def test_generate_docs_primary_symbol_no_separate_file(project_config: ProjectCo
             )
         ],
     )
-    result = generate_docs(api_dump, project_config, {}, [])
+    result = generate_docs(api_dump, project_config, [])
     assert "copy/index.md" in result.path_contents
     assert "copy/copy.md" not in result.path_contents
     assert "copy/copyoptions.md" in result.path_contents
