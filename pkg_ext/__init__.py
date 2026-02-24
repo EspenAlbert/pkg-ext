@@ -3,9 +3,9 @@
 from pkg_ext import api_commands
 from pkg_ext import changelog
 from pkg_ext import example
-from pkg_ext import workflows
 from pkg_ext import generate
 from pkg_ext import stability
+from pkg_ext import workflows
 from pkg_ext import api_dump
 from pkg_ext._internal.settings import PkgSettings
 
@@ -14,9 +14,9 @@ __all__ = [
     "api_commands",
     "changelog",
     "example",
-    "workflows",
     "generate",
     "stability",
+    "workflows",
     "api_dump",
     "PkgSettings",
 ]
