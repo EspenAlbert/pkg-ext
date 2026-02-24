@@ -1,5 +1,7 @@
 from datetime import UTC, datetime
+from pathlib import Path
 
+from zero_3rdparty.file_utils import ensure_parents_write_text
 from zero_3rdparty.sections import parse_sections
 
 from pkg_ext._internal.changelog.actions import FixAction, MakePublicAction
@@ -202,3 +204,29 @@ def test_generate_docs_primary_symbol_no_separate_file(project_config: ProjectCo
     assert "copy/copy.md" not in result.path_contents
     assert "copy/copyoptions.md" in result.path_contents
     assert "# copy" in result.path_contents["copy/index.md"]
+
+
+def test_render_group_index_with_examples(tmp_path: Path):
+    examples_dir = tmp_path / "examples"
+    ensure_parents_write_text(
+        examples_dir / "sections" / "parse_sections.md",
+        "<!--\ndescription: Parse content into named sections\n-->\n# Example",
+    )
+    group = GroupDump(name="sections", symbols=[_func_dump("parse_sections")])
+    contexts = [SymbolContext(symbol=s) for s in group.symbols]
+    config = GroupConfig(examples_include=["parse_sections", "missing_symbol"])
+    content = render_group_index(group, contexts, config, examples_dir=examples_dir)
+
+    sections = parse_sections(content, PKG_EXT_TOOL_NAME, MD_CONFIG)
+    section_ids = {s.id for s in sections}
+    assert "examples" in section_ids
+    assert "[parse_sections](../examples/sections/parse_sections.md)" in content
+    assert "Parse content into named sections" in content
+    assert "*(missing)*" in content
+
+
+def test_render_group_index_no_examples():
+    group = GroupDump(name="sections", symbols=[_func_dump("f")])
+    contexts = [SymbolContext(symbol=s) for s in group.symbols]
+    content = render_group_index(group, contexts, GroupConfig())
+    assert "## Examples" not in content

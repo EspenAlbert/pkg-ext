@@ -17,6 +17,7 @@ from pkg_ext._internal.config import (
     GroupConfig,
     ProjectConfig,
 )
+from pkg_ext._internal.examples import parse_description_comment
 from pkg_ext._internal.generation.docs_constants import MD_CONFIG, ROOT_DIR
 from pkg_ext._internal.generation.docs_render import (
     render_inline_symbol,
@@ -89,12 +90,24 @@ def render_symbol_entry(ctx: SymbolContext) -> str:
     return f"- [`{name}`](#{slug(name)}_def)"
 
 
+def render_examples_section(group_name: str, examples_include: list[str], examples_dir: Path) -> str:
+    rows: list[str] = []
+    for symbol in examples_include:
+        path = examples_dir / group_name / f"{symbol}.md"
+        description = parse_description_comment(path) if path.exists() else "*(missing)*"
+        link = f"../examples/{group_name}/{symbol}.md"
+        rows.append(f"| [{symbol}]({link}) | {description} |")
+    table = "## Examples\n\n| Symbol | Description |\n|--------|-------------|\n" + "\n".join(rows)
+    return wrap_section(table, "examples", PKG_EXT_TOOL_NAME, MD_CONFIG)
+
+
 def render_group_index(
     group: GroupDump,
     contexts: list[SymbolContext],
     group_config: GroupConfig,
     changelog_actions: Sequence[ChangelogAction] | None = None,
     *,
+    examples_dir: Path | None = None,
     docs_dir: Path | None = None,
     pkg_src_dir: Path | None = None,
     pkg_import_name: str | None = None,
@@ -154,6 +167,18 @@ def render_group_index(
     elif inline_sections:
         parts.extend(("", *inline_sections))
 
+    if examples_dir and group_config.examples_include:
+        parts.extend(
+            (
+                "",
+                render_examples_section(
+                    group.name,
+                    group_config.examples_include,
+                    examples_dir,
+                ),
+            )
+        )
+
     return "\n".join(parts)
 
 
@@ -167,6 +192,8 @@ def generate_docs(
     path_contents: dict[str, str] = {}
     pkg_import_name = api_dump.pkg_import_name
 
+    examples_dir = docs_dir / "examples" if docs_dir else None
+
     for group in api_dump.groups:
         dir_name = group_dir_name(group)
         group_config = config.groups.get(group.name, GroupConfig())
@@ -177,6 +204,7 @@ def generate_docs(
             contexts,
             group_config,
             changelog_actions,
+            examples_dir=examples_dir,
             docs_dir=docs_dir,
             pkg_src_dir=pkg_src_dir,
             pkg_import_name=pkg_import_name,

@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+import contextlib
 import logging
+import re
 from pathlib import Path
 from typing import TYPE_CHECKING
+
+from model_lib import Entity
+from model_lib.serialize.yaml_serialize import parse_yaml_str
 
 from pkg_ext._internal.config import GroupConfig, ProjectConfig, load_project_config
 from pkg_ext._internal.generation.docs_render import format_signature
@@ -18,6 +23,23 @@ if TYPE_CHECKING:
     from pkg_ext._internal.settings import PkgSettings
 
 logger = logging.getLogger(__name__)
+
+_COMMENT_PATTERN = re.compile(r"\A<!--\s*\n(?P<body>.*?)\n-->\s*\n", re.DOTALL)
+
+
+class ExampleMetadata(Entity):
+    description: str = ""
+
+
+def parse_description_comment(path: Path) -> str:
+    text = path.read_text()
+    if comment_match := _COMMENT_PATTERN.match(text):
+        with contextlib.suppress(Exception):
+            raw = parse_yaml_str(comment_match.group("body"))
+            meta = ExampleMetadata.model_validate(raw)
+            if meta.description:
+                return meta.description
+    return path.stem
 
 
 def _load_examples_include(config: ProjectConfig) -> dict[str, list[str]]:

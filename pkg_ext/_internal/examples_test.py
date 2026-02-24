@@ -1,9 +1,10 @@
 from datetime import UTC, datetime
+from pathlib import Path
 
 from zero_3rdparty.file_utils import ensure_parents_write_text
 
 from pkg_ext._internal.config import GroupConfig, ProjectConfig
-from pkg_ext._internal.examples import build_example_prompt, check_examples_exist
+from pkg_ext._internal.examples import build_example_prompt, check_examples_exist, parse_description_comment
 from pkg_ext._internal.models.api_dump import (
     CallableSignature,
     ClassDump,
@@ -57,6 +58,18 @@ def _api_dump(pkg_name: str = "my_pkg") -> PublicApiDump:
 
 def _config(*symbol_names: str) -> ProjectConfig:
     return ProjectConfig(groups={"sections": GroupConfig(examples_include=list(symbol_names))})
+
+
+def test_parse_description_comment(tmp_path: Path):
+    md = tmp_path / "symbol.md"
+    md.write_text("<!--\ndescription: Parse content into named sections\n-->\n# Example")
+    assert parse_description_comment(md) == "Parse content into named sections"
+
+
+def test_parse_description_comment_fallback(tmp_path: Path):
+    md = tmp_path / "symbol.md"
+    md.write_text("# No comment here")
+    assert parse_description_comment(md) == "symbol"
 
 
 def test_build_example_prompt_with_missing_symbols(settings: PkgSettings):
