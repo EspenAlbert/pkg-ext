@@ -90,15 +90,22 @@ def render_symbol_entry(ctx: SymbolContext) -> str:
     return f"- [`{name}`](#{slug(name)}_def)"
 
 
-def render_examples_section(group_name: str, examples_include: list[str], examples_dir: Path) -> str:
-    rows: list[str] = []
-    for symbol in examples_include:
-        path = examples_dir / group_name / f"{symbol}.md"
-        description = parse_description_comment(path) if path.exists() else "*(missing)*"
-        link = f"../examples/{group_name}/{symbol}.md"
-        rows.append(f"| [{symbol}]({link}) | {description} |")
-    table = "## Examples\n\n| Symbol | Description |\n|--------|-------------|\n" + "\n".join(rows)
-    return wrap_section(table, "examples", PKG_EXT_TOOL_NAME, MD_CONFIG)
+def _build_example_link(
+    symbol_name: str,
+    group_name: str,
+    examples_set: set[str],
+    examples_dir: Path | None,
+    relative_prefix: str,
+) -> tuple[str, str] | None:
+    if symbol_name not in examples_set:
+        return None
+    url = f"{relative_prefix}{group_name}/{symbol_name}.md"
+    desc = ""
+    if examples_dir:
+        path = examples_dir / group_name / f"{symbol_name}.md"
+        if path.exists():
+            desc = parse_description_comment(path)
+    return (url, desc)
 
 
 def render_group_index(
@@ -107,13 +114,13 @@ def render_group_index(
     group_config: GroupConfig,
     changelog_actions: Sequence[ChangelogAction] | None = None,
     *,
-    examples_dir: Path | None = None,
     docs_dir: Path | None = None,
     pkg_src_dir: Path | None = None,
     pkg_import_name: str | None = None,
 ) -> str:
     dir_name = group_dir_name(group)
     index_path = docs_dir / dir_name / "index.md" if docs_dir else None
+    examples_dir = docs_dir / "examples" if docs_dir else None
 
     primary_ctx = next((c for c in contexts if c.is_primary), None)
     other_contexts = sorted([c for c in contexts if not c.is_primary], key=lambda c: c.symbol.name)
@@ -127,12 +134,14 @@ def render_group_index(
     symbol_entries = [render_symbol_entry(c) for c in sorted_contexts]
     symbol_list = "\n".join(symbol_entries)
 
+    examples_set = set(group_config.examples_include)
     inline_sections = []
     changelog_actions_list = list(changelog_actions) if changelog_actions else []
     for ctx in sorted_contexts:
         if not ctx.needs_own_page:
             section_id = f"{slug(ctx.symbol.name)}_def"
             symbol_changes = build_symbol_changes(ctx.symbol.name, changelog_actions_list)
+            example_link = _build_example_link(ctx.symbol.name, group.name, examples_set, examples_dir, "../examples/")
             inline_content = render_inline_symbol(
                 ctx,
                 changelog_actions,
@@ -140,6 +149,7 @@ def render_group_index(
                 symbol_doc_path=index_path,
                 pkg_src_dir=pkg_src_dir,
                 pkg_import_name=pkg_import_name,
+                example_link=example_link,
             )
             inline_sections.append(wrap_section(inline_content, section_id, PKG_EXT_TOOL_NAME, MD_CONFIG))
 
@@ -167,18 +177,6 @@ def render_group_index(
     elif inline_sections:
         parts.extend(("", *inline_sections))
 
-    if examples_dir and group_config.examples_include:
-        parts.extend(
-            (
-                "",
-                render_examples_section(
-                    group.name,
-                    group_config.examples_include,
-                    examples_dir,
-                ),
-            )
-        )
-
     return "\n".join(parts)
 
 
@@ -197,6 +195,7 @@ def generate_docs(
     for group in api_dump.groups:
         dir_name = group_dir_name(group)
         group_config = config.groups.get(group.name, GroupConfig())
+        examples_set = set(group_config.examples_include)
         contexts = [build_symbol_context(s, group.name, changelog_actions) for s in group.symbols]
         index_path = f"{dir_name}/index.md"
         path_contents[index_path] = render_group_index(
@@ -204,7 +203,6 @@ def generate_docs(
             contexts,
             group_config,
             changelog_actions,
-            examples_dir=examples_dir,
             docs_dir=docs_dir,
             pkg_src_dir=pkg_src_dir,
             pkg_import_name=pkg_import_name,
@@ -216,6 +214,9 @@ def generate_docs(
                 if docs_dir and pkg_src_dir:
                     symbol_doc_path = docs_dir / symbol_path
                     symbol_changes = build_symbol_changes(ctx.symbol.name, changelog_actions)
+                    example_link = _build_example_link(
+                        ctx.symbol.name, group.name, examples_set, examples_dir, "../../examples/"
+                    )
                     path_contents[symbol_path] = render_symbol_page(
                         ctx,
                         group,
@@ -225,6 +226,7 @@ def generate_docs(
                         changes=symbol_changes,
                         changelog_actions=changelog_actions,
                         has_env_vars_fn=has_env_vars,
+                        example_link=example_link,
                     )
                 else:
                     path_contents[symbol_path] = f"# {ctx.symbol.name}\n"

@@ -6,6 +6,7 @@ from pkg_ext._internal.generation.docs import GeneratedDocsOutput
 from pkg_ext._internal.generation.docs_mkdocs import (
     MkdocsSection,
     NavItem,
+    _render_nav_yaml,
     copy_readme_as_index,
     extract_complex_symbols,
     generate_mkdocs_nav,
@@ -149,3 +150,54 @@ def test_write_docs_files_idempotent(tmp_path: Path):
     content2 = (docs_dir / "config/index.md").read_text()
     assert count1 == count2 == 1
     assert content1 == content2
+
+
+def test_generate_mkdocs_nav_with_examples():
+    api_dump = PublicApiDump(
+        pkg_import_name="my_pkg",
+        version="1.0.0",
+        dumped_at=datetime.now(UTC),
+        groups=[GroupDump(name="sections", symbols=[])],
+    )
+    examples_include = {"sections": ["parse_sections", "CommentConfig"]}
+    nav = generate_mkdocs_nav(api_dump, "my_pkg", examples_include=examples_include)
+    sections_nav = nav[1]["sections"]
+    assert isinstance(sections_nav, list)
+    assert {"Overview": "sections/index.md"} in sections_nav
+    examples_entry = sections_nav[-1]
+    assert "Examples" in examples_entry
+    example_children = examples_entry["Examples"]
+    assert isinstance(example_children, list)
+    assert {"parse_sections": "examples/sections/parse_sections.md"} in example_children
+    assert {"CommentConfig": "examples/sections/CommentConfig.md"} in example_children
+
+
+def test_generate_mkdocs_nav_flat_group_becomes_nested_with_examples():
+    api_dump = PublicApiDump(
+        pkg_import_name="my_pkg",
+        version="1.0.0",
+        dumped_at=datetime.now(UTC),
+        groups=[GroupDump(name="config", symbols=[])],
+    )
+    nav_without = generate_mkdocs_nav(api_dump, "my_pkg")
+    assert nav_without[1] == {"config": "config/index.md"}
+
+    nav_with = generate_mkdocs_nav(api_dump, "my_pkg", examples_include={"config": ["load"]})
+    children = nav_with[1]["config"]
+    assert isinstance(children, list)
+    assert {"Overview": "config/index.md"} in children
+
+
+def test_render_nav_yaml_with_examples():
+    nav: list[NavItem] = [
+        {"Home": "index.md"},
+        {
+            "sections": [
+                {"Overview": "sections/index.md"},
+                {"Examples": [{"parse_sections": "examples/sections/parse_sections.md"}]},
+            ]
+        },
+    ]
+    yaml = _render_nav_yaml(nav)
+    assert "      - parse_sections: examples/sections/parse_sections.md" in yaml
+    assert "    - Examples:" in yaml

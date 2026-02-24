@@ -112,6 +112,75 @@ def test_check_examples_exist_all_present(settings: PkgSettings):
     assert check_examples_exist(settings) == []
 
 
+def test_build_example_prompt_filter_group(settings: PkgSettings):
+    api_dump = _api_dump(settings.pkg_import_name)
+    config = ProjectConfig(
+        groups={
+            "sections": GroupConfig(examples_include=["parse_sections"]),
+            "other": GroupConfig(examples_include=["other_func"]),
+        }
+    )
+    prompt = build_example_prompt(settings, api_dump, config, filter_group="sections")
+    assert "parse_sections" in prompt
+    assert "other_func" not in prompt
+
+
+def test_build_example_prompt_filter_group_not_found(settings: PkgSettings):
+    api_dump = _api_dump(settings.pkg_import_name)
+    config = _config("parse_sections")
+    assert build_example_prompt(settings, api_dump, config, filter_group="nonexistent") == ""
+
+
+def test_build_example_prompt_with_related_types(settings: PkgSettings):
+    api_dump = PublicApiDump(
+        pkg_import_name=settings.pkg_import_name,
+        version="0.1.0",
+        dumped_at=datetime.now(UTC),
+        groups=[
+            GroupDump(
+                name="sections",
+                symbols=[
+                    FunctionDump(
+                        name="parse_sections",
+                        module_path="_internal.sections",
+                        docstring="Parse content.",
+                        signature=CallableSignature(
+                            parameters=[
+                                FuncParamInfo(
+                                    name="config",
+                                    kind=ParamKind.POSITIONAL_OR_KEYWORD,
+                                    type_annotation="SectionConfig",
+                                    type_imports=["my_pkg._internal.sections.SectionConfig"],
+                                ),
+                            ],
+                        ),
+                    ),
+                    ClassDump(
+                        name="SectionConfig",
+                        module_path="_internal.sections",
+                        docstring="Section config.",
+                        fields=[ClassFieldInfo(name="name", type_annotation="str")],
+                    ),
+                ],
+            ),
+        ],
+    )
+    config = _config("parse_sections")
+    prompt = build_example_prompt(settings, api_dump, config)
+    assert "SectionConfig" in prompt
+    assert "Related types" in prompt
+
+
+def test_build_example_prompt_with_test_file(settings: PkgSettings):
+    api_dump = _api_dump(settings.pkg_import_name)
+    config = _config("parse_sections")
+    test_file = settings.pkg_directory / "_internal" / "sections_test.py"
+    ensure_parents_write_text(test_file, "def test_parse(): pass")
+    prompt = build_example_prompt(settings, api_dump, config)
+    assert "Test code" in prompt
+    assert "def test_parse(): pass" in prompt
+
+
 def test_build_example_prompt_class_dump(settings: PkgSettings):
     api_dump = PublicApiDump(
         pkg_import_name=settings.pkg_import_name,

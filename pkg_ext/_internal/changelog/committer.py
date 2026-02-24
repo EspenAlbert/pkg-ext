@@ -6,7 +6,7 @@ from contextlib import suppress
 from ask_shell._internal.rich_live import print_to_live
 from rich.markdown import Markdown
 
-from pkg_ext._internal.changelog.actions import FixAction, parse_changelog_actions
+from pkg_ext._internal.changelog.actions import FixAction, parse_changelog_file_path
 from pkg_ext._internal.changelog.rebase import (
     UnmatchedResolution,
     apply_remap_to_file,
@@ -158,23 +158,24 @@ def _refresh_tool_state_shas(tool_state: PkgExtState, remap: dict[str, str], sha
 
 
 def _resolve_stale_shas(ctx: pkg_ctx) -> None:
-    tool_state = ctx.tool_state
+    changelog_path = ctx.changelog_path
+    if not changelog_path.exists():
+        return
     commits = ctx.git_changes.commits
     if not commits:
         return
-    all_actions = parse_changelog_actions(tool_state.changelog_dir)
-    fix_actions = [a for a in all_actions if isinstance(a, FixAction)]
+    actions = parse_changelog_file_path(changelog_path)
+    fix_actions = [a for a in actions if isinstance(a, FixAction)]
     stale = find_stale_shas(fix_actions, commits)
     if not stale:
         return
     remap, unmatched = build_sha_remap(stale, commits)
     shas_to_remove = _resolve_unmatched(unmatched, commits, remap)
-    for yaml_file in tool_state.changelog_dir.rglob("*.yaml"):
-        if remap:
-            apply_remap_to_file(yaml_file, remap)
-        if shas_to_remove:
-            remove_actions_from_file(yaml_file, shas_to_remove)
-    _refresh_tool_state_shas(tool_state, remap, shas_to_remove)
+    if remap:
+        apply_remap_to_file(changelog_path, remap)
+    if shas_to_remove:
+        remove_actions_from_file(changelog_path, shas_to_remove)
+    _refresh_tool_state_shas(ctx.tool_state, remap, shas_to_remove)
     kept_stale = len(unmatched) - len(shas_to_remove)
     logger.info(f"Rebased changelog: {len(remap)} remapped, {len(shas_to_remove)} removed, {kept_stale} kept stale")
 

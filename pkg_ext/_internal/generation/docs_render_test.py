@@ -261,3 +261,38 @@ def test_render_cli_params_table_with_choices():
     ]
     table = render_cli_params_table(params)
     assert "[json, yaml]" in table
+
+
+def test_render_inline_symbol_with_field_table():
+    from pkg_ext._internal.generation.docs import SymbolContext
+
+    cls = _class_with_fields("Config", description="Timeout in seconds")
+    ctx = SymbolContext(symbol=cls)
+    content = render_inline_symbol(ctx)
+    assert "| Field | Type | Default |" in content
+    assert "Timeout in seconds" in content
+
+
+def test_render_inline_symbol_with_cli_params():
+    from pkg_ext._internal.generation.docs import SymbolContext
+
+    cmd = _cli_cmd_dump(
+        "chore",
+        [
+            CLIParamInfo(param_name="description", type_annotation="str", flags=["--description"], required=True),
+        ],
+    )
+    ctx = SymbolContext(symbol=cmd)
+    content = render_inline_symbol(ctx)
+    assert "**CLI Options:**" in content
+    assert "`--description`" in content
+
+
+def test_render_inline_symbol_with_example_link():
+    from pkg_ext._internal.generation.docs import SymbolContext
+
+    func = _func_dump("load")
+    ctx = SymbolContext(symbol=func)
+    content = render_inline_symbol(ctx, example_link=("../examples/config/load.md", "Load config from file"))
+    assert "- [Example: Load config from file](../examples/config/load.md)" in content
+    assert content.index("Example:") < content.index("```python")

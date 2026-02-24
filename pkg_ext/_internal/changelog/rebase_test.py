@@ -105,6 +105,13 @@ def test_remove_actions_from_file(tmp_path: Path):
     assert "bbb222" not in content
 
 
+def test_remove_actions_from_file_all_removed(tmp_path: Path):
+    path = tmp_path / "001.yaml"
+    dump_changelog_actions(path, [_fix("aaa111", "fix: remove me")])
+    remove_actions_from_file(path, {"aaa111"})
+    assert not path.exists()
+
+
 def test_prompt_unmatched_fix_pick():
     module_name = prompt_unmatched_fix.__module__
     commits = [_commit("new111", "fix: A")]

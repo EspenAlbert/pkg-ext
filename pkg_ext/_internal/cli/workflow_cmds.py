@@ -119,7 +119,8 @@ def generate_docs_for_pkg(
     )
     count = docs_mkdocs.write_docs_files(output, docs_dir)
     complex_symbols = docs_mkdocs.extract_complex_symbols(output, api_dump.groups)
-    nav = docs_mkdocs.generate_mkdocs_nav(api_dump, settings.pkg_import_name, complex_symbols)
+    examples_include = {name: gc.examples_include for name, gc in config.groups.items() if gc.examples_include}
+    nav = docs_mkdocs.generate_mkdocs_nav(api_dump, settings.pkg_import_name, complex_symbols, examples_include)
     docs_mkdocs.write_mkdocs_yml(settings.mkdocs_yml, settings.pkg_import_name, nav, config.mkdocs_skip_sections)
     return count
 

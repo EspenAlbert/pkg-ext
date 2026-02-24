@@ -295,6 +295,22 @@ def calculate_source_link(
     return str(rel_path)
 
 
+def _render_symbol_type_table(symbol: SymbolDump, changelog_actions: Sequence[ChangelogAction]) -> str | None:
+    if isinstance(symbol, CLICommandDump) and symbol.cli_params:
+        if table := render_cli_params_table(symbol.cli_params):
+            return "\n".join(["**CLI Options:**", "", table])
+    if isinstance(symbol, ClassDump) and symbol.fields:
+        field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions)
+        if should_show_field_table(symbol.fields, field_versions):
+            return render_field_table(symbol.fields, field_versions)
+    return None
+
+
+def _format_example_link(example_link: tuple[str, str]) -> str:
+    url, desc = example_link
+    return f"- [Example: {desc}]({url})" if desc else f"- [Example]({url})"
+
+
 def render_inline_symbol(
     ctx: SymbolContext,
     changelog_actions: Sequence[ChangelogAction] | None = None,
@@ -303,17 +319,14 @@ def render_inline_symbol(
     symbol_doc_path: Path | None = None,
     pkg_src_dir: Path | None = None,
     pkg_import_name: str | None = None,
+    example_link: tuple[str, str] | None = None,
 ) -> str:
     symbol = ctx.symbol
-    type_label = symbol.type.value
-    sig = format_signature(symbol)
     changelog_actions = changelog_actions or []
 
-    since_version = get_symbol_since_version(symbol.name, changelog_actions)
-    since_badge = render_since_badge(since_version)
-
+    since_badge = render_since_badge(get_symbol_since_version(symbol.name, changelog_actions))
     anchor_id = f"{slug(symbol.name)}_def"
-    lines = [f'<a id="{anchor_id}"></a>\n\n### {type_label}: `{symbol.name}`']
+    lines = [f'<a id="{anchor_id}"></a>\n\n### {symbol.type.value}: `{symbol.name}`']
     if symbol_doc_path and pkg_src_dir and pkg_import_name:
         source_link = calculate_source_link(
             symbol_doc_path,
@@ -323,24 +336,17 @@ def render_inline_symbol(
             symbol.line_number,
         )
         lines.append(f"- [source]({source_link})")
+    if example_link:
+        lines.append(_format_example_link(example_link))
     if since_badge:
         lines.append(since_badge)
-    lines.extend(["", "```python", sig, "```"])
+    lines.extend(["", "```python", format_signature(symbol), "```"])
 
     docstring = format_docstring(symbol.docstring)
     if docstring:
         lines.extend(["", docstring])
-
-    if isinstance(symbol, CLICommandDump) and symbol.cli_params:
-        if table := render_cli_params_table(symbol.cli_params):
-            lines.extend(["", "**CLI Options:**", "", table])
-
-    if isinstance(symbol, ClassDump) and symbol.fields:
-        field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions)
-        if should_show_field_table(symbol.fields, field_versions):
-            if table := render_field_table(symbol.fields, field_versions):
-                lines.extend(["", table])
-
+    if type_table := _render_symbol_type_table(symbol, changelog_actions):
+        lines.extend(["", type_table])
     if changes:
         lines.extend(["", _render_changes_content(changes)])
 
@@ -352,20 +358,21 @@ def _render_symbol_main_section(
     group: GroupDump,
     source_link: str,
     changelog_actions: Sequence[ChangelogAction],
+    example_link: tuple[str, str] | None = None,
 ) -> str:
     section_id = f"{slug(symbol.name)}_def"
-    type_label = symbol.type.value
     stability = render_stability_badge(symbol.name, group.name, changelog_actions)
     since_badge = render_since_badge(get_symbol_since_version(symbol.name, changelog_actions))
-    sig = format_signature(symbol)
     docstring = format_docstring(symbol.docstring)
 
-    lines = [f"## {type_label}: {symbol.name}", f"- [source]({source_link})"]
+    lines = [f"## {symbol.type.value}: {symbol.name}", f"- [source]({source_link})"]
+    if example_link:
+        lines.append(_format_example_link(example_link))
     if stability:
         lines.append(stability)
     if since_badge:
         lines.append(since_badge)
-    lines.extend(["", "```python", sig, "```"])
+    lines.extend(["", "```python", format_signature(symbol), "```"])
     if docstring:
         lines.extend(["", docstring])
     return wrap_section("\n".join(lines), section_id, PKG_EXT_TOOL_NAME, MD_CONFIG)
@@ -381,6 +388,7 @@ def render_symbol_page(
     changelog_actions: Sequence[ChangelogAction] | None = None,
     *,
     has_env_vars_fn=None,
+    example_link: tuple[str, str] | None = None,
 ) -> str:
     symbol = ctx.symbol
     changelog_actions = changelog_actions or []
@@ -392,7 +400,7 @@ def render_symbol_page(
         pkg_import_name,
         symbol.line_number,
     )
-    main_content = _render_symbol_main_section(symbol, group, source_link, changelog_actions)
+    main_content = _render_symbol_main_section(symbol, group, source_link, changelog_actions, example_link)
     parts = [f"# {symbol.name}", "", main_content]
 
     if has_env_vars_fn and isinstance(symbol, ClassDump) and has_env_vars_fn(symbol):

@@ -1,5 +1,7 @@
 from pathlib import Path
+from unittest.mock import patch
 
+from pkg_ext._internal.changelog import change_base
 from pkg_ext._internal.changelog.actions import (
     ChoreAction,
     MakePublicAction,
@@ -9,7 +11,9 @@ from pkg_ext._internal.changelog.actions import (
 )
 from pkg_ext._internal.changelog.change_base import (
     consolidate_changelog_files,
+    find_changelog_files_in_diff,
     find_foreign_changelog_files,
+    validate_no_foreign_changelog,
 )
 
 
@@ -49,3 +53,50 @@ def test_consolidate_preserves_existing_target(tmp_path: Path):
     actions = parse_changelog_file_path(target)
     assert len(actions) == 2
     assert not source.exists()
+
+
+def _mock_run_result(stdout: str):
+    class _Result:
+        def __init__(self):
+            self.stdout = stdout
+
+    return _Result()
+
+
+def test_find_changelog_files_in_diff(tmp_path: Path):
+    changelog_dir = tmp_path / ".changelog"
+    changelog_dir.mkdir()
+    (changelog_dir / "015.yaml").write_text("actions: []")
+    (changelog_dir / "016.yaml").write_text("actions: []")
+
+    module_name = change_base.find_changelog_files_in_diff.__module__
+    with patch(
+        f"{module_name}.run_and_wait", return_value=_mock_run_result(".changelog/015.yaml\n.changelog/016.yaml\n")
+    ):
+        result = find_changelog_files_in_diff(tmp_path, changelog_dir, "main")
+    assert len(result) == 2
+    assert all(p.suffix == ".yaml" for p in result)
+
+
+def test_find_changelog_files_in_diff_empty(tmp_path: Path):
+    changelog_dir = tmp_path / ".changelog"
+    changelog_dir.mkdir()
+    module_name = change_base.find_changelog_files_in_diff.__module__
+    with patch(f"{module_name}.run_and_wait", return_value=_mock_run_result("")):
+        result = find_changelog_files_in_diff(tmp_path, changelog_dir, "main")
+    assert result == []
+
+
+def test_validate_no_foreign_changelog(tmp_path: Path):
+    changelog_dir = tmp_path / ".changelog"
+    changelog_dir.mkdir()
+    (changelog_dir / "015.yaml").write_text("actions: []")
+    (changelog_dir / "016.yaml").write_text("actions: []")
+
+    module_name = change_base.find_changelog_files_in_diff.__module__
+    with patch(
+        f"{module_name}.run_and_wait", return_value=_mock_run_result(".changelog/015.yaml\n.changelog/016.yaml\n")
+    ):
+        foreign = validate_no_foreign_changelog(tmp_path, changelog_dir, "main", 16)
+    assert len(foreign) == 1
+    assert foreign[0].stem == "015"
