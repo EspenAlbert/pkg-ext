@@ -103,7 +103,7 @@ Update changelog and regenerate docs (bot mode, writes to -dev files).
 
 ### cli_command: `change_base`
 - [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L283)
-> **Since:** unreleased
+> **Since:** 0.4.0
 
 ```python
 def change_base(*, new_base: str = ..., pr_number: int = 0):
@@ -123,5 +123,5 @@ Consolidate changelog files from closed PRs after re-targeting a stacked PR.
 
 | Version | Change |
 |---------|--------|
-| unreleased | Made public |
+| 0.4.0 | Made public |
 <!-- === OK_EDIT: pkg-ext change_base_def === -->

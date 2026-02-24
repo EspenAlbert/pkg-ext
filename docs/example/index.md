@@ -17,7 +17,7 @@
 
 ### cli_command: `check_examples`
 - [source](../../pkg_ext/_internal/cli/example_cmds.py#L33)
-> **Since:** unreleased
+> **Since:** 0.4.0
 
 ```python
 def check_examples():
@@ -30,14 +30,14 @@ Verify all symbols in examples_include have corresponding .md files.
 
 | Version | Change |
 |---------|--------|
-| unreleased | Made public |
+| 0.4.0 | Made public |
 <!-- === OK_EDIT: pkg-ext check_examples_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext gen_example_prompt_def === -->
 <a id="gen_example_prompt_def"></a>
 
 ### cli_command: `gen_example_prompt`
 - [source](../../pkg_ext/_internal/cli/example_cmds.py#L16)
-> **Since:** unreleased
+> **Since:** 0.4.0
 
 ```python
 def gen_example_prompt(*, group: str | None = ...):
@@ -56,5 +56,5 @@ Build an AI prompt for missing example docs and copy to clipboard.
 
 | Version | Change |
 |---------|--------|
-| unreleased | Made public |
+| 0.4.0 | Made public |
 <!-- === OK_EDIT: pkg-ext gen_example_prompt_def === -->

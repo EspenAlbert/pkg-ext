@@ -9,7 +9,7 @@ from pkg_ext import workflows
 from pkg_ext import api_dump
 from pkg_ext._internal.settings import PkgSettings
 
-VERSION = "0.3.5"
+VERSION = "0.4.0"
 __all__ = [
     "api_commands",
     "changelog",

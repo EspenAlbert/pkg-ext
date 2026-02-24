@@ -131,3 +131,8 @@ author: Espen Albert
 ignored: true
 message: 'fix(docs): update example link paths in generated documentation'
 short_sha: 40b0dc
+---
+name: 0.4.0
+ts: 2026-02-24 23:39:30.086256+00:00
+type: release
+old_version: 0.3.5

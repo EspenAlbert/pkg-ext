@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0 2026-02-24T23-39Z
+
+### Example
+- New function `gen_example_prompt`
+- New function `check_examples`
+
+### Generate
+- Removed `generate.gen_examples`
+- Removed `generate.gen_tests`
+
+### Workflows
+- New function `change_base`
+
+
 ## 0.3.5 2026-02-17T21-21Z
 
 ### Workflows

@@ -1,5 +1,5 @@
 pkg_import_name: pkg_ext
-version: 0.3.5
+version: 0.4.0
 groups:
 - name: __ROOT__
   symbols:
@@ -1417,10 +1417,55 @@ groups:
       hidden: false
 - name: workflows
   symbols:
+  - name: change_base
+    module_path: _internal.cli.workflow_cmds
+    docstring: Consolidate changelog files from closed PRs after re-targeting a stacked PR.
+    line_number: 283
+    type: cli_command
+    signature:
+      parameters:
+      - name: ctx
+        kind: positional_or_keyword
+        type_annotation: Context
+        type_imports:
+        - typer.models.Context
+      - name: new_base
+        kind: positional_or_keyword
+        type_annotation: str
+        type_imports: []
+        default:
+          value_repr: <typer.models.OptionInfo object>
+          is_factory: false
+      - name: pr_number
+        kind: positional_or_keyword
+        type_annotation: int
+        type_imports: []
+        default:
+          value_repr: <typer.models.OptionInfo object>
+          is_factory: false
+      return_type_imports: []
+    cli_params:
+    - param_name: new_base
+      type_annotation: str
+      flags:
+      - --new-base
+      help: The new base branch (e.g., 'main')
+      required: true
+      is_argument: false
+      hidden: false
+    - param_name: pr_number
+      type_annotation: int
+      flags:
+      - --pr
+      help: Use this if the HEAD commit is not a merge
+      default_repr: '0'
+      required: false
+      is_argument: false
+      hidden: false
   - name: post_merge
     module_path: _internal.cli.workflow_cmds
     docstring: ''
-    line_number: 121
+    line_number: 127
     type: cli_command
     signature:
       parameters:
@@ -1498,7 +1543,7 @@ groups:
   - name: pre_change
     module_path: _internal.cli.workflow_cmds
     docstring: Handle new symbols, update changelog, optionally sync files and docs.
-    line_number: 197
+    line_number: 203
     type: cli_command
     signature:
       parameters:
@@ -1629,7 +1674,7 @@ groups:
   - name: pre_commit
     module_path: _internal.cli.workflow_cmds
     docstring: Update changelog and regenerate docs (bot mode, writes to -dev files).
-    line_number: 231
+    line_number: 237
     type: cli_command
     signature:
       parameters:
@@ -1694,4 +1739,4 @@ groups:
       required: false
       is_argument: false
       hidden: false
-dumped_at: 2026-02-24 22:04:23.947164+00:00
+dumped_at: 2026-02-24 23:39:30.016526+00:00
