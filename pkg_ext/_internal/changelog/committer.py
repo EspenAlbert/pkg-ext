@@ -1,11 +1,20 @@
 import difflib
+import logging
 from collections import Counter
 from contextlib import suppress
 
 from ask_shell._internal.rich_live import print_to_live
 from rich.markdown import Markdown
 
-from pkg_ext._internal.changelog.actions import FixAction
+from pkg_ext._internal.changelog.actions import FixAction, parse_changelog_actions
+from pkg_ext._internal.changelog.rebase import (
+    UnmatchedResolution,
+    apply_remap_to_file,
+    build_sha_remap,
+    find_stale_shas,
+    prompt_unmatched_fix,
+    remove_actions_from_file,
+)
 from pkg_ext._internal.context import pkg_ctx
 from pkg_ext._internal.errors import NoPublicGroupMatch
 from pkg_ext._internal.git_usage.state import GitCommit
@@ -17,6 +26,9 @@ from pkg_ext._internal.interactive import (
     select_group_name_or_skip,
 )
 from pkg_ext._internal.models import PublicGroup, PublicGroups, as_module_path
+from pkg_ext._internal.pkg_state import PkgExtState
+
+logger = logging.getLogger(__name__)
 
 
 def py_diff(old: str, new: str) -> str:
@@ -123,7 +135,52 @@ def fix_changelog_action(commit: GitCommit, ctx: pkg_ctx) -> FixAction | None:
     return fix
 
 
+def _resolve_unmatched(unmatched: list[FixAction], commits: list[GitCommit], remap: dict[str, str]) -> set[str]:
+    shas_to_remove: set[str] = set()
+    for action in unmatched:
+        resolution, new_sha = prompt_unmatched_fix(action, commits)
+        if resolution == UnmatchedResolution.PICK_COMMIT:
+            remap[action.short_sha] = new_sha
+        elif resolution == UnmatchedResolution.REMOVE_ENTRY:
+            shas_to_remove.add(action.short_sha)
+    return shas_to_remove
+
+
+def _refresh_tool_state_shas(tool_state: PkgExtState, remap: dict[str, str], shas_to_remove: set[str]) -> None:
+    for old_sha, new_sha in remap.items():
+        for sha_set in (tool_state.ignored_shas, tool_state.included_shas):
+            if old_sha in sha_set:
+                sha_set.discard(old_sha)
+                sha_set.add(new_sha)
+    for sha in shas_to_remove:
+        tool_state.ignored_shas.discard(sha)
+        tool_state.included_shas.discard(sha)
+
+
+def _resolve_stale_shas(ctx: pkg_ctx) -> None:
+    tool_state = ctx.tool_state
+    commits = ctx.git_changes.commits
+    if not commits:
+        return
+    all_actions = parse_changelog_actions(tool_state.changelog_dir)
+    fix_actions = [a for a in all_actions if isinstance(a, FixAction)]
+    stale = find_stale_shas(fix_actions, commits)
+    if not stale:
+        return
+    remap, unmatched = build_sha_remap(stale, commits)
+    shas_to_remove = _resolve_unmatched(unmatched, commits, remap)
+    for yaml_file in tool_state.changelog_dir.rglob("*.yaml"):
+        if remap:
+            apply_remap_to_file(yaml_file, remap)
+        if shas_to_remove:
+            remove_actions_from_file(yaml_file, shas_to_remove)
+    _refresh_tool_state_shas(tool_state, remap, shas_to_remove)
+    kept_stale = len(unmatched) - len(shas_to_remove)
+    logger.info(f"Rebased changelog: {len(remap)} remapped, {len(shas_to_remove)} removed, {kept_stale} kept stale")
+
+
 def add_git_changes(ctx: pkg_ctx) -> None:
+    _resolve_stale_shas(ctx)
     git_changes = ctx.git_changes
     commit_fix_prefixes = ctx.settings.commit_fix_prefixes
     tool_state = ctx.tool_state
