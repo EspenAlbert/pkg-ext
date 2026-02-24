@@ -264,4 +264,4 @@ def test_generate_docs_own_page_symbol_with_example(tmp_path: Path):
     config = ProjectConfig(groups={"config": GroupConfig(examples_include=["EnvClass"])})
     result = generate_docs(api_dump, config, [], docs_dir=docs_dir, pkg_src_dir=tmp_path)
     page_content = result.path_contents["config/envclass.md"]
-    assert "- [Example: Environment configuration](../../examples/config/EnvClass.md)" in page_content
+    assert "- [Example: Environment configuration](../examples/config/EnvClass.md)" in page_content

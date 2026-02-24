@@ -215,7 +215,7 @@ def generate_docs(
                     symbol_doc_path = docs_dir / symbol_path
                     symbol_changes = build_symbol_changes(ctx.symbol.name, changelog_actions)
                     example_link = _build_example_link(
-                        ctx.symbol.name, group.name, examples_set, examples_dir, "../../examples/"
+                        ctx.symbol.name, group.name, examples_set, examples_dir, "../examples/"
                     )
                     path_contents[symbol_path] = render_symbol_page(
                         ctx,
