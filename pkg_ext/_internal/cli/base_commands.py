@@ -103,6 +103,7 @@ def main(
 # Register commands from other modules (imports must be after app creation to avoid circular imports)
 from pkg_ext._internal.cli.api_cmds import diff_api, dump_api  # noqa: E402
 from pkg_ext._internal.cli.changelog_cmds import chore, promote, release_notes  # noqa: E402
+from pkg_ext._internal.cli.example_cmds import check_examples, gen_example_prompt  # noqa: E402
 from pkg_ext._internal.cli.gen_cmds import gen_docs, gen_tests  # noqa: E402
 from pkg_ext._internal.cli.stability_cmds import dep, exp, ga  # noqa: E402
 from pkg_ext._internal.cli.workflow_cmds import post_merge, pre_change, pre_commit  # noqa: E402
@@ -120,3 +121,5 @@ app.command(name="docs")(gen_docs)
 app.command()(dump_api)
 app.command()(diff_api)
 app.command()(release_notes)
+app.command()(gen_example_prompt)
+app.command()(check_examples)

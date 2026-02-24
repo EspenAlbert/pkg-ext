@@ -118,6 +118,13 @@ class PkgSettings(BaseSettings):
         return self.state_dir / self.DOCS_DIR_NAME
 
     @property
+    def examples_dir(self) -> Path:
+        return self.docs_dir / "examples"
+
+    def example_file_path(self, group_name: str, symbol_name: str) -> Path:
+        return self.examples_dir / group_name / f"{symbol_name}.md"
+
+    @property
     def mkdocs_yml(self) -> Path:
         return self.state_dir / "mkdocs.yml"
 
