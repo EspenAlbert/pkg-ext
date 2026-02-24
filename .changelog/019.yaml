@@ -1,0 +1,133 @@
+name: gen_examples
+ts: 2026-02-24 21:23:05.586821+00:00
+type: delete
+group: generate
+---
+name: check_examples_exist
+ts: 2026-02-24 21:23:17.029179+00:00
+type: keep_private
+full_path: _internal.examples.check_examples_exist
+---
+name: build_example_prompt
+ts: 2026-02-24 21:23:17.029258+00:00
+type: keep_private
+full_path: _internal.examples.build_example_prompt
+---
+name: add_to_clipboard
+ts: 2026-02-24 21:23:19.997342+00:00
+type: keep_private
+full_path: _internal.clipboard.add_to_clipboard
+---
+name: example
+ts: 2026-02-24 21:24:40.722618+00:00
+type: group_module
+module_path: _internal.cli.example_cmds
+---
+name: gen_example_prompt
+ts: 2026-02-24 21:24:40.725290+00:00
+type: make_public
+details: CLI command in _internal/cli/example_cmds.py
+full_path: _internal.cli.example_cmds.gen_example_prompt
+group: example
+---
+name: check_examples
+ts: 2026-02-24 21:24:40.729870+00:00
+type: make_public
+details: CLI command in _internal/cli/example_cmds.py
+full_path: _internal.cli.example_cmds.check_examples
+group: example
+---
+name: render_examples_section
+ts: 2026-02-24 21:52:28.093042+00:00
+type: keep_private
+full_path: _internal.generation.docs.render_examples_section
+---
+name: parse_description_comment
+ts: 2026-02-24 21:52:31.417379+00:00
+type: keep_private
+full_path: _internal.examples.parse_description_comment
+---
+name: filter_group_by_examples_include
+ts: 2026-02-24 21:52:31.417444+00:00
+type: keep_private
+full_path: _internal.examples.filter_group_by_examples_include
+---
+name: _ExampleMetadata
+ts: 2026-02-24 21:52:33.760131+00:00
+type: keep_private
+full_path: _internal.examples._ExampleMetadata
+---
+name: gen_tests
+ts: 2026-02-24 22:35:51.133326+00:00
+type: delete
+group: generate
+---
+name: change_base
+ts: 2026-02-24 22:35:51.162716+00:00
+type: make_public
+details: CLI command in _internal/cli/workflow_cmds.py
+full_path: _internal.cli.workflow_cmds.change_base
+group: workflows
+---
+name: find_changelog_files_in_diff
+ts: 2026-02-24 22:35:54.559048+00:00
+type: keep_private
+full_path: _internal.changelog.change_base.find_changelog_files_in_diff
+---
+name: find_foreign_changelog_files
+ts: 2026-02-24 22:35:54.559195+00:00
+type: keep_private
+full_path: _internal.changelog.change_base.find_foreign_changelog_files
+---
+name: consolidate_changelog_files
+ts: 2026-02-24 22:35:54.559206+00:00
+type: keep_private
+full_path: _internal.changelog.change_base.consolidate_changelog_files
+---
+name: validate_no_foreign_changelog
+ts: 2026-02-24 22:35:54.559215+00:00
+type: keep_private
+full_path: _internal.changelog.change_base.validate_no_foreign_changelog
+---
+name: find_stale_shas
+ts: 2026-02-24 23:07:09.052908+00:00
+type: keep_private
+full_path: _internal.changelog.rebase.find_stale_shas
+---
+name: match_by_message
+ts: 2026-02-24 23:07:09.052965+00:00
+type: keep_private
+full_path: _internal.changelog.rebase.match_by_message
+---
+name: build_sha_remap
+ts: 2026-02-24 23:07:09.052973+00:00
+type: keep_private
+full_path: _internal.changelog.rebase.build_sha_remap
+---
+name: apply_remap_to_file
+ts: 2026-02-24 23:07:09.052977+00:00
+type: keep_private
+full_path: _internal.changelog.rebase.apply_remap_to_file
+---
+name: remove_actions_from_file
+ts: 2026-02-24 23:07:09.052981+00:00
+type: keep_private
+full_path: _internal.changelog.rebase.remove_actions_from_file
+---
+name: prompt_unmatched_fix
+ts: 2026-02-24 23:07:09.052985+00:00
+type: keep_private
+full_path: _internal.changelog.rebase.prompt_unmatched_fix
+---
+name: UnmatchedResolution
+ts: 2026-02-24 23:07:15.330819+00:00
+type: keep_private
+full_path: _internal.changelog.rebase.UnmatchedResolution
+---
+name: ''
+ts: 2026-02-24 23:07:23.317080+00:00
+type: fix
+author: Espen Albert
+ignored: true
+message: 'fix(docs): update example link paths in generated documentation'
+short_sha: 40b0dc

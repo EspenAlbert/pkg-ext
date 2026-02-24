@@ -3,6 +3,7 @@
 
 <!-- === OK_EDIT: pkg-ext header === -->
 <!-- === DO_NOT_EDIT: pkg-ext symbols === -->
+- [`change_base`](#change_base_def)
 - [`post_merge`](#post_merge_def)
 - [`pre_change`](#pre_change_def)
 - [`pre_commit`](#pre_commit_def)
@@ -14,7 +15,7 @@
 <a id="post_merge_def"></a>
 
 ### cli_command: `post_merge`
-- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L196)
+- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L127)
 > **Since:** 0.1.0
 
 ```python
@@ -41,7 +42,7 @@ def post_merge(*, explicit_pr: int = 0, push: bool = False, skip_clean_old_entri
 <a id="pre_change_def"></a>
 
 ### cli_command: `pre_change`
-- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L272)
+- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L203)
 > **Since:** 0.1.0
 
 ```python
@@ -49,7 +50,7 @@ def pre_change(*, group: str | None = ..., git_changes_since: GitSince = <GitSin
     ...
 ```
 
-Handle new symbols then generate examples and tests.
+Handle new symbols, update changelog, optionally sync files and docs.
 
 **CLI Options:**
 
@@ -73,7 +74,7 @@ Handle new symbols then generate examples and tests.
 <a id="pre_commit_def"></a>
 
 ### cli_command: `pre_commit`
-- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L313)
+- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L237)
 > **Since:** 0.1.0
 
 ```python
@@ -97,3 +98,30 @@ Update changelog and regenerate docs (bot mode, writes to -dev files).
 |---------|--------|
 | 0.1.0 | Made public |
 <!-- === OK_EDIT: pkg-ext pre_commit_def === -->
+<!-- === DO_NOT_EDIT: pkg-ext change_base_def === -->
+<a id="change_base_def"></a>
+
+### cli_command: `change_base`
+- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L283)
+> **Since:** unreleased
+
+```python
+def change_base(*, new_base: str = ..., pr_number: int = 0):
+    ...
+```
+
+Consolidate changelog files from closed PRs after re-targeting a stacked PR.
+
+**CLI Options:**
+
+| Flag | Type | Default | Description |
+|---|---|---|---|
+| `--new-base` | `str` | *required* | The new base branch (e.g., 'main') |
+| `--pr` | `int` | `0` | Use this if the HEAD commit is not a merge |
+
+### Changes
+
+| Version | Change |
+|---------|--------|
+| unreleased | Made public |
+<!-- === OK_EDIT: pkg-ext change_base_def === -->

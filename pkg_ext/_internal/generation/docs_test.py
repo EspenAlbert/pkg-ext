@@ -1,5 +1,7 @@
 from datetime import UTC, datetime
+from pathlib import Path
 
+from zero_3rdparty.file_utils import ensure_parents_write_text
 from zero_3rdparty.sections import parse_sections
 
 from pkg_ext._internal.changelog.actions import FixAction, MakePublicAction
@@ -64,9 +66,6 @@ def test_symbol_context_complexity():
     simple = SymbolContext(symbol=_func_dump("simple"))
     assert not simple.needs_own_page
 
-    with_examples = SymbolContext(symbol=_func_dump("ex"), has_examples=True)
-    assert with_examples.needs_own_page
-
     with_env = SymbolContext(symbol=_class_dump("env", "VAR"), has_env_vars=True)
     assert with_env.needs_own_page
 
@@ -77,7 +76,7 @@ def test_symbol_context_complexity():
 def test_build_symbol_context_only_make_public_not_complex():
     func = _func_dump("my_func")
     action = MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime.now(UTC))
-    ctx = build_symbol_context(func, "config", set(), [action])
+    ctx = build_symbol_context(func, "config", [action])
     assert not ctx.has_meaningful_changes
     assert not ctx.needs_own_page
 
@@ -85,20 +84,20 @@ def test_build_symbol_context_only_make_public_not_complex():
 def test_build_symbol_context_fix_action_is_complex():
     func = _func_dump("my_func")
     action = FixAction(name="my_func", short_sha="abc123", message="fix", ts=datetime.now(UTC))
-    ctx = build_symbol_context(func, "config", set(), [action])
+    ctx = build_symbol_context(func, "config", [action])
     assert ctx.has_meaningful_changes
     assert ctx.needs_own_page
 
 
 def test_build_symbol_context_primary_not_complex():
     func = _func_dump("config")
-    ctx = build_symbol_context(func, "config", set(), [])
+    ctx = build_symbol_context(func, "config", [])
     assert ctx.is_primary
     assert not ctx.needs_own_page
 
 
 def test_symbol_context_primary_overrides_complex():
-    ctx = SymbolContext(symbol=_func_dump("copy"), has_examples=True, is_primary=True)
+    ctx = SymbolContext(symbol=_func_dump("copy"), has_meaningful_changes=True, is_primary=True)
     assert ctx.is_primary
     assert not ctx.needs_own_page
 
@@ -158,7 +157,7 @@ def test_generate_docs_creates_index_and_complex_pages(project_config: ProjectCo
             )
         ],
     )
-    result = generate_docs(api_dump, project_config, {}, [])
+    result = generate_docs(api_dump, project_config, [])
     assert isinstance(result, GeneratedDocsOutput)
     assert "config/index.md" in result.path_contents
     assert "config/envclass.md" in result.path_contents
@@ -200,8 +199,69 @@ def test_generate_docs_primary_symbol_no_separate_file(project_config: ProjectCo
             )
         ],
     )
-    result = generate_docs(api_dump, project_config, {}, [])
+    result = generate_docs(api_dump, project_config, [])
     assert "copy/index.md" in result.path_contents
     assert "copy/copy.md" not in result.path_contents
     assert "copy/copyoptions.md" in result.path_contents
     assert "# copy" in result.path_contents["copy/index.md"]
+
+
+def test_render_group_index_with_examples(tmp_path: Path):
+    examples_dir = tmp_path / "docs" / "examples"
+    ensure_parents_write_text(
+        examples_dir / "sections" / "parse_sections.md",
+        "<!--\ndescription: Parse content into named sections\n-->\n# Example",
+    )
+    group = GroupDump(name="sections", symbols=[_func_dump("parse_sections")])
+    contexts = [SymbolContext(symbol=s) for s in group.symbols]
+    config = GroupConfig(examples_include=["parse_sections"])
+    content = render_group_index(group, contexts, config, docs_dir=tmp_path / "docs")
+    assert "- [Example: Parse content into named sections](../examples/sections/parse_sections.md)" in content
+
+
+def test_render_group_index_no_examples():
+    group = GroupDump(name="sections", symbols=[_func_dump("f")])
+    contexts = [SymbolContext(symbol=s) for s in group.symbols]
+    content = render_group_index(group, contexts, GroupConfig())
+    assert "Example" not in content
+
+
+def test_generate_docs_with_inline_example_links(tmp_path: Path):
+    docs_dir = tmp_path / "docs"
+    ensure_parents_write_text(
+        docs_dir / "examples" / "sections" / "parse_sections.md",
+        "<!--\ndescription: Parse content into named sections\n-->\n# Example",
+    )
+    api_dump = PublicApiDump(
+        pkg_import_name="my_pkg",
+        version="1.0.0",
+        dumped_at=datetime.now(UTC),
+        groups=[GroupDump(name="sections", symbols=[_func_dump("parse_sections")])],
+    )
+    config = ProjectConfig(groups={"sections": GroupConfig(examples_include=["parse_sections"])})
+    result = generate_docs(api_dump, config, [], docs_dir=docs_dir)
+    index_content = result.path_contents["sections/index.md"]
+    assert "- [Example: Parse content into named sections](../examples/sections/parse_sections.md)" in index_content
+
+
+def test_generate_docs_own_page_symbol_with_example(tmp_path: Path):
+    docs_dir = tmp_path / "docs"
+    ensure_parents_write_text(
+        docs_dir / "examples" / "config" / "EnvClass.md",
+        "<!--\ndescription: Environment configuration\n-->\n# Example",
+    )
+    api_dump = PublicApiDump(
+        pkg_import_name="my_pkg",
+        version="1.0.0",
+        dumped_at=datetime.now(UTC),
+        groups=[
+            GroupDump(
+                name="config",
+                symbols=[_class_dump("EnvClass", env_var="MY_VAR")],
+            )
+        ],
+    )
+    config = ProjectConfig(groups={"config": GroupConfig(examples_include=["EnvClass"])})
+    result = generate_docs(api_dump, config, [], docs_dir=docs_dir, pkg_src_dir=tmp_path)
+    page_content = result.path_contents["config/envclass.md"]
+    assert "- [Example: Environment configuration](../examples/config/EnvClass.md)" in page_content

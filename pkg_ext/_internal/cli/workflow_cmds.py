@@ -1,16 +1,19 @@
-"""Git workflow commands: pre_change, pre_commit, post_merge."""
+"""Git workflow commands: pre_change, pre_commit, post_merge, change_base."""
 
 import logging
 from pathlib import Path
-from typing import cast
 
 import typer
 from git import InvalidGitRepositoryError, Repo
-from zero_3rdparty.file_utils import ensure_parents_write_text
-from zero_3rdparty.sections import get_comment_config, parse_sections, replace_sections
 
-from pkg_ext._internal import api_dumper, py_format
-from pkg_ext._internal.changelog import parse_changelog_actions
+from pkg_ext._internal import api_dumper
+from pkg_ext._internal.changelog import changelog_filepath, parse_changelog_actions
+from pkg_ext._internal.changelog.change_base import (
+    consolidate_changelog_files,
+    find_changelog_files_in_diff,
+    find_foreign_changelog_files,
+    validate_no_foreign_changelog,
+)
 from pkg_ext._internal.cli.changelog_cmds import _create_chore_action
 from pkg_ext._internal.cli.options import (
     option_full,
@@ -28,7 +31,6 @@ from pkg_ext._internal.cli.options import (
 from pkg_ext._internal.cli.workflows import (
     GenerateApiInput,
     clean_old_entries,
-    create_api_dump,
     create_ctx,
     create_release_action,
     create_stability_ctx,
@@ -39,8 +41,8 @@ from pkg_ext._internal.cli.workflows import (
     update_changelog_entries,
     write_api_dump,
 )
-from pkg_ext._internal.config import PKG_EXT_TOOL_NAME, ProjectConfig, load_project_config
-from pkg_ext._internal.generation import docs, docs_mkdocs, example_gen, test_gen
+from pkg_ext._internal.config import load_project_config
+from pkg_ext._internal.generation import docs, docs_mkdocs
 from pkg_ext._internal.git_usage import GitSince, find_pr_info_or_none, head_merge_pr
 from pkg_ext._internal.models import PublicGroups
 from pkg_ext._internal.settings import PkgSettings
@@ -83,75 +85,11 @@ def check_generated_files_dirty(settings: PkgSettings) -> list[str]:
     return modified + untracked
 
 
-def generate_examples_for_groups(
-    settings: PkgSettings,
-    groups: list[api_dumper.GroupDump],
-    config: ProjectConfig | None = None,
-) -> int:
-    py_config = get_comment_config("file.py")
-    config = config or load_project_config(settings.repo_root)
-    generated_paths: list[Path] = []
-    for group_dump in groups:
-        if not (filtered := config.filter_group_for_examples(group_dump)):
-            logger.debug(f"Skipping examples for {group_dump.name}: no symbols enabled")
-            continue
-        path = settings.examples_file_path(filtered.name)
-        new_content = example_gen.generate_group_examples_file(filtered, settings.pkg_import_name)
-        if path.exists():
-            existing = path.read_text()
-            src_sections = {s.id: s.content for s in parse_sections(new_content, PKG_EXT_TOOL_NAME, py_config)}
-            merged = replace_sections(existing, src_sections, PKG_EXT_TOOL_NAME, py_config)
-            path.write_text(merged)
-        else:
-            ensure_parents_write_text(path, new_content)
-        logger.info(f"Generated examples: {path}")
-        generated_paths.append(path)
-    py_format.format_python_files(generated_paths, settings.format_command)
-    return len(generated_paths)
-
-
-def generate_tests_for_groups(
-    settings: PkgSettings,
-    groups: list[api_dumper.GroupDump],
-    config: ProjectConfig | None = None,
-) -> int:
-    py_config = get_comment_config("file.py")
-    config = config or load_project_config(settings.repo_root)
-    generated_paths: list[Path] = []
-    for group_dump in groups:
-        if not (filtered := config.filter_group_for_examples(group_dump)):
-            logger.debug(f"Skipping tests for {group_dump.name}: no symbols with examples")
-            continue
-        # Further filter to only testable types (functions/classes)
-        testable = [s for s in filtered.symbols if isinstance(s, api_dumper.FunctionDump | api_dumper.ClassDump)]
-        if not testable:
-            continue
-        filtered = api_dumper.GroupDump(
-            name=filtered.name,
-            symbols=cast(list[api_dumper.SymbolDump], testable),
-        )
-        path = settings.test_file_path(filtered.name)
-        new_content = test_gen.generate_group_test_file(filtered, settings.pkg_import_name)
-        if path.exists():
-            existing = path.read_text()
-            src_sections = {s.id: s.content for s in parse_sections(new_content, test_gen.TOOL_NAME, py_config)}
-            merged = replace_sections(existing, src_sections, test_gen.TOOL_NAME, py_config)
-            path.write_text(merged)
-        else:
-            ensure_parents_write_text(path, new_content)
-        logger.info(f"Generated tests: {path}")
-        generated_paths.append(path)
-    py_format.format_python_files(generated_paths, settings.format_command)
-    return len(generated_paths)
-
-
 def generate_docs_for_pkg(
     settings: PkgSettings,
     output_dir: Path | None = None,
     filter_group: str | None = None,
 ) -> int:
-    from pkg_ext._internal import api_dumper
-
     pkg_ctx = create_stability_ctx(settings)
     groups = settings.parse_computed_public_groups(PublicGroups)
     version = str(read_current_version(pkg_ctx))
@@ -161,20 +99,12 @@ def generate_docs_for_pkg(
     changelog_actions = parse_changelog_actions(settings.changelog_dir)
     docs_dir = output_dir or settings.docs_dir
 
-    example_symbols: dict[str, set[str]] = {}
-    groups_to_process = [api_dump.get_group(filter_group)] if filter_group else api_dump.groups
-    for group_dump in groups_to_process:
-        loaded = docs.load_examples_for_group(settings.pkg_import_name, group_dump.name)
-        example_symbols[group_dump.name] = set(loaded.keys())
-
     output = docs.generate_docs(
         api_dump=api_dump,
         config=config,
-        example_symbols=example_symbols,
         changelog_actions=changelog_actions,
         docs_dir=docs_dir,
         pkg_src_dir=settings.repo_root,
-        load_examples=True,
     )
     if filter_group:
         dir_name = docs.group_dir_name(api_dump.get_group(filter_group))
@@ -188,7 +118,8 @@ def generate_docs_for_pkg(
     )
     count = docs_mkdocs.write_docs_files(output, docs_dir)
     complex_symbols = docs_mkdocs.extract_complex_symbols(output, api_dump.groups)
-    nav = docs_mkdocs.generate_mkdocs_nav(api_dump, settings.pkg_import_name, complex_symbols)
+    examples_include = {name: gc.examples_include for name, gc in config.groups.items() if gc.examples_include}
+    nav = docs_mkdocs.generate_mkdocs_nav(api_dump, settings.pkg_import_name, complex_symbols, examples_include)
     docs_mkdocs.write_mkdocs_yml(settings.mkdocs_yml, settings.pkg_import_name, nav, config.mkdocs_skip_sections)
     return count
 
@@ -279,7 +210,7 @@ def pre_change(
     skip_open_in_editor: bool | None = option_skip_open_in_editor,
     keep_private: bool = option_keep_private,
 ):
-    """Handle new symbols then generate examples and tests."""
+    """Handle new symbols, update changelog, optionally sync files and docs."""
     settings: PkgSettings = ctx.obj
     if skip_open_in_editor is not None:
         settings.skip_open_in_editor = skip_open_in_editor
@@ -296,13 +227,6 @@ def pre_change(
     pkg_ctx = update_changelog_entries(api_input)
     if not pkg_ctx:
         return
-    api_dump = create_api_dump(settings)
-    groups = [api_dump.get_group(group)] if group else api_dump.groups
-    examples_count = generate_examples_for_groups(settings, groups)
-    tests_count = generate_tests_for_groups(settings, groups)
-    total = examples_count + tests_count
-    logger.info(f"Generated {total} files ({examples_count} examples, {tests_count} tests)")
-
     if not full:
         return
     settings.dev_mode = True
@@ -333,6 +257,19 @@ def pre_commit(
 
     _dump_diff_and_docs(settings, skip_docs)
 
+    if pr_info := find_pr_info_or_none(settings.repo_root):
+        foreign = validate_no_foreign_changelog(
+            settings.repo_root, settings.changelog_dir, pr_info.base_ref_name, pr_info.pr_number
+        )
+        if foreign:
+            stems = ", ".join(f.stem for f in foreign)
+            logger.error(
+                f"Found changelog files for other PRs: {stems}. "
+                "This usually means the PR base was changed. "
+                f"Run: pkg-ext change-base --new-base {pr_info.base_ref_name}"
+            )
+            raise typer.Exit(1)
+
     if skip_dirty_check:
         return
     if dirty_files := check_generated_files_dirty(settings):
@@ -341,3 +278,29 @@ def pre_commit(
             logger.error(f"  {f}")
         logger.error("Run `git add` on these files before committing.")
         raise typer.Exit(1)
+
+
+def change_base(
+    ctx: typer.Context,
+    new_base: str = typer.Option(..., "--new-base", help="The new base branch (e.g., 'main')"),
+    pr_number: int = option_pr,
+):
+    """Consolidate changelog files from closed PRs after re-targeting a stacked PR."""
+    settings: PkgSettings = ctx.obj
+    if not pr_number:
+        pr_info = find_pr_info_or_none(settings.repo_root)
+        if not pr_info:
+            logger.error("No active PR found. Use --pr to specify the PR number.")
+            raise typer.Exit(1)
+        pr_number = pr_info.pr_number
+
+    diff_files = find_changelog_files_in_diff(settings.repo_root, settings.changelog_dir, new_base)
+    foreign = find_foreign_changelog_files(diff_files, pr_number)
+    if not foreign:
+        logger.info("No foreign changelog files, nothing to consolidate")
+        return
+
+    target = changelog_filepath(settings.changelog_dir, pr_number)
+    consolidate_changelog_files(target, foreign)
+    stems = ", ".join(f.stem for f in foreign)
+    logger.info(f"Consolidated {len(foreign)} changelog files into {target.name}: {stems}")

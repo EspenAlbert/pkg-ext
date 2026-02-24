@@ -110,31 +110,31 @@ def extract_complex_symbols(output: GeneratedDocsOutput, groups: list[GroupDump]
     return result
 
 
-NavItem = dict[str, str | list[dict[str, str]]]
+NavChildItem = dict[str, str | list[dict[str, str]]]
+NavItem = dict[str, str | list[NavChildItem]]
 
 
 def generate_mkdocs_nav(
     api_dump: PublicApiDump,
     pkg_import_name: str,
     complex_symbols: dict[str, list[tuple[str, str]]] | None = None,
+    examples_include: dict[str, list[str]] | None = None,
 ) -> list[NavItem]:
-    """Generate mkdocs nav structure.
-
-    Args:
-        api_dump: The public API dump
-        pkg_import_name: Package import name for the root group label
-        complex_symbols: Dict mapping group names to lists of (symbol_name, filename) tuples
-    """
     complex_symbols = complex_symbols or {}
+    examples_include = examples_include or {}
     nav: list[NavItem] = [{"Home": "index.md"}]
     groups = sorted(api_dump.groups, key=lambda g: (g.name != ROOT_GROUP_NAME, g.name))
     for group in groups:
         dir_name = group_dir_name_for_nav(group.name)
         label = pkg_import_name if group.name == ROOT_GROUP_NAME else group.name
         group_complex = complex_symbols.get(group.name, [])
-        if group_complex:
-            children: list[dict[str, str]] = [{"Overview": f"{dir_name}/index.md"}]
+        group_examples = examples_include.get(group.name, [])
+        if group_complex or group_examples:
+            children: list[NavChildItem] = [{"Overview": f"{dir_name}/index.md"}]
             children.extend({name: f"{dir_name}/{filename}"} for name, filename in group_complex)
+            if group_examples:
+                example_children = [{sym: f"examples/{group.name}/{sym}.md"} for sym in group_examples]
+                children.append({"Examples": example_children})
             nav.append({label: children})
         else:
             nav.append({label: f"{dir_name}/index.md"})
@@ -150,8 +150,14 @@ def _render_nav_yaml(nav: list[NavItem]) -> str:
             else:
                 lines.append(f"  - {label}:")
                 for child in value:
-                    for child_label, child_path in child.items():
-                        lines.append(f"    - {child_label}: {child_path}")
+                    for child_label, child_value in child.items():
+                        if isinstance(child_value, str):
+                            lines.append(f"    - {child_label}: {child_value}")
+                        else:
+                            lines.append(f"    - {child_label}:")
+                            for grandchild in child_value:
+                                for gc_label, gc_path in grandchild.items():
+                                    lines.append(f"      - {gc_label}: {gc_path}")
     return "\n".join(lines)
 
 

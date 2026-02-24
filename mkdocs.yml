@@ -32,6 +32,7 @@ nav:
     - PublicApiDump: api_dump/publicapidump.md
     - TypeAliasDump: api_dump/typealiasdump.md
   - changelog: changelog/index.md
+  - example: example/index.md
   - generate: generate/index.md
   - stability: stability/index.md
   - workflows: workflows/index.md

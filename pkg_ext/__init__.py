@@ -2,9 +2,10 @@
 # flake8: noqa
 from pkg_ext import api_commands
 from pkg_ext import changelog
-from pkg_ext import workflows
+from pkg_ext import example
 from pkg_ext import generate
 from pkg_ext import stability
+from pkg_ext import workflows
 from pkg_ext import api_dump
 from pkg_ext._internal.settings import PkgSettings
 
@@ -12,9 +13,10 @@ VERSION = "0.3.5"
 __all__ = [
     "api_commands",
     "changelog",
-    "workflows",
+    "example",
     "generate",
     "stability",
+    "workflows",
     "api_dump",
     "PkgSettings",
 ]

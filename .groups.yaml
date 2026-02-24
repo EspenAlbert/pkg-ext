@@ -36,13 +36,17 @@ groups:
   - _internal.cli.changelog_cmds.chore
   - _internal.cli.changelog_cmds.promote
   - _internal.cli.changelog_cmds.release_notes
+- name: example
+  owned_modules:
+  - _internal.cli.example_cmds
+  owned_refs:
+  - _internal.cli.example_cmds.check_examples
+  - _internal.cli.example_cmds.gen_example_prompt
 - name: generate
   owned_modules:
   - _internal.cli.gen_cmds
   owned_refs:
   - _internal.cli.gen_cmds.gen_docs
-  - _internal.cli.gen_cmds.gen_examples
-  - _internal.cli.gen_cmds.gen_tests
 - name: stability
   owned_modules:
   - _internal.cli.stability_cmds
@@ -54,6 +58,7 @@ groups:
   owned_modules:
   - _internal.cli.workflow_cmds
   owned_refs:
+  - _internal.cli.workflow_cmds.change_base
   - _internal.cli.workflow_cmds.post_merge
   - _internal.cli.workflow_cmds.pre_change
   - _internal.cli.workflow_cmds.pre_commit

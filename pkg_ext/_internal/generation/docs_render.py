@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
-from datetime import datetime
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from textwrap import dedent
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from zero_3rdparty.sections import slug, wrap_section
 
@@ -19,17 +18,13 @@ from pkg_ext._internal.generation.docs_version import (
     get_symbol_since_version,
     get_symbol_stability,
 )
-from pkg_ext._internal.generation.example_gen import (
-    EXAMPLE_BASE_FIELDS,
-    EXAMPLE_DESCRIPTION_FIELD,
-    EXAMPLE_NAME_FIELD,
-)
 from pkg_ext._internal.models.api_dump import (
     ClassDump,
     ClassFieldInfo,
     CLICommandDump,
     CLIParamInfo,
     ExceptionDump,
+    FuncParamInfo,
     FunctionDump,
     GlobalVarDump,
     GroupDump,
@@ -37,14 +32,13 @@ from pkg_ext._internal.models.api_dump import (
     SymbolDump,
     TypeAliasDump,
 )
-from pkg_ext._internal.py_format import format_python_string
 from pkg_ext._internal.signature_parser import CLI_CONTEXT_TYPE_NAMES
 
 if TYPE_CHECKING:
     from pkg_ext._internal.generation.docs import SymbolContext
 
 
-def _format_param(p) -> str:
+def _format_param(p: FuncParamInfo) -> str:
     parts = [p.name]
     if p.type_annotation:
         parts.append(f": {p.type_annotation}")
@@ -302,6 +296,22 @@ def calculate_source_link(
     return str(rel_path)
 
 
+def _render_symbol_type_table(symbol: SymbolDump, changelog_actions: Sequence[ChangelogAction]) -> str | None:
+    if isinstance(symbol, CLICommandDump) and symbol.cli_params:
+        if table := render_cli_params_table(symbol.cli_params):
+            return "\n".join(["**CLI Options:**", "", table])
+    if isinstance(symbol, ClassDump) and symbol.fields:
+        field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions)
+        if should_show_field_table(symbol.fields, field_versions):
+            return render_field_table(symbol.fields, field_versions)
+    return None
+
+
+def _format_example_link(example_link: tuple[str, str]) -> str:
+    url, desc = example_link
+    return f"- [Example: {desc}]({url})" if desc else f"- [Example]({url})"
+
+
 def render_inline_symbol(
     ctx: SymbolContext,
     changelog_actions: Sequence[ChangelogAction] | None = None,
@@ -310,17 +320,14 @@ def render_inline_symbol(
     symbol_doc_path: Path | None = None,
     pkg_src_dir: Path | None = None,
     pkg_import_name: str | None = None,
+    example_link: tuple[str, str] | None = None,
 ) -> str:
     symbol = ctx.symbol
-    type_label = symbol.type.value
-    sig = format_signature(symbol)
     changelog_actions = changelog_actions or []
 
-    since_version = get_symbol_since_version(symbol.name, changelog_actions)
-    since_badge = render_since_badge(since_version)
-
+    since_badge = render_since_badge(get_symbol_since_version(symbol.name, changelog_actions))
     anchor_id = f"{slug(symbol.name)}_def"
-    lines = [f'<a id="{anchor_id}"></a>\n\n### {type_label}: `{symbol.name}`']
+    lines = [f'<a id="{anchor_id}"></a>\n\n### {symbol.type.value}: `{symbol.name}`']
     if symbol_doc_path and pkg_src_dir and pkg_import_name:
         source_link = calculate_source_link(
             symbol_doc_path,
@@ -330,24 +337,17 @@ def render_inline_symbol(
             symbol.line_number,
         )
         lines.append(f"- [source]({source_link})")
+    if example_link:
+        lines.append(_format_example_link(example_link))
     if since_badge:
         lines.append(since_badge)
-    lines.extend(["", "```python", sig, "```"])
+    lines.extend(["", "```python", format_signature(symbol), "```"])
 
     docstring = format_docstring(symbol.docstring)
     if docstring:
         lines.extend(["", docstring])
-
-    if isinstance(symbol, CLICommandDump) and symbol.cli_params:
-        if table := render_cli_params_table(symbol.cli_params):
-            lines.extend(["", "**CLI Options:**", "", table])
-
-    if isinstance(symbol, ClassDump) and symbol.fields:
-        field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions)
-        if should_show_field_table(symbol.fields, field_versions):
-            if table := render_field_table(symbol.fields, field_versions):
-                lines.extend(["", table])
-
+    if type_table := _render_symbol_type_table(symbol, changelog_actions):
+        lines.extend(["", type_table])
     if changes:
         lines.extend(["", _render_changes_content(changes)])
 
@@ -359,20 +359,21 @@ def _render_symbol_main_section(
     group: GroupDump,
     source_link: str,
     changelog_actions: Sequence[ChangelogAction],
+    example_link: tuple[str, str] | None = None,
 ) -> str:
     section_id = f"{slug(symbol.name)}_def"
-    type_label = symbol.type.value
     stability = render_stability_badge(symbol.name, group.name, changelog_actions)
     since_badge = render_since_badge(get_symbol_since_version(symbol.name, changelog_actions))
-    sig = format_signature(symbol)
     docstring = format_docstring(symbol.docstring)
 
-    lines = [f"## {type_label}: {symbol.name}", f"- [source]({source_link})"]
+    lines = [f"## {symbol.type.value}: {symbol.name}", f"- [source]({source_link})"]
+    if example_link:
+        lines.append(_format_example_link(example_link))
     if stability:
         lines.append(stability)
     if since_badge:
         lines.append(since_badge)
-    lines.extend(["", "```python", sig, "```"])
+    lines.extend(["", "```python", format_signature(symbol), "```"])
     if docstring:
         lines.extend(["", docstring])
     return wrap_section("\n".join(lines), section_id, PKG_EXT_TOOL_NAME, MD_CONFIG)
@@ -384,11 +385,11 @@ def render_symbol_page(
     symbol_doc_path: Path,
     pkg_src_dir: Path,
     pkg_import_name: str,
-    examples: list[Any] | None = None,
     changes: list[SymbolChange] | None = None,
     changelog_actions: Sequence[ChangelogAction] | None = None,
     *,
-    has_env_vars_fn=None,
+    has_env_vars_fn: Callable[[ClassDump], bool] | None = None,
+    example_link: tuple[str, str] | None = None,
 ) -> str:
     symbol = ctx.symbol
     changelog_actions = changelog_actions or []
@@ -400,7 +401,7 @@ def render_symbol_page(
         pkg_import_name,
         symbol.line_number,
     )
-    main_content = _render_symbol_main_section(symbol, group, source_link, changelog_actions)
+    main_content = _render_symbol_main_section(symbol, group, source_link, changelog_actions, example_link)
     parts = [f"# {symbol.name}", "", main_content]
 
     if has_env_vars_fn and isinstance(symbol, ClassDump) and has_env_vars_fn(symbol):
@@ -416,9 +417,6 @@ def render_symbol_page(
         if should_show_field_table(symbol.fields, field_versions):
             if table := render_field_table(symbol.fields, field_versions):
                 parts.extend(["", "### Fields", "", table])
-
-    for ex in examples or []:
-        parts.extend(["", render_example_section(ex, symbol, pkg_import_name)])
 
     if changes:
         parts.extend(["", render_changes_section(changes, symbol.name)])
@@ -443,39 +441,3 @@ def render_changes_section(changes: list[SymbolChange], symbol_name: str) -> str
         return ""
     section_id = f"{slug(symbol_name)}_changes"
     return wrap_section(_render_changes_content(changes), section_id, PKG_EXT_TOOL_NAME, MD_CONFIG)
-
-
-def _format_example_value(value: Any) -> str:
-    if isinstance(value, str):
-        if "\n" in value:
-            return f'"""\\\n{value}"""'
-        return repr(value)
-    if isinstance(value, datetime):
-        return f"datetime({value.year}, {value.month}, {value.day})"
-    return repr(value)
-
-
-def render_example_section(example: Any, symbol: SymbolDump, pkg_import_name: str) -> str:
-    example_name = getattr(example, EXAMPLE_NAME_FIELD, "")
-    description = getattr(example, EXAMPLE_DESCRIPTION_FIELD, "")
-    section_id = f"{slug(symbol.name)}_example_{slug(example_name)}"
-
-    fields = {k: v for k, v in example.model_dump().items() if k not in EXAMPLE_BASE_FIELDS}
-
-    if isinstance(symbol, FunctionDump | CLICommandDump):
-        args = ", ".join(f"{k}={_format_example_value(v)}" for k, v in fields.items())
-        code = f"result = {symbol.name}({args})"
-    elif isinstance(symbol, ClassDump):
-        args = ", ".join(f"{k}={_format_example_value(v)}" for k, v in fields.items())
-        code = f"instance = {symbol.name}({args})"
-    else:
-        code = f"# {symbol.name} example"
-
-    formatted_code = format_python_string(code)
-
-    lines = [f"### Example: {example_name}"]
-    if description:
-        lines.append(description)
-    lines.extend(["", "```python", formatted_code, "```"])
-
-    return wrap_section("\n".join(lines), section_id, PKG_EXT_TOOL_NAME, MD_CONFIG)

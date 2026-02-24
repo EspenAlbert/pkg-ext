@@ -107,18 +107,19 @@ class PkgSettings(BaseSettings):
     def warnings_file_path(self) -> Path:
         return self.pkg_directory / self.WARNINGS_FILENAME
 
-    def examples_file_path(self, group_name: str) -> Path:
-        return self.pkg_directory / f"{group_name}_examples.py"
-
-    def test_file_path(self, group_name: str) -> Path:
-        return self.pkg_directory / f"{group_name}_test.py"
-
     def group_module_path(self, group_name: str) -> Path:
         return self.pkg_directory / f"{group_name}.py"
 
     @property
     def docs_dir(self) -> Path:
         return self.state_dir / self.DOCS_DIR_NAME
+
+    @property
+    def examples_dir(self) -> Path:
+        return self.docs_dir / "examples"
+
+    def example_file_path(self, group_name: str, symbol_name: str) -> Path:
+        return self.examples_dir / group_name / f"{symbol_name}.md"
 
     @property
     def mkdocs_yml(self) -> Path:
@@ -175,7 +176,7 @@ def pkg_settings(
     keep_prerelease: bool | None = None,
     ignored_symbols: frozenset[str] | None = None,
 ) -> PkgSettings:
-    # Resolve global settings with proper precedence: CLI arg → Env var → Config file(user or proejct) → Default
+    # Resolve global settings with proper precedence: CLI arg → Env var → Config file(user or project) → Default
     user_config = load_user_config()
     project_config = load_project_config((repo_root / pkg_path).parent)
 

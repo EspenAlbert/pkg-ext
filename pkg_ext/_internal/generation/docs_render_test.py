@@ -1,8 +1,6 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
-from pydantic import BaseModel
-
 from pkg_ext._internal.changelog.actions import (
     ExperimentalAction,
     MakePublicAction,
@@ -16,7 +14,6 @@ from pkg_ext._internal.generation.docs_render import (
     render_changes_section,
     render_cli_params_table,
     render_env_var_table,
-    render_example_section,
     render_field_table,
     render_inline_symbol,
     render_stability_badge,
@@ -190,20 +187,6 @@ def test_render_changes_section():
     assert "| 1.0.0 | Made public |" in content
 
 
-class ParseExample(BaseModel):
-    example_name: str = "basic"
-    example_description_md: str = "Parse a string"
-    data: str = "hello"
-
-
-def test_render_example_section():
-    func = _func_dump("parse")
-    example = ParseExample(example_name="basic", data="test")
-    content = render_example_section(example, func, "my_pkg")
-    assert "### Example: basic" in content
-    assert "result = parse(data=" in content
-
-
 # Import SymbolContext here to avoid circular import at module level
 def test_render_inline_symbol():
     from pkg_ext._internal.generation.docs import SymbolContext
@@ -278,3 +261,38 @@ def test_render_cli_params_table_with_choices():
     ]
     table = render_cli_params_table(params)
     assert "[json, yaml]" in table
+
+
+def test_render_inline_symbol_with_field_table():
+    from pkg_ext._internal.generation.docs import SymbolContext
+
+    cls = _class_with_fields("Config", description="Timeout in seconds")
+    ctx = SymbolContext(symbol=cls)
+    content = render_inline_symbol(ctx)
+    assert "| Field | Type | Default |" in content
+    assert "Timeout in seconds" in content
+
+
+def test_render_inline_symbol_with_cli_params():
+    from pkg_ext._internal.generation.docs import SymbolContext
+
+    cmd = _cli_cmd_dump(
+        "chore",
+        [
+            CLIParamInfo(param_name="description", type_annotation="str", flags=["--description"], required=True),
+        ],
+    )
+    ctx = SymbolContext(symbol=cmd)
+    content = render_inline_symbol(ctx)
+    assert "**CLI Options:**" in content
+    assert "`--description`" in content
+
+
+def test_render_inline_symbol_with_example_link():
+    from pkg_ext._internal.generation.docs import SymbolContext
+
+    func = _func_dump("load")
+    ctx = SymbolContext(symbol=func)
+    content = render_inline_symbol(ctx, example_link=("../examples/config/load.md", "Load config from file"))
+    assert "- [Example: Load config from file](../examples/config/load.md)" in content
+    assert content.index("Example:") < content.index("```python")

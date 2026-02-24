@@ -73,7 +73,26 @@ class GitCommit(BaseModel):
 
 
 # Merge pull request #26 from EspenAlbert/pkg-ext-standalone
-_merge_message_regex = re.compile(r"Merge pull request #(\d+)")
+_merge_message_regex = re.compile(r"Merge pull request #(?P<pr>\d+)")
+# feat: some change (#26) — squash merge appends PR number
+_squash_message_regex = re.compile(r".+\(#(?P<pr>\d+)\)")
+
+
+def _pr_number_from_message(message: str) -> int | None:
+    """
+    >>> _pr_number_from_message("Merge pull request #26 from EspenAlbert/branch")
+    26
+    >>> _pr_number_from_message("feat: Replace Example[T] generation (#19)")
+    19
+    >>> _pr_number_from_message("chore: some random commit") is None
+    True
+    """
+    first_line = message.split("\n", 1)[0]
+    if merge_match := _merge_message_regex.match(first_line):
+        return int(merge_match["pr"])
+    if squash_match := _squash_message_regex.match(first_line):
+        return int(squash_match["pr"])
+    return None
 
 
 def pr_number_from_url(url: str) -> int:
@@ -147,8 +166,8 @@ class GitChanges:
 def head_merge_pr(repo_path: Path) -> int:
     repo = Repo(repo_path)
     message = str(repo.head.commit.message.strip())
-    if merge_match := _merge_message_regex.match(message):
-        return int(merge_match[1])
+    if pr := _pr_number_from_message(message):
+        return pr
     raise ValueError(f"head is not a merge PR commit: {message}")
 
 
@@ -157,16 +176,16 @@ def last_merge_pr(commits: Iterable[GitCommit], after_ts: fields.UtcDatetime | N
     for commit in sorted(commits, reverse=True):
         if commit.ts < after_ts:
             return None
-        if merge_match := _merge_message_regex.match(commit.message):
-            return int(merge_match[1])
+        if pr := _pr_number_from_message(commit.message):
+            return pr
     return None
 
 
 def _last_merge_pr_repo(repo: Repo, head_sha: str) -> int | None:
     for commit in repo.iter_commits(rev=head_sha):
         message = str(commit.message.strip())
-        if merge_match := _merge_message_regex.match(message):
-            return int(merge_match[1])
+        if pr := _pr_number_from_message(message):
+            return pr
 
 
 class _NoGitChangesError(Exception):

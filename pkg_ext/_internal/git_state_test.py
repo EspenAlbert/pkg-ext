@@ -9,6 +9,7 @@ from pkg_ext._internal.git_usage.state import (
     GitChangesInput,
     GitCommit,
     GitSince,
+    _pr_number_from_message,
     find_git_changes,
     last_merge_pr,
     pr_number_from_url,
@@ -64,6 +65,19 @@ def test_find_git_changes(repo_path):
     )
 
 
+@pytest.mark.parametrize(
+    "message, expected",
+    [
+        ("Merge pull request #26 from EspenAlbert/branch", 26),
+        ("feat: Replace Example[T] generation (#19)", 19),
+        ("fix(cli): handle edge case (#7)", 7),
+        ("chore: some random commit", None),
+    ],
+)
+def test_pr_number_from_message(message: str, expected: int | None):
+    assert _pr_number_from_message(message) == expected
+
+
 def test_last_merge_pr():
     now = utc_now()
     c1_ts = now
@@ -95,6 +109,17 @@ def test_last_merge_pr():
     assert last_merge_pr(commits, c1_ts) == 42
     assert last_merge_pr(commits, c3_ts) is None
     assert last_merge_pr(commits) == 42
+
+    squash_commits = [
+        GitCommit(
+            author="a",
+            message="feat: some feature (#10)",
+            ts=now,
+            sha="aaa111",
+            file_changes=set(),
+        ),
+    ]
+    assert last_merge_pr(squash_commits) == 10
 
 
 def test_read_remote_url(repo_path):
