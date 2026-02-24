@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 _COMMENT_PATTERN = re.compile(r"\A<!--\s*\n(?P<body>.*?)\n-->\s*\n", re.DOTALL)
 
 
-class ExampleMetadata(Entity):
+class _ExampleMetadata(Entity):
     description: str = ""
 
 
@@ -36,7 +36,7 @@ def parse_description_comment(path: Path) -> str:
     if comment_match := _COMMENT_PATTERN.match(text):
         with contextlib.suppress(Exception):
             raw = parse_yaml_str(comment_match.group("body"))
-            meta = ExampleMetadata.model_validate(raw)
+            meta = _ExampleMetadata.model_validate(raw)
             if meta.description:
                 return meta.description
     return path.stem

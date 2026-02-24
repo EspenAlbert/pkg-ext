@@ -16,13 +16,15 @@
 <a id="check_examples_def"></a>
 
 ### cli_command: `check_examples`
-- [source](../../pkg_ext/_internal/cli/example_cmds.py#L32)
+- [source](../../pkg_ext/_internal/cli/example_cmds.py#L33)
 > **Since:** unreleased
 
 ```python
 def check_examples():
     ...
 ```
+
+Verify all symbols in examples_include have corresponding .md files.
 
 ### Changes
 
@@ -41,6 +43,8 @@ def check_examples():
 def gen_example_prompt(*, group: str | None = ...):
     ...
 ```
+
+Build an AI prompt for missing example docs and copy to clipboard.
 
 **CLI Options:**
 

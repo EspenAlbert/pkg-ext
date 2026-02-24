@@ -230,3 +230,24 @@ def test_render_group_index_no_examples():
     contexts = [SymbolContext(symbol=s) for s in group.symbols]
     content = render_group_index(group, contexts, GroupConfig())
     assert "## Examples" not in content
+
+
+def test_generate_docs_with_examples(tmp_path: Path):
+    docs_dir = tmp_path / "docs"
+    examples_dir = docs_dir / "examples"
+    ensure_parents_write_text(
+        examples_dir / "sections" / "parse_sections.md",
+        "<!--\ndescription: Parse content into named sections\n-->\n# Example",
+    )
+    api_dump = PublicApiDump(
+        pkg_import_name="my_pkg",
+        version="1.0.0",
+        dumped_at=datetime.now(UTC),
+        groups=[GroupDump(name="sections", symbols=[_func_dump("parse_sections")])],
+    )
+    config = ProjectConfig(groups={"sections": GroupConfig(examples_include=["parse_sections"])})
+    result = generate_docs(api_dump, config, [], docs_dir=docs_dir)
+    index_content = result.path_contents["sections/index.md"]
+    assert "## Examples" in index_content
+    assert "[parse_sections](../examples/sections/parse_sections.md)" in index_content
+    assert "Parse content into named sections" in index_content

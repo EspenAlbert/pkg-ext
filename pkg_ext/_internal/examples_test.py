@@ -72,6 +72,12 @@ def test_parse_description_comment_fallback(tmp_path: Path):
     assert parse_description_comment(md) == "symbol"
 
 
+def test_parse_description_comment_no_description_key(tmp_path: Path):
+    md = tmp_path / "symbol.md"
+    md.write_text("<!--\nauthor: someone\n-->\n# Example")
+    assert parse_description_comment(md) == "symbol"
+
+
 def test_build_example_prompt_with_missing_symbols(settings: PkgSettings):
     api_dump = _api_dump(settings.pkg_import_name)
     config = _config("parse_sections")
