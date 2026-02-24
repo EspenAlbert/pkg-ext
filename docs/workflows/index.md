@@ -14,7 +14,7 @@
 <a id="post_merge_def"></a>
 
 ### cli_command: `post_merge`
-- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L196)
+- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L168)
 > **Since:** 0.1.0
 
 ```python
@@ -41,7 +41,7 @@ def post_merge(*, explicit_pr: int = 0, push: bool = False, skip_clean_old_entri
 <a id="pre_change_def"></a>
 
 ### cli_command: `pre_change`
-- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L272)
+- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L244)
 > **Since:** 0.1.0
 
 ```python
@@ -49,7 +49,7 @@ def pre_change(*, group: str | None = ..., git_changes_since: GitSince = <GitSin
     ...
 ```
 
-Handle new symbols then generate examples and tests.
+Handle new symbols, update changelog, optionally sync files and docs.
 
 **CLI Options:**
 
@@ -73,7 +73,7 @@ Handle new symbols then generate examples and tests.
 <a id="pre_commit_def"></a>
 
 ### cli_command: `pre_commit`
-- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L313)
+- [source](../../pkg_ext/_internal/cli/workflow_cmds.py#L278)
 > **Since:** 0.1.0
 
 ```python

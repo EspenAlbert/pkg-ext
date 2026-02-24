@@ -1,0 +1,38 @@
+name: gen_examples
+ts: 2026-02-24 21:23:05.586821+00:00
+type: delete
+group: generate
+---
+name: check_examples_exist
+ts: 2026-02-24 21:23:17.029179+00:00
+type: keep_private
+full_path: _internal.examples.check_examples_exist
+---
+name: build_example_prompt
+ts: 2026-02-24 21:23:17.029258+00:00
+type: keep_private
+full_path: _internal.examples.build_example_prompt
+---
+name: add_to_clipboard
+ts: 2026-02-24 21:23:19.997342+00:00
+type: keep_private
+full_path: _internal.clipboard.add_to_clipboard
+---
+name: example
+ts: 2026-02-24 21:24:40.722618+00:00
+type: group_module
+module_path: _internal.cli.example_cmds
+---
+name: gen_example_prompt
+ts: 2026-02-24 21:24:40.725290+00:00
+type: make_public
+details: CLI command in _internal/cli/example_cmds.py
+full_path: _internal.cli.example_cmds.gen_example_prompt
+group: example
+---
+name: check_examples
+ts: 2026-02-24 21:24:40.729870+00:00
+type: make_public
+details: CLI command in _internal/cli/example_cmds.py
+full_path: _internal.cli.example_cmds.check_examples
+group: example
