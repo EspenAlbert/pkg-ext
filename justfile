@@ -78,4 +78,7 @@ docs-serve:
   uv run --group docs mkdocs serve
 # === OK_EDIT: path-sync docs ===
 
+pkg-change-base *args:
+  uv run pkg-ext change-base {{args}}
+
 # Custom recipes below

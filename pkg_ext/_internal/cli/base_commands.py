@@ -106,11 +106,12 @@ from pkg_ext._internal.cli.changelog_cmds import chore, promote, release_notes  
 from pkg_ext._internal.cli.example_cmds import check_examples, gen_example_prompt  # noqa: E402
 from pkg_ext._internal.cli.gen_cmds import gen_docs  # noqa: E402
 from pkg_ext._internal.cli.stability_cmds import dep, exp, ga  # noqa: E402
-from pkg_ext._internal.cli.workflow_cmds import post_merge, pre_change, pre_commit  # noqa: E402
+from pkg_ext._internal.cli.workflow_cmds import change_base, post_merge, pre_change, pre_commit  # noqa: E402
 
 app.command()(post_merge)
 app.command()(pre_change)
 app.command()(pre_commit)
+app.command(name="change-base")(change_base)
 app.command()(chore)
 app.command()(promote)
 app.command()(exp)

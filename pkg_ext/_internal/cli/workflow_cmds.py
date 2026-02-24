@@ -1,4 +1,4 @@
-"""Git workflow commands: pre_change, pre_commit, post_merge."""
+"""Git workflow commands: pre_change, pre_commit, post_merge, change_base."""
 
 import logging
 from pathlib import Path
@@ -6,7 +6,13 @@ from pathlib import Path
 import typer
 from git import InvalidGitRepositoryError, Repo
 
-from pkg_ext._internal.changelog import parse_changelog_actions
+from pkg_ext._internal.changelog import changelog_filepath, parse_changelog_actions
+from pkg_ext._internal.changelog.change_base import (
+    consolidate_changelog_files,
+    find_changelog_files_in_diff,
+    find_foreign_changelog_files,
+    validate_no_foreign_changelog,
+)
 from pkg_ext._internal.cli.changelog_cmds import _create_chore_action
 from pkg_ext._internal.cli.options import (
     option_full,
@@ -251,6 +257,19 @@ def pre_commit(
 
     _dump_diff_and_docs(settings, skip_docs)
 
+    if pr_info := find_pr_info_or_none(settings.repo_root):
+        foreign = validate_no_foreign_changelog(
+            settings.repo_root, settings.changelog_dir, pr_info.base_ref_name, pr_info.pr_number
+        )
+        if foreign:
+            stems = ", ".join(f.stem for f in foreign)
+            logger.error(
+                f"Found changelog files for other PRs: {stems}. "
+                "This usually means the PR base was changed. "
+                f"Run: pkg-ext change-base --new-base {pr_info.base_ref_name}"
+            )
+            raise typer.Exit(1)
+
     if skip_dirty_check:
         return
     if dirty_files := check_generated_files_dirty(settings):
@@ -259,3 +278,29 @@ def pre_commit(
             logger.error(f"  {f}")
         logger.error("Run `git add` on these files before committing.")
         raise typer.Exit(1)
+
+
+def change_base(
+    ctx: typer.Context,
+    new_base: str = typer.Option(..., "--new-base", help="The new base branch (e.g., 'main')"),
+    pr_number: int = option_pr,
+):
+    """Consolidate changelog files from closed PRs after re-targeting a stacked PR."""
+    settings: PkgSettings = ctx.obj
+    if not pr_number:
+        pr_info = find_pr_info_or_none(settings.repo_root)
+        if not pr_info:
+            logger.error("No active PR found. Use --pr to specify the PR number.")
+            raise typer.Exit(1)
+        pr_number = pr_info.pr_number
+
+    diff_files = find_changelog_files_in_diff(settings.repo_root, settings.changelog_dir, new_base)
+    foreign = find_foreign_changelog_files(diff_files, pr_number)
+    if not foreign:
+        logger.info("No foreign changelog files, nothing to consolidate")
+        return
+
+    target = changelog_filepath(settings.changelog_dir, pr_number)
+    consolidate_changelog_files(target, foreign)
+    stems = ", ".join(f.stem for f in foreign)
+    logger.info(f"Consolidated {len(foreign)} changelog files into {target.name}: {stems}")
