@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 from enum import StrEnum
+from typing import Callable, Union
 
 import typer
 from pydantic import BaseModel, Field, computed_field
 
 from pkg_ext._internal.models.api_dump import ParamKind
 from pkg_ext._internal.signature_parser import (
+    _annotation_str,
     extract_cli_params,
     is_cli_command,
     parse_class_fields,
@@ -187,3 +189,21 @@ def test_stable_repr_strips_embedded_memory_addresses():
     result = stable_repr(_FakeValidator(my_func))
     assert result == "FakeValidator(func=<function my_func>)"
     assert "0x" not in result
+
+
+def test_annotation_str_callable_with_union_params():
+    """Callable param lists with Union should use pipe syntax, not typing.Union[...]."""
+    cb = Callable[[Union[int, str, float]], bool]
+    assert _annotation_str(cb) == "Callable[[int | str | float], bool]"
+
+
+def test_annotation_str_callable_with_pipe_union_params():
+    cb = Callable[[int | str | float], bool]
+    assert _annotation_str(cb) == "Callable[[int | str | float], bool]"
+
+
+def test_annotation_str_callable_union_and_pipe_produce_same_output():
+    """Union[...] and | syntax inside Callable produce identical strings."""
+    cb_union = Callable[[Union[int, str]], bool]
+    cb_pipe = Callable[[int | str], bool]
+    assert _annotation_str(cb_union) == _annotation_str(cb_pipe)

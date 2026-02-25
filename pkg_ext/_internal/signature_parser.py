@@ -87,6 +87,12 @@ def _annotation_str(annotation: Any) -> str | None:
             return f"{origin_name}[{', '.join(a for a in arg_strs if a)}]"
         return origin_name
 
+    # Callable param specs: get_args(Callable[[A, B], R]) returns ([A, B], R)
+    # where the first element is a plain list — recurse into it
+    if isinstance(annotation, list):
+        arg_strs = [_annotation_str(arg) for arg in annotation]
+        return f"[{', '.join(a for a in arg_strs if a)}]"
+
     return str(annotation)
 
 
