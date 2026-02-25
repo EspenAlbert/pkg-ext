@@ -1,0 +1,25 @@
+name: apply_remap_to_actions
+ts: 2026-02-25 10:55:41.143978+00:00
+type: keep_private
+full_path: _internal.changelog.rebase.apply_remap_to_actions
+---
+name: remove_actions_by_sha
+ts: 2026-02-25 10:55:41.144038+00:00
+type: keep_private
+full_path: _internal.changelog.rebase.remove_actions_by_sha
+---
+name: changelog
+ts: 2026-02-25 10:55:52.146876+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(changelog): remap stale SHAs in-memory to survive pkg_ctx.__exit__ dump'
+message: 'fix(changelog): remap stale SHAs in-memory to survive pkg_ctx.__exit__ dump'
+short_sha: cd3911
+---
+name: ''
+ts: 2026-02-25 10:55:58.883138+00:00
+type: fix
+author: Espen Albert
+ignored: true
+message: 'fix(changelog): use Sequence for covariant action list params'
+short_sha: 1f4505
