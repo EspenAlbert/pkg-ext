@@ -89,14 +89,68 @@ class DiffResult(Event):
 
 
 _QUALIFIED_NAME_RE = re.compile(r"(?<![.\w])(\w+\.)+(\w+)")
+_UNION_BRACKET_RE = re.compile(r"\bUnion\[")
+_CLASS_TAG_RE = re.compile(r"<class '(?P<name>[^']+)'>")
+
+
+def _split_top_level(s: str, sep: str) -> list[str]:
+    """Split on *sep* only when not nested inside brackets."""
+    parts: list[str] = []
+    depth = 0
+    start = 0
+    sep_len = len(sep)
+    i = 0
+    while i < len(s):
+        ch = s[i]
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth -= 1
+        elif depth == 0 and s[i : i + sep_len] == sep:
+            parts.append(s[start:i].strip())
+            start = i + sep_len
+            i = start
+            continue
+        i += 1
+    parts.append(s[start:].strip())
+    return parts
+
+
+def _find_matching_bracket(s: str, open_pos: int) -> int:
+    depth = 1
+    for i in range(open_pos + 1, len(s)):
+        if s[i] == "[":
+            depth += 1
+        elif s[i] == "]":
+            depth -= 1
+            if depth == 0:
+                return i
+    return -1
+
+
+def _convert_union_syntax(text: str) -> str:
+    """Convert ``Union[A, B, C]`` to ``A | B | C``, handling nested brackets."""
+    result = text
+    while match := _UNION_BRACKET_RE.search(result):
+        bracket_start = match.end() - 1
+        bracket_end = _find_matching_bracket(result, bracket_start)
+        if bracket_end == -1:
+            break
+        inner = result[bracket_start + 1 : bracket_end]
+        parts = _split_top_level(inner, ", ")
+        replacement = " | ".join(parts)
+        result = result[: match.start()] + replacement + result[bracket_end + 1 :]
+    return result
 
 
 def normalize_type(t: str | None) -> str | None:
     if t is None:
         return None
-    normalized = _QUALIFIED_NAME_RE.sub(r"\2", t)
+    normalized = _CLASS_TAG_RE.sub(r"\g<name>", t)
+    normalized = _QUALIFIED_NAME_RE.sub(r"\2", normalized)
+    normalized = _convert_union_syntax(normalized)
     if " | " in normalized:
-        parts = [p.strip() for p in normalized.split(" | ")]
+        parts = _split_top_level(normalized, " | ")
         normalized = " | ".join(sorted(parts))
     return normalized
 

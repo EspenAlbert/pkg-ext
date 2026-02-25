@@ -63,6 +63,23 @@ def test_normalize_type_union_ordering():
     assert normalize_type("int | str | None") == "None | int | str"
 
 
+def test_normalize_type_union_bracket_syntax():
+    assert normalize_type("Union[str, int]") == "int | str"
+    assert normalize_type("typing.Union[str, int, None]") == "None | int | str"
+
+
+def test_normalize_type_union_bracket_nested_in_callable():
+    old = "Callable[[typing.Union[A, B, C]], bool]"
+    new = "Callable[[A | B | C], bool]"
+    assert normalize_type(old) == normalize_type(new)
+
+
+def test_normalize_type_nested_pipe_not_corrupted():
+    """Top-level | split must not break on | inside brackets."""
+    t = "Callable[[A | B], R] | None"
+    assert normalize_type(t) == "Callable[[A | B], R] | None"
+
+
 def test_normalize_type_qualified_names():
     assert normalize_type("pathlib.Path") == "Path"
     assert normalize_type("list[pathlib.Path]") == "list[Path]"
@@ -74,6 +91,32 @@ def test_types_equal():
     assert types_equal("pathlib.Path", "Path")
     assert not types_equal("str", "int")
     assert types_equal(None, None)
+
+
+def test_types_equal_union_vs_pipe():
+    assert types_equal(
+        "list[Callable[[typing.Union[A, B, C]], bool]]",
+        "list[Callable[[A | B | C], bool]]",
+    )
+
+
+def test_types_equal_union_with_qualified_names():
+    assert types_equal(
+        "list[Callable[[typing.Union[pkg.mod.A, pkg.mod.B]], bool | None]]",
+        "list[Callable[[A | B], bool | None]]",
+    )
+
+
+def test_types_equal_class_tag_vs_name():
+    assert types_equal(
+        "Callable[[<class 'ask_shell._internal.models.ShellRun'>], bool]",
+        "Callable[[ShellRun], bool]",
+    )
+
+
+def test_normalize_type_strips_class_tags():
+    assert normalize_type("<class 'str'>") == "str"
+    assert normalize_type("Callable[[<class 'int'>], bool]") == "Callable[[int], bool]"
 
 
 def test_compare_params_removed():
