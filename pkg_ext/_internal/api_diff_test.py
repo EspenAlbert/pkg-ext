@@ -107,6 +107,18 @@ def test_types_equal_union_with_qualified_names():
     )
 
 
+def test_types_equal_class_tag_vs_name():
+    assert types_equal(
+        "Callable[[<class 'ask_shell._internal.models.ShellRun'>], bool]",
+        "Callable[[ShellRun], bool]",
+    )
+
+
+def test_normalize_type_strips_class_tags():
+    assert normalize_type("<class 'str'>") == "str"
+    assert normalize_type("Callable[[<class 'int'>], bool]") == "Callable[[int], bool]"
+
+
 def test_compare_params_removed():
     baseline = [_param("x"), _param("y")]
     dev = [_param("x")]

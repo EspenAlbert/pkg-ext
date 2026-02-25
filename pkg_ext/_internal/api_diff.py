@@ -90,6 +90,7 @@ class DiffResult(Event):
 
 _QUALIFIED_NAME_RE = re.compile(r"(?<![.\w])(\w+\.)+(\w+)")
 _UNION_BRACKET_RE = re.compile(r"\bUnion\[")
+_CLASS_TAG_RE = re.compile(r"<class '(?P<name>[^']+)'>")
 
 
 def _split_top_level(s: str, sep: str) -> list[str]:
@@ -145,7 +146,8 @@ def _convert_union_syntax(text: str) -> str:
 def normalize_type(t: str | None) -> str | None:
     if t is None:
         return None
-    normalized = _QUALIFIED_NAME_RE.sub(r"\2", t)
+    normalized = _CLASS_TAG_RE.sub(r"\g<name>", t)
+    normalized = _QUALIFIED_NAME_RE.sub(r"\2", normalized)
     normalized = _convert_union_syntax(normalized)
     if " | " in normalized:
         parts = _split_top_level(normalized, " | ")
