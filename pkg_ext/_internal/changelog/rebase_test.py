@@ -1,18 +1,17 @@
 from datetime import UTC, datetime
-from pathlib import Path
 from unittest.mock import patch
 
 from ask_shell._internal.interactive import select_dict, select_list_choice
 
-from pkg_ext._internal.changelog.actions import FixAction, dump_changelog_actions
+from pkg_ext._internal.changelog.actions import FixAction, KeepPrivateAction
 from pkg_ext._internal.changelog.rebase import (
     UnmatchedResolution,
-    apply_remap_to_file,
+    apply_remap_to_actions,
     build_sha_remap,
     find_stale_shas,
     match_by_message,
     prompt_unmatched_fix,
-    remove_actions_from_file,
+    remove_actions_by_sha,
 )
 from pkg_ext._internal.git_usage.state import GitCommit
 
@@ -79,37 +78,35 @@ def test_build_sha_remap():
     assert unmatched[0].short_sha == "old222"
 
 
-def test_apply_remap_to_file(tmp_path: Path):
-    yaml_file = tmp_path / "001.yaml"
-    yaml_file.write_text("name: group1\nshort_sha: aaa111\ntype: fix\nmessage: fix something\n")
-    changed = apply_remap_to_file(yaml_file, {"aaa111": "bbb222"})
-    assert changed
-    assert "short_sha: bbb222" in yaml_file.read_text()
-    assert "aaa111" not in yaml_file.read_text()
+def test_apply_remap_to_actions():
+    actions = [_fix("aaa111", "fix: A"), _fix("bbb222", "fix: B")]
+    count = apply_remap_to_actions(actions, {"aaa111": "ccc333"})
+    assert count == 1
+    assert actions[0].short_sha == "ccc333"
+    assert actions[1].short_sha == "bbb222"
 
 
-def test_apply_remap_no_match(tmp_path: Path):
-    yaml_file = tmp_path / "001.yaml"
-    yaml_file.write_text("name: group1\nshort_sha: aaa111\ntype: fix\n")
-    assert not apply_remap_to_file(yaml_file, {"zzz999": "xxx888"})
+def test_apply_remap_to_actions_skips_non_fix():
+    keep_private = KeepPrivateAction(name="some_func", full_path="_internal.mod.some_func")
+    actions = [keep_private, _fix("aaa111", "fix: A")]
+    count = apply_remap_to_actions(actions, {"aaa111": "bbb222"})
+    assert count == 1
+    assert actions[1].short_sha == "bbb222"
 
 
-def test_remove_actions_from_file(tmp_path: Path):
-    path = tmp_path / "001.yaml"
+def test_remove_actions_by_sha():
     actions = [_fix("aaa111", "fix: keep"), _fix("bbb222", "fix: remove")]
-    dump_changelog_actions(path, actions)
-    remove_actions_from_file(path, {"bbb222"})
-    assert path.exists()
-    content = path.read_text()
-    assert "aaa111" in content
-    assert "bbb222" not in content
+    result = remove_actions_by_sha(actions, {"bbb222"})
+    assert len(result) == 1
+    assert result[0].short_sha == "aaa111"
 
 
-def test_remove_actions_from_file_all_removed(tmp_path: Path):
-    path = tmp_path / "001.yaml"
-    dump_changelog_actions(path, [_fix("aaa111", "fix: remove me")])
-    remove_actions_from_file(path, {"aaa111"})
-    assert not path.exists()
+def test_remove_actions_by_sha_keeps_non_fix():
+    keep_private = KeepPrivateAction(name="some_func", full_path="_internal.mod.some_func")
+    actions = [keep_private, _fix("aaa111", "fix: remove")]
+    result = remove_actions_by_sha(actions, {"aaa111"})
+    assert len(result) == 1
+    assert result[0] is keep_private
 
 
 def test_prompt_unmatched_fix_pick():
