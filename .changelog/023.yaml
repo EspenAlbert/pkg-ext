@@ -13,3 +13,8 @@ author: Espen Albert
 changelog_message: 'fix(api-diff): normalize Union[A, B, C] and <class ''X''> in type comparison'
 message: 'fix(api-diff): normalize Union[A, B, C] and <class ''X''> in type comparison'
 short_sha: 369bb1
+---
+name: 0.4.2
+ts: 2026-02-25 18:58:17.869097+00:00
+type: release
+old_version: 0.4.1

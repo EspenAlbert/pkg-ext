@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.2 2026-02-25T18-58Z
+
+### Api_Commands
+- fix(api-diff): normalize Union[A, B, C] and A | B | C as equivalent types [99f4ca](https://github.com/EspenAlbert/pkg-ext/commit/99f4ca)
+- fix(api-diff): normalize Union[A, B, C] and <class 'X'> in type comparison [369bb1](https://github.com/EspenAlbert/pkg-ext/commit/369bb1)
+
+
 ## 0.4.1 2026-02-25T10-59Z
 
 ### Changelog
