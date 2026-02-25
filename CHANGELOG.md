@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1 2026-02-25T10-59Z
+
+### Changelog
+- fix(changelog): remap stale SHAs in-memory to survive pkg_ctx.__exit__ dump [cd3911](https://github.com/EspenAlbert/pkg-ext/commit/cd3911)
+
+
 ## 0.4.0 2026-02-24T23-39Z
 
 ### Example

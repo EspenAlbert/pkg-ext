@@ -23,3 +23,8 @@ author: Espen Albert
 ignored: true
 message: 'fix(changelog): use Sequence for covariant action list params'
 short_sha: 1f4505
+---
+name: 0.4.1
+ts: 2026-02-25 10:59:09.987716+00:00
+type: release
+old_version: 0.4.0
