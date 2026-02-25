@@ -109,11 +109,12 @@ pkg-ext [OPTIONS] COMMAND
 
 | Category | Commands | Description | Docs |
 |----------|----------|-------------|------|
-| Workflow | `pre-change`, `pre-commit`, `post-merge` | Development lifecycle commands | [docs/workflows](docs/workflows/index.md) |
+| Workflow | `pre-change`, `pre-commit`, `post-merge`, `change-base` | Development lifecycle commands | [docs/workflows](docs/workflows/index.md) |
 | Changelog | `chore`, `promote`, `release-notes` | Changelog management | [docs/changelog](docs/changelog/index.md) |
 | Stability | `exp`, `ga`, `dep` | Stability level management | [docs/stability](docs/stability/index.md) |
 | API | `diff-api`, `dump-api` | API comparison and export | [docs/api_commands](docs/api_commands/index.md) |
-| Generation | `gen-docs`, `gen-examples`, `gen-tests` | Generate documentation and scaffolds | [docs/generate](docs/generate/index.md) |
+| Generation | `gen-docs` | Generate API documentation | [docs/generate](docs/generate/index.md) |
+| Examples | `gen-example-prompt`, `check-examples` | Example doc generation and validation | [docs/example](docs/example/index.md) |
 
 ### When to Use Workflow Commands
 
@@ -123,10 +124,12 @@ pkg-ext [OPTIONS] COMMAND
 | Final validation before commit | `pre-commit` |
 | Single command for everything | `pre-change --full` |
 | CI/CD pipeline | `pre-commit` (bot mode) |
+| Re-targeted a stacked PR | `change-base --new-base main` |
 
-- **`pre-change`** handles interactive decisions (expose/hide symbols, delete/rename). Fast because it only generates example and test scaffolds.
-- **`pre-commit`** validates all decisions are made (fails in bot mode if prompts needed), syncs generated files, regenerates docs, and runs the dirty check.
-- **`pre-change --full`** combines both: runs interactive prompts, generates examples/tests, then syncs files and regenerates docs. The dirty check is skipped since you're still developing.
+- **`pre-change`** handles interactive decisions (expose/hide symbols, delete/rename)
+- **`pre-commit`** validates all decisions are made (fails in bot mode if prompts needed), syncs generated files, regenerates docs, and runs the dirty check
+- **`pre-change --full`** combines both: runs interactive prompts, then syncs files and regenerates docs. The dirty check is skipped since you're still developing
+- **`change-base`** consolidates changelog files from closed PRs after re-targeting a stacked PR to a new base branch
 
 ## Configuration
 
@@ -211,12 +214,11 @@ This allows iterating on changelog entries during development without modifying 
 | `{pkg}/{group}.py` | Group re-export modules | No |
 | `{pkg}/_warnings.py` | Stability warning decorators | No |
 | `docs/**/*.md` | API documentation | Yes (outside markers) |
-| `{group}_examples.py` | Example scaffolds | Yes (outside markers) |
-| `{group}_test.py` | Test scaffolds | Yes (outside markers) |
 
 - `__init__.py` exports are updated but VERSION remains unchanged until release
 - Symbol doc pages include a "Changes" table showing unreleased modifications
 - Content outside `=== OK_EDIT: pkg-ext ... ===` markers can be customized and is preserved
+- Example docs are markdown files under `docs/examples/{group}/{symbol}.md`, managed by `gen-example-prompt` and validated by `check-examples`
 
 ### Files Updated During Release
 
@@ -294,7 +296,7 @@ When exposing a function, its type hint arguments are auto-exposed if they refer
 
 - Uses [GitPython](https://gitpython.readthedocs.io/) for commit analysis
 - Uses [gh CLI](https://cli.github.com/) to detect PR info
-- Extracts PR number from merge commit message (`Merge pull request #123`)
+- Extracts PR number from merge commit (`Merge pull request #123`) or squash merge (`feat: ... (#123)`) messages
 
 ## API Diff and Breaking Change Detection
 
@@ -346,7 +348,7 @@ When no baseline `{pkg}.api.yaml` exists, diff is skipped (nothing to compare ag
 
 ### Git Requirements
 - **Requires `gh` CLI** for PR info detection
-- **Merge commit format expected** - `Merge pull request #123 from ...`
+- **PR number in commit message** - supports `Merge pull request #123 from ...` and squash merge `... (#123)` formats
 - **Single remote assumed** - Uses first remote for URL
 
 ### Changelog
