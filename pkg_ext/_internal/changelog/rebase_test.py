@@ -98,6 +98,7 @@ def test_remove_actions_by_sha():
     actions = [_fix("aaa111", "fix: keep"), _fix("bbb222", "fix: remove")]
     result = remove_actions_by_sha(actions, {"bbb222"})
     assert len(result) == 1
+    assert isinstance(result[0], FixAction)
     assert result[0].short_sha == "aaa111"
 
 

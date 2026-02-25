@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from ask_shell._internal.interactive import ChoiceTyped, select_dict, select_list_choice
@@ -42,7 +43,7 @@ def build_sha_remap(
     return remap, unmatched
 
 
-def apply_remap_to_actions(actions: list[ChangelogAction], remap: dict[str, str]) -> int:
+def apply_remap_to_actions(actions: Sequence[ChangelogAction], remap: dict[str, str]) -> int:
     count = 0
     for action in actions:
         if isinstance(action, FixAction) and action.short_sha in remap:
@@ -51,7 +52,7 @@ def apply_remap_to_actions(actions: list[ChangelogAction], remap: dict[str, str]
     return count
 
 
-def remove_actions_by_sha(actions: list[ChangelogAction], shas_to_remove: set[str]) -> list[ChangelogAction]:
+def remove_actions_by_sha(actions: Sequence[ChangelogAction], shas_to_remove: set[str]) -> list[ChangelogAction]:
     return [a for a in actions if not (isinstance(a, FixAction) and a.short_sha in shas_to_remove)]
 
 
