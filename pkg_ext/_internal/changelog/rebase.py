@@ -1,16 +1,19 @@
+from __future__ import annotations
+
 import logging
-import re
-from pathlib import Path
+from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 from ask_shell._internal.interactive import ChoiceTyped, select_dict, select_list_choice
 from zero_3rdparty.enum_utils import StrEnum
 
-from pkg_ext._internal.changelog.actions import FixAction, dump_changelog_actions, parse_changelog_file_path
+from pkg_ext._internal.changelog.actions import FixAction
 from pkg_ext._internal.git_usage.state import GitCommit
 
-logger = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from pkg_ext._internal.changelog.actions import ChangelogAction
 
-_SHORT_SHA_PATTERN = re.compile(r"(?P<key>short_sha:\s*)(?P<sha>[0-9a-f]{6})")
+logger = logging.getLogger(__name__)
 
 
 def find_stale_shas(fix_actions: list[FixAction], current_commits: list[GitCommit]) -> list[FixAction]:
@@ -40,27 +43,17 @@ def build_sha_remap(
     return remap, unmatched
 
 
-def apply_remap_to_file(path: Path, remap: dict[str, str]) -> bool:
-    text = path.read_text()
-    original = text
-    for old_sha, new_sha in remap.items():
-        text = _SHORT_SHA_PATTERN.sub(
-            lambda m: f"{m.group('key')}{new_sha}" if m.group("sha") == old_sha else m.group(0),
-            text,
-        )
-    if text == original:
-        return False
-    path.write_text(text)
-    return True
+def apply_remap_to_actions(actions: Sequence[ChangelogAction], remap: dict[str, str]) -> int:
+    count = 0
+    for action in actions:
+        if isinstance(action, FixAction) and action.short_sha in remap:
+            action.short_sha = remap[action.short_sha]
+            count += 1
+    return count
 
 
-def remove_actions_from_file(path: Path, shas_to_remove: set[str]) -> None:
-    actions = parse_changelog_file_path(path)
-    remaining = [a for a in actions if not (isinstance(a, FixAction) and a.short_sha in shas_to_remove)]
-    if remaining:
-        dump_changelog_actions(path, remaining)
-    else:
-        path.unlink(missing_ok=True)
+def remove_actions_by_sha(actions: Sequence[ChangelogAction], shas_to_remove: set[str]) -> list[ChangelogAction]:
+    return [a for a in actions if not (isinstance(a, FixAction) and a.short_sha in shas_to_remove)]
 
 
 class UnmatchedResolution(StrEnum):

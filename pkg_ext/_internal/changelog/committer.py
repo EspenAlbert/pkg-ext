@@ -6,14 +6,14 @@ from contextlib import suppress
 from ask_shell._internal.rich_live import print_to_live
 from rich.markdown import Markdown
 
-from pkg_ext._internal.changelog.actions import FixAction, parse_changelog_file_path
+from pkg_ext._internal.changelog.actions import FixAction
 from pkg_ext._internal.changelog.rebase import (
     UnmatchedResolution,
-    apply_remap_to_file,
+    apply_remap_to_actions,
     build_sha_remap,
     find_stale_shas,
     prompt_unmatched_fix,
-    remove_actions_from_file,
+    remove_actions_by_sha,
 )
 from pkg_ext._internal.context import pkg_ctx
 from pkg_ext._internal.errors import NoPublicGroupMatch
@@ -158,23 +158,21 @@ def _refresh_tool_state_shas(tool_state: PkgExtState, remap: dict[str, str], sha
 
 
 def _resolve_stale_shas(ctx: pkg_ctx) -> None:
-    changelog_path = ctx.changelog_path
-    if not changelog_path.exists():
+    if not ctx._actions:
         return
     commits = ctx.git_changes.commits
     if not commits:
         return
-    actions = parse_changelog_file_path(changelog_path)
-    fix_actions = [a for a in actions if isinstance(a, FixAction)]
+    fix_actions = [a for a in ctx._actions if isinstance(a, FixAction)]
     stale = find_stale_shas(fix_actions, commits)
     if not stale:
         return
     remap, unmatched = build_sha_remap(stale, commits)
     shas_to_remove = _resolve_unmatched(unmatched, commits, remap)
     if remap:
-        apply_remap_to_file(changelog_path, remap)
+        apply_remap_to_actions(ctx._actions, remap)
     if shas_to_remove:
-        remove_actions_from_file(changelog_path, shas_to_remove)
+        ctx._actions = remove_actions_by_sha(ctx._actions, shas_to_remove)
     _refresh_tool_state_shas(ctx.tool_state, remap, shas_to_remove)
     kept_stale = len(unmatched) - len(shas_to_remove)
     logger.info(f"Rebased changelog: {len(remap)} remapped, {len(shas_to_remove)} removed, {kept_stale} kept stale")
