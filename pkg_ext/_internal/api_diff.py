@@ -177,16 +177,14 @@ def _compare_defaults(
     group: str,
     item_name: str,
     item_type: Literal["param", "field"],
-    is_field: bool = False,
 ) -> DiffResult | None:
-    field_name = item_name if is_field else None
     if base_default is None and dev_default is not None:
         return _diff(
             symbol_name,
             group,
             ChangeKind.DEFAULT_ADDED,
             f"{item_type} '{item_name}' default added: {dev_default.value_repr}",
-            field_name=field_name,
+            field_name=item_name,
         )
     if base_default is not None and dev_default is None:
         return _diff(
@@ -194,7 +192,7 @@ def _compare_defaults(
             group,
             ChangeKind.DEFAULT_REMOVED,
             f"{item_type} '{item_name}' default removed (was: {base_default.value_repr})",
-            field_name=field_name,
+            field_name=item_name,
         )
     if base_default and dev_default:
         if base_default.is_factory and dev_default.is_factory:
@@ -206,7 +204,7 @@ def _compare_defaults(
                 group,
                 ChangeKind.DEFAULT_CHANGED,
                 f"{item_type} '{item_name}' default: {base_default.value_repr} -> {dev_default.value_repr}",
-                field_name=field_name,
+                field_name=item_name,
             )
     return None
 
@@ -238,17 +236,18 @@ def compare_params(
     base_map = {p.name: p for p in baseline if p.name != "self"}
     dev_map = {p.name: p for p in dev if p.name != "self"}
 
-    for name in base_map.keys() - dev_map.keys():
+    for name in sorted(base_map.keys() - dev_map.keys()):
         results.append(
             _diff(
                 symbol_name,
                 group,
                 ChangeKind.PARAM_REMOVED,
                 f"removed param '{name}'",
+                field_name=name,
             )
         )
 
-    for name in dev_map.keys() - base_map.keys():
+    for name in sorted(dev_map.keys() - base_map.keys()):
         p = dev_map[name]
         if _is_required(p):
             results.append(
@@ -257,6 +256,7 @@ def compare_params(
                     group,
                     ChangeKind.REQUIRED_PARAM_ADDED,
                     f"added required param '{name}'",
+                    field_name=name,
                 )
             )
         else:
@@ -267,10 +267,11 @@ def compare_params(
                     group,
                     ChangeKind.OPTIONAL_PARAM_ADDED,
                     f"added optional param '{name}' (default: {default_str})",
+                    field_name=name,
                 )
             )
 
-    for name in base_map.keys() & dev_map.keys():
+    for name in sorted(base_map.keys() & dev_map.keys()):
         bp, dp = base_map[name], dev_map[name]
         if not types_equal(bp.type_annotation, dp.type_annotation):
             results.append(
@@ -279,6 +280,7 @@ def compare_params(
                     group,
                     ChangeKind.PARAM_TYPE_CHANGED,
                     f"param '{name}' type: {bp.type_annotation} -> {dp.type_annotation}",
+                    field_name=name,
                 )
             )
         if default_diff := _compare_defaults(bp.default, dp.default, symbol_name, group, name, "param"):
@@ -297,7 +299,7 @@ def compare_fields(
     base_map = {f.name: f for f in baseline if not f.is_computed}
     dev_map = {f.name: f for f in dev if not f.is_computed}
 
-    for name in base_map.keys() - dev_map.keys():
+    for name in sorted(base_map.keys() - dev_map.keys()):
         results.append(
             _diff(
                 symbol_name,
@@ -308,7 +310,7 @@ def compare_fields(
             )
         )
 
-    for name in dev_map.keys() - base_map.keys():
+    for name in sorted(dev_map.keys() - base_map.keys()):
         f = dev_map[name]
         if _is_field_required(f):
             results.append(
@@ -332,7 +334,7 @@ def compare_fields(
                 )
             )
 
-    for name in base_map.keys() & dev_map.keys():
+    for name in sorted(base_map.keys() & dev_map.keys()):
         bf, df = base_map[name], dev_map[name]
         if not types_equal(bf.type_annotation, df.type_annotation):
             results.append(
@@ -344,7 +346,7 @@ def compare_fields(
                     field_name=name,
                 )
             )
-        if default_diff := _compare_defaults(bf.default, df.default, symbol_name, group, name, "field", is_field=True):
+        if default_diff := _compare_defaults(bf.default, df.default, symbol_name, group, name, "field"):
             results.append(default_diff)
 
     return results
@@ -378,14 +380,14 @@ def _compare_bases(
 ) -> list[DiffResult]:
     removed_direct = set(baseline_direct) - set(dev_direct)
     added_direct = set(dev_direct) - set(baseline_direct)
-    # Only report removed if truly removed (not in MRO anymore)
     results = [
         _diff(symbol_name, group, ChangeKind.BASE_CLASS_REMOVED, f"removed base class '{base}'")
-        for base in removed_direct
+        for base in sorted(removed_direct)
         if not (dev_mro_bases and base in dev_mro_bases)
     ]
     results.extend(
-        _diff(symbol_name, group, ChangeKind.BASE_CLASS_ADDED, f"added base class '{base}'") for base in added_direct
+        _diff(symbol_name, group, ChangeKind.BASE_CLASS_ADDED, f"added base class '{base}'")
+        for base in sorted(added_direct)
     )
     return results
 
@@ -450,7 +452,7 @@ def compare_group(baseline: GroupDump, dev: GroupDump) -> list[DiffResult]:
     base_map = {s.name: s for s in baseline.symbols}
     dev_map = {s.name: s for s in dev.symbols}
     # Only compare modified symbols - additions/removals handled by pre-change actions
-    for name in base_map.keys() & dev_map.keys():
+    for name in sorted(base_map.keys() & dev_map.keys()):
         results.extend(compare_symbols(base_map[name], dev_map[name], baseline.name))
     return results
 
@@ -461,7 +463,7 @@ def compare_api_dumps(baseline: PublicApiDump | None, dev: PublicApiDump) -> lis
     results: list[DiffResult] = []
     base_groups = {g.name: g for g in baseline.groups}
     dev_groups = {g.name: g for g in dev.groups}
-    for name in base_groups.keys() & dev_groups.keys():
+    for name in sorted(base_groups.keys() & dev_groups.keys()):
         results.extend(compare_group(base_groups[name], dev_groups[name]))
     return results
 

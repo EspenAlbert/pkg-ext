@@ -18,8 +18,11 @@ from pkg_ext._internal.api_diff import (
 )
 from pkg_ext._internal.changelog.actions import AdditionalChangeAction, BreakingChangeAction
 from pkg_ext._internal.models.api_dump import (
+    CallableSignature,
     ClassFieldInfo,
     FuncParamInfo,
+    FunctionDump,
+    GroupDump,
     ParamDefault,
     ParamKind,
     PublicApiDump,
@@ -380,3 +383,57 @@ def test_reconcile_preserves_timestamp_and_removes_stale():
     assert result[0].details == "new details"
     assert result[1].name == "new_func"
     assert result[1].auto_generated
+
+
+def test_compare_params_sets_field_name_on_all_diffs():
+    baseline = [_param("x")]
+    dev = [
+        _param("x"),
+        _param("retry_initial_wait", default=_default("1.0")),
+        _param("retry_jitter", default=_default("0.5")),
+        _param("retry_max_wait", default=_default("30")),
+    ]
+    results = compare_params(baseline, dev, "run", "shell")
+    assert len(results) == 3
+    field_names = {r.field_name for r in results}
+    assert field_names == {"retry_initial_wait", "retry_jitter", "retry_max_wait"}
+    assert all(r.change_kind == ChangeKind.OPTIONAL_PARAM_ADDED for r in results)
+
+
+def test_reconcile_multi_param_stability():
+    """Multiple params on the same function must have unique keys and reconcile idempotently."""
+    param_names = ["retry_initial_wait", "retry_jitter", "retry_max_wait"]
+    baseline = [_param("x")]
+    dev = [_param("x")] + [_param(n, default=_default("1.0")) for n in param_names]
+    diffs = compare_params(baseline, dev, "run", "shell")
+
+    first_run = reconcile_auto_actions([], diffs)
+    assert len(first_run) == 3
+
+    second_run = reconcile_auto_actions(first_run, diffs)
+    assert len(second_run) == 3
+    for first, second in zip(first_run, second_run, strict=True):
+        assert first.ts == second.ts
+        assert first.details == second.details
+
+
+def _make_dump(groups: list[GroupDump], version: str = "1.0.0") -> PublicApiDump:
+    return PublicApiDump(pkg_import_name="test", version=version, groups=groups, dumped_at=datetime.now(UTC))
+
+
+def test_compare_api_dumps_detects_param_change():
+    func_base = FunctionDump(
+        name="run",
+        module_path="mod",
+        signature=CallableSignature(parameters=[_param("x", type_annotation="str")]),
+    )
+    func_dev = FunctionDump(
+        name="run",
+        module_path="mod",
+        signature=CallableSignature(parameters=[_param("x", type_annotation="int")]),
+    )
+    baseline = _make_dump([GroupDump(name="core", symbols=[func_base])])
+    dev = _make_dump([GroupDump(name="core", symbols=[func_dev])])
+    results = compare_api_dumps(baseline, dev)
+    assert len(results) == 1
+    assert results[0].change_kind == ChangeKind.PARAM_TYPE_CHANGED
