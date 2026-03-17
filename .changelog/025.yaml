@@ -1,0 +1,7 @@
+name: changelog
+ts: 2026-03-17 20:44:15.194070+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(api-diff): set field_name on param diffs and sort set iterations for stable reconciliation'
+message: 'fix(api-diff): set field_name on param diffs and sort set iterations for stable reconciliation'
+short_sha: 03a09e
