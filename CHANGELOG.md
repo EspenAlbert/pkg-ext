@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.3 2026-03-17T20-46Z
+
+### Changelog
+- fix(api-diff): set field_name on param diffs and sort set iterations for stable reconciliation [03a09e](https://github.com/EspenAlbert/pkg-ext/commit/03a09e)
+
+
 ## 0.4.2 2026-02-25T18-58Z
 
 ### Api_Commands
