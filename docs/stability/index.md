@@ -18,7 +18,7 @@
 > **Since:** 0.1.0
 
 ```python
-def dep(*, target: str = ..., replacement: str | None = ...):
+def dep(*, target: str = ..., replacement: str | None = None):
     ...
 ```
 
@@ -29,7 +29,7 @@ Mark target as deprecated.
 | Flag | Type | Default | Description |
 |---|---|---|---|
 | `--target`, `-t` | `str` | *required* | Target: group \| group.symbol \| group.symbol.arg |
-| `--replacement`, `-r` | `str | None` | *required* | Replacement suggestion |
+| `--replacement`, `-r` | `str | None` | `None` | Replacement suggestion |
 
 ### Changes
 

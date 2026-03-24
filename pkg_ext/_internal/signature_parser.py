@@ -388,11 +388,16 @@ def _extract_choices(annotation: Any) -> list[str] | None:
     return None
 
 
-def _is_required(param_info: Any) -> bool:
-    """Check if parameter is required (no default value)."""
-    if param_info.default is None is param_info.default_factory:
-        return True
-    return param_info.default is ...
+def is_cli_required_for_docs(info: ParameterInfo) -> bool:
+    return info.default is ... and info.default_factory is None
+
+
+def _cli_default_object_for_docs(info: ParameterInfo) -> Any:
+    if info.default is ...:
+        if info.default_factory is None:
+            raise ValueError("required CLI parameter has no default to materialize")
+        return info.default_factory()
+    return info.default
 
 
 def _format_envvar(envvar: str | list[str] | None) -> str | None:
@@ -419,9 +424,10 @@ def extract_cli_params(func: Callable) -> list[CLIParamInfo]:
         info = param.default
         annotation = hints.get(name)
         is_arg = isinstance(info, ArgumentInfo)
+        required = is_cli_required_for_docs(info)
         default_repr: str | None = None
-        if not _is_required(info):
-            default_repr = stable_repr(info.default)
+        if not required:
+            default_repr = stable_repr(_cli_default_object_for_docs(info))
         params.append(
             CLIParamInfo(
                 param_name=name,
@@ -429,7 +435,7 @@ def extract_cli_params(func: Callable) -> list[CLIParamInfo]:
                 flags=[] if is_arg else _resolve_cli_flags(name, info),
                 help=info.help,
                 default_repr=default_repr,
-                required=_is_required(info),
+                required=required,
                 envvar=_format_envvar(info.envvar),
                 is_argument=is_arg,
                 hidden=info.hidden,

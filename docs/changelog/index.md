@@ -69,7 +69,7 @@ Create a ChoreAction for internal changes that warrant a release.
 > **Since:** 0.1.0
 
 ```python
-def promote(*, name: str | None = ..., group: str | None = ..., module_filter: str | None = ..., pattern: str | None = ..., undecided: bool = False, pr_number: int = 0):
+def promote(*, name: str | None = None, group: str | None = None, module_filter: str | None = None, pattern: str | None = None, undecided: bool = False, pr_number: int = 0):
     ...
 ```
 
@@ -79,10 +79,10 @@ Promote symbols to public API (private or undecided).
 
 | Flag | Type | Default | Description |
 |---|---|---|---|
-| `--name`, `-n` | `str | None` | *required* | Symbol name to promote |
-| `--group`, `-g` | `str | None` | *required* | Target group |
-| `--module`, `-m` | `str | None` | *required* | Filter by module path prefix (inside the package, don't include the package name) |
-| `--pattern`, `-p` | `str | None` | *required* | Filter by name pattern (e.g., 'dump_*') |
+| `--name`, `-n` | `str | None` | `None` | Symbol name to promote |
+| `--group`, `-g` | `str | None` | `None` | Target group |
+| `--module`, `-m` | `str | None` | `None` | Filter by module path prefix (inside the package, don't include the package name) |
+| `--pattern`, `-p` | `str | None` | `None` | Filter by name pattern (e.g., 'dump_*') |
 | `--undecided`, `-u` | `bool` | `False` | Include symbols without changelog entry (not yet decided) |
 | `--pr` | `int` | `0` | PR number (auto-detected if not provided) |
 

@@ -134,6 +134,30 @@ def test_extract_cli_params():
     assert verbose_param.flags == ["--verbose"]
 
 
+def test_extract_cli_params_default_factory_and_none_defaults():
+    def cmd(
+        exclude: list[str] = typer.Option(..., "--exclude", default_factory=list),
+        tflint: bool | None = typer.Option(None, "--tflint/--no-tflint"),
+        include: list[str] = typer.Option([], "--include"),
+        nested: list[str] = typer.Option(
+            ...,
+            "--nested",
+            default_factory=lambda: list(("p1", "p2")),
+        ),
+    ) -> None:
+        pass
+
+    ps = {p.param_name: p for p in extract_cli_params(cmd)}
+    assert not ps["exclude"].required
+    assert ps["exclude"].default_repr == "[]"
+    assert not ps["tflint"].required
+    assert ps["tflint"].default_repr == "None"
+    assert not ps["include"].required
+    assert ps["include"].default_repr == "[]"
+    assert not ps["nested"].required
+    assert ps["nested"].default_repr == "['p1', 'p2']"
+
+
 def test_stable_repr_normalizes_memory_addresses():
     sentinel = object()
     result = stable_repr(sentinel)
