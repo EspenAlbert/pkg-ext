@@ -6,8 +6,11 @@ import inspect
 import re
 import types
 import typing
-from contextlib import suppress
-from typing import Any, Callable, ClassVar, Literal, Union, get_args, get_origin, get_type_hints
+from collections.abc import Iterator
+from contextlib import contextmanager, suppress
+from contextvars import ContextVar
+from pathlib import Path
+from typing import Any, Callable, ClassVar, Literal, NamedTuple, Union, get_args, get_origin, get_type_hints
 
 from pydantic.fields import FieldInfo
 from pydantic_core import PydanticUndefined
@@ -38,6 +41,41 @@ _MEMORY_ADDRESS_PATTERN = re.compile(r"^<(?P<type_info>.+) at 0x[0-9a-fA-F]+>$")
 _MEMORY_ADDRESS_INLINE = re.compile(r"<(?P<type_info>[^<>]+) at 0x[0-9a-fA-F]+>")
 
 
+class DocReprContext(NamedTuple):
+    pkg_dir: Path
+    repo_root: Path | None = None
+
+
+_doc_repr_ctx_var: ContextVar[DocReprContext | None] = ContextVar("_doc_repr_ctx", default=None)
+
+
+@contextmanager
+def doc_repr_context(pkg_dir: Path, repo_root: Path | None = None) -> Iterator[None]:
+    token = _doc_repr_ctx_var.set(DocReprContext(pkg_dir=pkg_dir, repo_root=repo_root))
+    try:
+        yield
+    finally:
+        _doc_repr_ctx_var.reset(token)
+
+
+def path_repr_for_docs(path: Path, ctx: DocReprContext) -> str:
+    resolved = path.resolve()
+    anchor = ctx.pkg_dir.resolve()
+    if resolved == anchor:
+        return "Path('.')"
+    with suppress(ValueError):
+        rel = resolved.relative_to(anchor)
+        return f"Path('{rel.as_posix()}')"
+    if ctx.repo_root:
+        repo = ctx.repo_root.resolve()
+        if resolved == repo:
+            return "Path('.')"
+        with suppress(ValueError):
+            rel = resolved.relative_to(repo)
+            return f"Path('{rel.as_posix()}')"
+    return "Path('<outside package>')"
+
+
 def strip_memory_addresses(s: str) -> str:
     """Remove memory addresses from any string containing <... at 0x...> patterns."""
     return _MEMORY_ADDRESS_INLINE.sub(r"<\g<type_info>>", s)
@@ -50,6 +88,8 @@ def stable_repr(value: Any) -> str:
     (e.g., `<object object at 0x100346830>`) that change between Python runs.
     This function normalizes such reprs to a stable form like `<object>`.
     """
+    if isinstance(value, Path) and (ctx := _doc_repr_ctx_var.get()):
+        return path_repr_for_docs(value, ctx)
     raw_repr = repr(value)
     if match := _MEMORY_ADDRESS_PATTERN.match(raw_repr):
         type_info = match.group("type_info")
@@ -308,8 +348,6 @@ def _parse_dataclass_fields(cls: type) -> list[ClassFieldInfo]:
     try:
         hints = get_type_hints(cls)
     except NameError:
-        # Forward reference couldn't be resolved (e.g., TYPE_CHECKING import)
-        # Fall back to raw string annotations
         hints = getattr(cls, "__annotations__", {})
     fields: list[ClassFieldInfo] = []
     for f in dataclasses.fields(cls):
@@ -335,7 +373,6 @@ def _parse_dataclass_fields(cls: type) -> list[ClassFieldInfo]:
 
 
 def parse_class_fields(cls: type) -> list[ClassFieldInfo] | None:
-    """Dispatch to Pydantic or dataclass field parser. Returns None for plain classes."""
     with suppress(ImportError):
         from pydantic import BaseModel
 
@@ -410,7 +447,6 @@ def _format_envvar(envvar: str | list[str] | None) -> str | None:
 
 
 def extract_cli_params(func: Callable) -> list[CLIParamInfo]:
-    """Extract CLI parameters from a typer command function."""
     try:
         sig = inspect.signature(func)
         hints = get_type_hints(func)

@@ -42,6 +42,7 @@ from pkg_ext._internal.models import PkgCodeState, PublicGroups
 from pkg_ext._internal.models.api_dump import PublicApiDump
 from pkg_ext._internal.reference_handling import handle_added_refs, handle_removed_refs
 from pkg_ext._internal.settings import PkgSettings
+from pkg_ext._internal.signature_parser import doc_repr_context
 from pkg_ext._internal.version_bump import bump_version, read_current_version
 from pkg_ext._internal.warnings_gen import write_warnings_module
 
@@ -238,7 +239,8 @@ def create_api_dump(settings: PkgSettings):
     groups = settings.parse_computed_public_groups(PublicGroups)
     version = str(read_current_version(pkg_ctx))
     refs = {ref.local_id: ref for ref in pkg_ctx.code_state.import_id_refs.values()}
-    return api_dumper.dump_public_api(groups, refs, settings.pkg_import_name, version)
+    with doc_repr_context(settings.pkg_directory, settings.repo_root):
+        return api_dumper.dump_public_api(groups, refs, settings.pkg_import_name, version)
 
 
 def write_api_dump(settings: PkgSettings, dev_mode: bool = False) -> Path:

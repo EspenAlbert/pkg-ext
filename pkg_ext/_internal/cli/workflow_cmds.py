@@ -46,6 +46,7 @@ from pkg_ext._internal.generation import docs, docs_mkdocs
 from pkg_ext._internal.git_usage import GitSince, find_pr_info_or_none, head_merge_pr
 from pkg_ext._internal.models import PublicGroups
 from pkg_ext._internal.settings import PkgSettings
+from pkg_ext._internal.signature_parser import doc_repr_context
 from pkg_ext._internal.version_bump import read_current_version
 
 logger = logging.getLogger(__name__)
@@ -94,7 +95,8 @@ def generate_docs_for_pkg(
     groups = settings.parse_computed_public_groups(PublicGroups)
     version = str(read_current_version(pkg_ctx))
     refs = {ref.local_id: ref for ref in pkg_ctx.code_state.import_id_refs.values()}
-    api_dump = api_dumper.dump_public_api(groups, refs, settings.pkg_import_name, version)
+    with doc_repr_context(settings.pkg_directory, settings.repo_root):
+        api_dump = api_dumper.dump_public_api(groups, refs, settings.pkg_import_name, version)
     config = load_project_config(settings.state_dir)
     changelog_actions = parse_changelog_actions(settings.changelog_dir)
     docs_dir = output_dir or settings.docs_dir

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import StrEnum
+from pathlib import Path
 from typing import Callable, Union
 
 import typer
@@ -7,12 +8,15 @@ from pydantic import BaseModel, Field, computed_field
 
 from pkg_ext._internal.models.api_dump import ParamKind
 from pkg_ext._internal.signature_parser import (
+    DocReprContext,
     _annotation_str,
+    doc_repr_context,
     extract_cli_params,
     is_cli_command,
     parse_class_fields,
     parse_mro_bases,
     parse_signature,
+    path_repr_for_docs,
     stable_repr,
     strip_memory_addresses,
 )
@@ -231,3 +235,60 @@ def test_annotation_str_callable_union_and_pipe_produce_same_output():
     cb_union = Callable[[Union[int, str]], bool]
     cb_pipe = Callable[[int | str], bool]
     assert _annotation_str(cb_union) == _annotation_str(cb_pipe)
+
+
+def test_path_repr_for_docs(tmp_path: Path):
+    anchor = tmp_path / "pkg"
+    anchor.mkdir()
+    sub = anchor / "sub" / "dir"
+    sub.mkdir(parents=True)
+    ctx = DocReprContext(pkg_dir=anchor)
+
+    assert path_repr_for_docs(anchor, ctx) == "Path('.')"
+    assert path_repr_for_docs(sub, ctx) == "Path('sub/dir')"
+    assert path_repr_for_docs(tmp_path / "outside", ctx) == "Path('<outside package>')"
+
+
+def test_path_repr_for_docs_falls_back_to_repo_root(tmp_path: Path):
+    repo = tmp_path / "repo"
+    pkg = repo / "pkg"
+    pkg.mkdir(parents=True)
+    sibling = repo / "other"
+    sibling.mkdir()
+    ctx = DocReprContext(pkg_dir=pkg, repo_root=repo)
+
+    assert path_repr_for_docs(sibling, ctx) == "Path('other')"
+    assert path_repr_for_docs(repo, ctx) == "Path('.')"
+    assert path_repr_for_docs(tmp_path / "external", ctx) == "Path('<outside package>')"
+
+
+def test_stable_repr_path_without_ctx():
+    p = Path("/some/absolute/path")
+    result = stable_repr(p)
+    assert "/some/absolute/path" in result
+
+
+def test_stable_repr_path_with_ctx(tmp_path: Path):
+    anchor = tmp_path / "pkg"
+    anchor.mkdir()
+    with doc_repr_context(anchor):
+        assert stable_repr(anchor) == "Path('.')"
+        assert stable_repr(anchor / "sub") == "Path('sub')"
+
+
+def test_extract_cli_params_with_doc_repr_ctx(tmp_path: Path):
+    target = tmp_path / "pkg"
+    target.mkdir()
+
+    def cmd(
+        path: Path = typer.Option(target, "--path"),
+    ) -> None:
+        pass
+
+    params_without = extract_cli_params(cmd)
+    assert params_without[0].default_repr
+    assert str(target) in params_without[0].default_repr
+
+    with doc_repr_context(target):
+        params_with = extract_cli_params(cmd)
+    assert params_with[0].default_repr == "Path('.')"
