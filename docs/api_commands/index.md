@@ -17,7 +17,7 @@
 > **Since:** 0.1.0
 
 ```python
-def diff_api(*, baseline_ref: str | None = ...):
+def diff_api(*, baseline_ref: str | None = None):
     ...
 ```
 
@@ -27,7 +27,7 @@ Show API changes between baseline and dev dump.
 
 | Flag | Type | Default | Description |
 |---|---|---|---|
-| `--baseline` | `str | None` | *required* | Git tag/ref to compare against (default: {pkg}.api.yaml file) |
+| `--baseline` | `str | None` | `None` | Git tag/ref to compare against (default: {pkg}.api.yaml file) |
 
 ### Changes
 
@@ -43,7 +43,7 @@ Show API changes between baseline and dev dump.
 > **Since:** 0.1.0
 
 ```python
-def dump_api(*, output: Path | None = ..., dev: bool = False):
+def dump_api(*, output: Path | None = None, dev: bool = False):
     ...
 ```
 
@@ -53,7 +53,7 @@ Dump public API to YAML for diffing and breaking change detection.
 
 | Flag | Type | Default | Description |
 |---|---|---|---|
-| `-o`, `--output` | `Path | None` | *required* | Output file path |
+| `-o`, `--output` | `Path | None` | `None` | Output file path |
 | `--dev` | `bool` | `False` | Write to -dev file (gitignored for local comparison) |
 
 ### Changes

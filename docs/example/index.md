@@ -40,7 +40,7 @@ Verify all symbols in examples_include have corresponding .md files.
 > **Since:** 0.4.0
 
 ```python
-def gen_example_prompt(*, group: str | None = ...):
+def gen_example_prompt(*, group: str | None = None):
     ...
 ```
 
@@ -50,7 +50,7 @@ Build an AI prompt for missing example docs and copy to clipboard.
 
 | Flag | Type | Default | Description |
 |---|---|---|---|
-| `-g`, `--group` | `str | None` | *required* | Generate for specific group only |
+| `-g`, `--group` | `str | None` | `None` | Generate for specific group only |
 
 ### Changes
 

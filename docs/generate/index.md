@@ -16,7 +16,7 @@
 > **Since:** 0.1.0
 
 ```python
-def gen_docs(*, output_dir: Path | None = ..., group: str | None = ...):
+def gen_docs(*, output_dir: Path | None = None, group: str | None = None):
     ...
 ```
 
@@ -26,8 +26,8 @@ Generate documentation from public API.
 
 | Flag | Type | Default | Description |
 |---|---|---|---|
-| `-o`, `--output-dir` | `Path | None` | *required* | Output directory (default: docs/) |
-| `-g`, `--group` | `str | None` | *required* | Generate for specific group only |
+| `-o`, `--output-dir` | `Path | None` | `None` | Output directory (default: docs/) |
+| `-g`, `--group` | `str | None` | `None` | Generate for specific group only |
 
 ### Changes
 

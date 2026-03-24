@@ -46,7 +46,7 @@ def post_merge(*, explicit_pr: int = 0, push: bool = False, skip_clean_old_entri
 > **Since:** 0.1.0
 
 ```python
-def pre_change(*, group: str | None = ..., git_changes_since: GitSince = <GitSince.DEFAULT: 'default'>, skip_fix_commits: bool = False, full: bool = False, skip_docs: bool = False, skip_open_in_editor: bool | None = ..., keep_private: bool = False):
+def pre_change(*, group: str | None = None, git_changes_since: GitSince = <GitSince.DEFAULT: 'default'>, skip_fix_commits: bool = False, full: bool = False, skip_docs: bool = False, skip_open_in_editor: bool | None = None, keep_private: bool = False):
     ...
 ```
 
@@ -56,12 +56,12 @@ Handle new symbols, update changelog, optionally sync files and docs.
 
 | Flag | Type | Default | Description |
 |---|---|---|---|
-| `-g`, `--group` | `str | None` | *required* | Generate for specific group only |
+| `-g`, `--group` | `str | None` | `None` | Generate for specific group only |
 | `--git-since` | `GitSince` | `<GitSince.DEFAULT: 'default'>` | Will use git log to look for 'fix' commits to include in the changelog [no_git_changes, last_git_tag, pr_base_branch, default] |
 | `--skip-fix-commits` | `bool` | `False` | Skip prompts for fix commits in git history |
 | `--full` | `bool` | `False` | Run pre-commit workflow after pre-change (sync + docs + diff) |
 | `--skip-docs` | `bool` | `False` | Skip doc regeneration |
-| `--skip-open` | `bool | None` | *required* | Skip opening files in editor |
+| `--skip-open` | `bool | None` | `None` | Skip opening files in editor |
 | `--keep-private` | `bool` | `False` | Automatically keep all new symbols private without prompting |
 
 ### Changes

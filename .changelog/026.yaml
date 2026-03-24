@@ -1,0 +1,12 @@
+name: is_cli_required_for_docs
+ts: 2026-03-24 10:15:38.763157+00:00
+type: keep_private
+full_path: _internal.signature_parser.is_cli_required_for_docs
+---
+name: api_dump
+ts: 2026-03-24 10:15:51.990437+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(docs): Align Typer CLI option required/default with Typer rules'
+message: 'fix(docs): Align Typer CLI option required/default with Typer rules'
+short_sha: 749da8
