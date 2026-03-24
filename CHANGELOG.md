@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.4 2026-03-24T10-17Z
+
+### Api_Dump
+- fix(docs): Align Typer CLI option required/default with Typer rules [749da8](https://github.com/EspenAlbert/pkg-ext/commit/749da8)
+
+
 ## 0.4.3 2026-03-17T20-46Z
 
 ### Changelog

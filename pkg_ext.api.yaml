@@ -1,5 +1,5 @@
 pkg_import_name: pkg_ext
-version: 0.4.3
+version: 0.4.4
 groups:
 - name: __ROOT__
   symbols:
@@ -231,7 +231,8 @@ groups:
       flags:
       - --baseline
       help: 'Git tag/ref to compare against (default: {pkg}.api.yaml file)'
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
   - name: dump_api
@@ -269,7 +270,8 @@ groups:
       - -o
       - --output
       help: Output file path
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
     - param_name: dev
@@ -1134,7 +1136,8 @@ groups:
       - --name
       - -n
       help: Symbol name to promote
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
     - param_name: group
@@ -1143,7 +1146,8 @@ groups:
       - --group
       - -g
       help: Target group
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
     - param_name: module_filter
@@ -1152,7 +1156,8 @@ groups:
       - --module
       - -m
       help: Filter by module path prefix (inside the package, don't include the package name)
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
     - param_name: pattern
@@ -1161,7 +1166,8 @@ groups:
       - --pattern
       - -p
       help: Filter by name pattern (e.g., 'dump_*')
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
     - param_name: undecided
@@ -1255,7 +1261,8 @@ groups:
       - -g
       - --group
       help: Generate for specific group only
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
 - name: generate
@@ -1295,7 +1302,8 @@ groups:
       - -o
       - --output-dir
       help: 'Output directory (default: docs/)'
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
     - param_name: group
@@ -1304,7 +1312,8 @@ groups:
       - -g
       - --group
       help: Generate for specific group only
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
 - name: stability
@@ -1352,7 +1361,8 @@ groups:
       - --replacement
       - -r
       help: Replacement suggestion
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
   - name: exp
@@ -1610,7 +1620,8 @@ groups:
       - -g
       - --group
       help: Generate for specific group only
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
     - param_name: git_changes_since
@@ -1659,7 +1670,8 @@ groups:
       flags:
       - --skip-open
       help: Skip opening files in editor
-      required: true
+      default_repr: None
+      required: false
       is_argument: false
       hidden: false
     - param_name: keep_private
@@ -1739,4 +1751,4 @@ groups:
       required: false
       is_argument: false
       hidden: false
-dumped_at: 2026-03-17 20:46:31.476529+00:00
+dumped_at: 2026-03-24 10:17:40.431612+00:00
