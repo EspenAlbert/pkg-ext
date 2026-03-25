@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.5 2026-03-25T21-53Z
+
+### Other Changes
+- Chore: stabilize path defaults
+
+
 ## 0.4.4 2026-03-24T10-17Z
 
 ### Api_Dump
