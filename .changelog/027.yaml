@@ -1,3 +1,18 @@
+name: doc_repr_context
+ts: 2026-03-25 21:51:17.786910+00:00
+type: keep_private
+full_path: _internal.signature_parser.doc_repr_context
+---
+name: path_repr_for_docs
+ts: 2026-03-25 21:51:17.786967+00:00
+type: keep_private
+full_path: _internal.signature_parser.path_repr_for_docs
+---
+name: DocReprContext
+ts: 2026-03-25 21:51:20.658203+00:00
+type: keep_private
+full_path: _internal.signature_parser.DocReprContext
+---
 ts: 2026-03-25 21:50:42.559623+00:00
 type: chore
 description: stabilize path defaults
