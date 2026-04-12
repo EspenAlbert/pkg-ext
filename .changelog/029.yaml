@@ -26,3 +26,8 @@ author: Espen Albert
 changelog_message: 'fix: Reconcile owned_modules alongside owned_refs when symbols move'
 message: 'fix: Reconcile owned_modules alongside owned_refs when symbols move'
 short_sha: dddfde
+---
+name: 0.4.6
+ts: 2026-04-12 16:30:23.136495+00:00
+type: release
+old_version: 0.4.5

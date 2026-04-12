@@ -1,5 +1,5 @@
 pkg_import_name: pkg_ext
-version: 0.4.5
+version: 0.4.6
 groups:
 - name: __ROOT__
   symbols:
@@ -1751,4 +1751,4 @@ groups:
       required: false
       is_argument: false
       hidden: false
-dumped_at: 2026-03-25 21:53:17.064452+00:00
+dumped_at: 2026-04-12 16:30:23.073728+00:00

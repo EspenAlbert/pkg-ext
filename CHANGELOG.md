@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.6 2026-04-12T16-30Z
+
+### Workflows
+- fix: Resolve short-name collision that silently drops duplicate symbol names [8d9632](https://github.com/EspenAlbert/pkg-ext/commit/8d9632)
+- fix: Update decided_local_ids for moved symbols during reconciliation [5636ab](https://github.com/EspenAlbert/pkg-ext/commit/5636ab)
+- fix: Reconcile owned_modules alongside owned_refs when symbols move [dddfde](https://github.com/EspenAlbert/pkg-ext/commit/dddfde)
+
+
 ## 0.4.5 2026-03-25T21-53Z
 
 ### Other Changes
