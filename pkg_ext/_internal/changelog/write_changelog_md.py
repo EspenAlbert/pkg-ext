@@ -102,8 +102,8 @@ def as_changelog_line(action: ChangelogAction, remote_url: str, ctx: pkg_ctx) ->
             return ""
         case FixAction(message=msg, changelog_message=cl_msg, short_sha=sha):
             return f"{cl_msg or msg} {_commit_url(remote_url, sha)}"
-        case MakePublicAction(name=name):
-            return f"New {ctx.code_state.ref_symbol(name).type} `{name}`"
+        case MakePublicAction(name=name, full_path=full_path):
+            return f"New {ctx.code_state.ref_symbol(full_path or name).type} `{name}`"
         case DeleteAction(name=name, group=group):
             return f"Removed `{group}.{name}`"
         case RenameAction(name=name, old_name=old_name, group=group):

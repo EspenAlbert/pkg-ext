@@ -1,0 +1,28 @@
+name: main
+ts: 2026-04-12 16:10:19.714611+00:00
+type: keep_private
+full_path: _internal.cli.main
+---
+name: workflows
+ts: 2026-04-12 16:10:30.816480+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix: Resolve short-name collision that silently drops duplicate symbol names'
+message: 'fix: Resolve short-name collision that silently drops duplicate symbol names'
+short_sha: 8d9632
+---
+name: workflows
+ts: 2026-04-12 16:10:51.908835+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix: Update decided_local_ids for moved symbols during reconciliation'
+message: 'fix: Update decided_local_ids for moved symbols during reconciliation'
+short_sha: 5636ab
+---
+name: workflows
+ts: 2026-04-12 16:11:02.339052+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix: Reconcile owned_modules alongside owned_refs when symbols move'
+message: 'fix: Reconcile owned_modules alongside owned_refs when symbols move'
+short_sha: dddfde

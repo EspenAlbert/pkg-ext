@@ -23,18 +23,17 @@ def process_reference_renames(
 ) -> set[str]:
     """Process renames. Returns set of old names that were renamed."""
     renamed_names: set[str] = set()
-    used_active: set[str] = set()
+    used_local_ids: set[str] = set()
     for group, ref in renames:
-        rename_choices = [state for name, state in active_refs.items() if name not in used_active]
+        rename_choices = [state for lid, state in active_refs.items() if lid not in used_local_ids]
         new_ref = select_ref(
             f"Select new name for the reference {ref.name} with type: {ref.type}",
             rename_choices,
         )
-        new_name = new_ref.name
-        used_active.add(new_name)
+        used_local_ids.add(new_ref.symbol.local_id)
         if confirm_create_alias(ref, new_ref):
             raise NotImplementedError("Alias creation is not implemented yet")
-        ctx.add_changelog_action(RenameAction(name=new_name, group=group, old_name=ref.name))
+        ctx.add_changelog_action(RenameAction(name=new_ref.name, group=group, old_name=ref.name))
         renamed_names.add(ref.name)
         task.update(advance=1)
     return renamed_names

@@ -104,7 +104,7 @@ def create_ctx(api_input: GenerateApiInput) -> pkg_ctx:
     with exit_stack:
         code_state = parse_pkg_code_state(settings)
         tool_state, extra_actions = parse_changelog(settings, code_state)
-        tool_state.groups.reconcile_moved_refs(code_state.import_id_refs)
+        tool_state.reconcile_with_code(code_state.import_id_refs)
 
         git_changes_input = GitChangesInput(
             repo_path=settings.repo_root,
@@ -223,7 +223,7 @@ def clean_old_entries(settings: PkgSettings):
 def create_stability_ctx(settings: PkgSettings) -> pkg_ctx:
     code_state = parse_pkg_code_state(settings)
     tool_state, extra_actions = parse_changelog(settings, code_state)
-    tool_state.groups.reconcile_moved_refs(code_state.import_id_refs)
+    tool_state.reconcile_with_code(code_state.import_id_refs)
 
     return pkg_ctx(
         settings=settings,
