@@ -202,7 +202,7 @@ def test_render_inline_symbol_shows_since_badge():
     from pkg_ext._internal.generation.docs import SymbolContext
 
     func = _func_dump("my_func")
-    ctx = SymbolContext(symbol=func)
+    ctx = SymbolContext(symbol=func, group_name="config")
     actions = [
         MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime(2025, 1, 1, tzinfo=UTC)),
         ReleaseAction(name="1.0.0", old_version="0.0.0", ts=datetime(2025, 1, 10, tzinfo=UTC)),

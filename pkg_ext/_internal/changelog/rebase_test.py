@@ -31,6 +31,7 @@ def _fix(sha: str, message: str, ts: datetime | None = None, ignored: bool = Fal
         short_sha=sha,
         message=message,
         name="group1",
+        group="group1",
         ts=ts or datetime(2025, 1, 1, tzinfo=UTC),
         author="test",
         ignored=ignored,

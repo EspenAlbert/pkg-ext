@@ -10,6 +10,7 @@ from pathlib import Path
 from model_lib import Entity
 from zero_3rdparty.sections import slug, wrap_section
 
+from pkg_ext._internal.changelog import actions as changelog_actions_mod
 from pkg_ext._internal.changelog.actions import ChangelogAction
 from pkg_ext._internal.config import (
     PKG_EXT_TOOL_NAME,
@@ -39,6 +40,7 @@ class GeneratedDocsOutput(Entity):
 @dataclass
 class SymbolContext:
     symbol: SymbolDump
+    group_name: str = ""
     has_env_vars: bool = False
     has_meaningful_changes: bool = False
     is_primary: bool = False
@@ -72,11 +74,15 @@ def build_symbol_context(
     changelog_actions: list[ChangelogAction],
 ) -> SymbolContext:
     has_changes = any(
-        action.name == symbol.name and isinstance(action, MEANINGFUL_CHANGE_ACTIONS) for action in changelog_actions
+        action.name == symbol.name
+        and isinstance(action, MEANINGFUL_CHANGE_ACTIONS)
+        and ((ag := changelog_actions_mod.action_group(action)) is None or ag == group_name)
+        for action in changelog_actions
     )
     is_primary = symbol.name.lower() == group_name.lower()
     return SymbolContext(
         symbol=symbol,
+        group_name=group_name,
         has_env_vars=has_env_vars(symbol),
         has_meaningful_changes=has_changes,
         is_primary=is_primary,
@@ -140,7 +146,7 @@ def render_group_index(
     for ctx in sorted_contexts:
         if not ctx.needs_own_page:
             section_id = f"{slug(ctx.symbol.name)}_def"
-            symbol_changes = build_symbol_changes(ctx.symbol.name, changelog_actions_list)
+            symbol_changes = build_symbol_changes(ctx.symbol.name, changelog_actions_list, ctx.group_name)
             example_link = _build_example_link(ctx.symbol.name, group.name, examples_set, examples_dir, "../examples/")
             inline_content = render_inline_symbol(
                 ctx,
@@ -213,7 +219,7 @@ def generate_docs(
                 symbol_path = f"{dir_name}/{ctx.page_filename}"
                 if docs_dir and pkg_src_dir:
                     symbol_doc_path = docs_dir / symbol_path
-                    symbol_changes = build_symbol_changes(ctx.symbol.name, changelog_actions)
+                    symbol_changes = build_symbol_changes(ctx.symbol.name, changelog_actions, ctx.group_name)
                     example_link = _build_example_link(
                         ctx.symbol.name, group.name, examples_set, examples_dir, "../examples/"
                     )
