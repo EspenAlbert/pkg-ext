@@ -254,13 +254,14 @@ def _build_field_versions(
     symbol_name: str,
     fields: list[ClassFieldInfo] | None,
     changelog_actions: Sequence[ChangelogAction],
+    group_name: str,
 ) -> dict[str, str]:
     if not fields:
         return {}
     return {
         f.name: v
         for f in fields
-        if not f.is_computed and (v := get_field_since_version(symbol_name, f.name, changelog_actions))
+        if not f.is_computed and (v := get_field_since_version(symbol_name, f.name, changelog_actions, group_name))
     }
 
 
@@ -296,12 +297,14 @@ def calculate_source_link(
     return str(rel_path)
 
 
-def _render_symbol_type_table(symbol: SymbolDump, changelog_actions: Sequence[ChangelogAction]) -> str | None:
+def _render_symbol_type_table(
+    symbol: SymbolDump, changelog_actions: Sequence[ChangelogAction], group_name: str
+) -> str | None:
     if isinstance(symbol, CLICommandDump) and symbol.cli_params:
         if table := render_cli_params_table(symbol.cli_params):
             return "\n".join(["**CLI Options:**", "", table])
     if isinstance(symbol, ClassDump) and symbol.fields:
-        field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions)
+        field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions, group_name)
         if should_show_field_table(symbol.fields, field_versions):
             return render_field_table(symbol.fields, field_versions)
     return None
@@ -325,7 +328,7 @@ def render_inline_symbol(
     symbol = ctx.symbol
     changelog_actions = changelog_actions or []
 
-    since_badge = render_since_badge(get_symbol_since_version(symbol.name, changelog_actions))
+    since_badge = render_since_badge(get_symbol_since_version(symbol.name, changelog_actions, ctx.group_name))
     anchor_id = f"{slug(symbol.name)}_def"
     lines = [f'<a id="{anchor_id}"></a>\n\n### {symbol.type.value}: `{symbol.name}`']
     if symbol_doc_path and pkg_src_dir and pkg_import_name:
@@ -346,7 +349,7 @@ def render_inline_symbol(
     docstring = format_docstring(symbol.docstring)
     if docstring:
         lines.extend(["", docstring])
-    if type_table := _render_symbol_type_table(symbol, changelog_actions):
+    if type_table := _render_symbol_type_table(symbol, changelog_actions, ctx.group_name):
         lines.extend(["", type_table])
     if changes:
         lines.extend(["", _render_changes_content(changes)])
@@ -363,7 +366,7 @@ def _render_symbol_main_section(
 ) -> str:
     section_id = f"{slug(symbol.name)}_def"
     stability = render_stability_badge(symbol.name, group.name, changelog_actions)
-    since_badge = render_since_badge(get_symbol_since_version(symbol.name, changelog_actions))
+    since_badge = render_since_badge(get_symbol_since_version(symbol.name, changelog_actions, group.name))
     docstring = format_docstring(symbol.docstring)
 
     lines = [f"## {symbol.type.value}: {symbol.name}", f"- [source]({source_link})"]
@@ -413,7 +416,7 @@ def render_symbol_page(
             parts.extend(["", "### CLI Options", "", table])
 
     if isinstance(symbol, ClassDump) and symbol.fields:
-        field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions)
+        field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions, group.name)
         if should_show_field_table(symbol.fields, field_versions):
             if table := render_field_table(symbol.fields, field_versions):
                 parts.extend(["", "### Fields", "", table])

@@ -41,14 +41,14 @@ def test_get_symbol_since_version_with_release():
         MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime(2025, 1, 1, tzinfo=UTC)),
         ReleaseAction(name="1.0.0", old_version="0.0.0", ts=datetime(2025, 1, 10, tzinfo=UTC)),
     ]
-    assert get_symbol_since_version("my_func", actions) == "1.0.0"
+    assert get_symbol_since_version("my_func", actions, "config") == "1.0.0"
 
 
 def test_get_symbol_since_version_unreleased():
     actions = [
         MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime(2025, 1, 1, tzinfo=UTC)),
     ]
-    assert get_symbol_since_version("my_func", actions) == UNRELEASED_VERSION
+    assert get_symbol_since_version("my_func", actions, "config") == UNRELEASED_VERSION
 
 
 def test_get_field_since_version_from_action():
@@ -62,7 +62,7 @@ def test_get_field_since_version_from_action():
         ),
         ReleaseAction(name="1.1.0", old_version="1.0.0", ts=datetime(2025, 1, 10, tzinfo=UTC)),
     ]
-    assert get_field_since_version("MyClass", "new_field", actions) == "1.1.0"
+    assert get_field_since_version("MyClass", "new_field", actions, "config") == "1.1.0"
 
 
 def test_get_field_since_version_falls_back_to_symbol():
@@ -70,7 +70,7 @@ def test_get_field_since_version_falls_back_to_symbol():
         MakePublicAction(name="MyClass", group="config", full_path="mod.MyClass", ts=datetime(2025, 1, 1, tzinfo=UTC)),
         ReleaseAction(name="1.0.0", old_version="0.0.0", ts=datetime(2025, 1, 10, tzinfo=UTC)),
     ]
-    assert get_field_since_version("MyClass", "existing_field", actions) == "1.0.0"
+    assert get_field_since_version("MyClass", "existing_field", actions, "config") == "1.0.0"
 
 
 def test_build_symbol_changes_unreleased():
@@ -83,7 +83,7 @@ def test_build_symbol_changes_unreleased():
             ts=datetime(2025, 1, 2, tzinfo=UTC),
         ),
     ]
-    changes = build_symbol_changes("my_func", actions)
+    changes = build_symbol_changes("my_func", actions, "config")
     assert len(changes) == 2
     assert all(c.version == UNRELEASED_VERSION for c in changes)
 
@@ -99,7 +99,7 @@ def test_build_symbol_changes_with_releases():
             ts=datetime(2025, 1, 10, tzinfo=UTC),
         ),
     ]
-    changes = build_symbol_changes("parse", actions)
+    changes = build_symbol_changes("parse", actions, "config")
     assert len(changes) == 2
     versions = [c.version for c in changes]
     assert "1.0.0" in versions
@@ -116,7 +116,7 @@ def test_build_symbol_changes_deprecated_action():
             ts=datetime(2025, 1, 1, tzinfo=UTC),
         ),
     ]
-    changes = build_symbol_changes("old_func", actions)
+    changes = build_symbol_changes("old_func", actions, "config")
     assert len(changes) == 1
     assert "new_func" in changes[0].description
 
@@ -130,9 +130,38 @@ def test_build_symbol_changes_rename_action():
             ts=datetime(2025, 1, 1, tzinfo=UTC),
         ),
     ]
-    changes = build_symbol_changes("new_name", actions)
+    changes = build_symbol_changes("new_name", actions, "config")
     assert len(changes) == 1
     assert "old_name" in changes[0].description
+
+
+def test_get_symbol_since_version_filters_by_group():
+    actions = [
+        MakePublicAction(name="init_cmd", group="core", full_path="core.init_cmd", ts=datetime(2025, 1, 1, tzinfo=UTC)),
+        ReleaseAction(name="1.0.0", old_version="0.0.0", ts=datetime(2025, 1, 5, tzinfo=UTC)),
+        MakePublicAction(
+            name="init_cmd", group="config", full_path="config.init_cmd", ts=datetime(2025, 2, 1, tzinfo=UTC)
+        ),
+    ]
+    assert get_symbol_since_version("init_cmd", actions, "core") == "1.0.0"
+    assert get_symbol_since_version("init_cmd", actions, "config") == UNRELEASED_VERSION
+
+
+def test_build_symbol_changes_filters_by_group():
+    actions = [
+        MakePublicAction(name="init_cmd", group="core", full_path="core.init_cmd", ts=datetime(2025, 1, 1, tzinfo=UTC)),
+        ReleaseAction(name="1.0.0", old_version="0.0.0", ts=datetime(2025, 1, 5, tzinfo=UTC)),
+        MakePublicAction(
+            name="init_cmd", group="config", full_path="config.init_cmd", ts=datetime(2025, 2, 1, tzinfo=UTC)
+        ),
+    ]
+    core_changes = build_symbol_changes("init_cmd", actions, "core")
+    assert len(core_changes) == 1
+    assert core_changes[0].version == "1.0.0"
+
+    config_changes = build_symbol_changes("init_cmd", actions, "config")
+    assert len(config_changes) == 1
+    assert config_changes[0].version == UNRELEASED_VERSION
 
 
 def test_get_symbol_stability_defaults_to_ga():

@@ -71,9 +71,11 @@ def _matches_symbol_or_group(
     return False
 
 
-def get_symbol_since_version(symbol_name: str, changelog_actions: Sequence[ChangelogAction]) -> str | None:
+def get_symbol_since_version(
+    symbol_name: str, changelog_actions: Sequence[ChangelogAction], group_name: str
+) -> str | None:
     for action in sorted(changelog_actions):
-        if isinstance(action, MakePublicAction) and action.name == symbol_name:
+        if isinstance(action, MakePublicAction) and action.name == symbol_name and action.group == group_name:
             if version := find_release_version(action.ts, changelog_actions):
                 return version
             return UNRELEASED_VERSION
@@ -84,17 +86,19 @@ def get_field_since_version(
     symbol_name: str,
     field_name: str,
     changelog_actions: Sequence[ChangelogAction],
+    group_name: str,
 ) -> str | None:
     for action in sorted(changelog_actions):
         if (
             isinstance(action, AdditionalChangeAction)
             and action.name == symbol_name
             and action.field_name == field_name
+            and action.group == group_name
         ):
             if version := find_release_version(action.ts, changelog_actions):
                 return version
             return UNRELEASED_VERSION
-    return get_symbol_since_version(symbol_name, changelog_actions)
+    return get_symbol_since_version(symbol_name, changelog_actions, group_name)
 
 
 def _action_description(action: ChangelogAction) -> str:
@@ -116,12 +120,20 @@ def _action_description(action: ChangelogAction) -> str:
     return ""
 
 
-def build_symbol_changes(symbol_name: str, changelog_actions: Sequence[ChangelogAction]) -> list[SymbolChange]:
+def _action_group(action: ChangelogAction) -> str | None:
+    return getattr(action, "group", None)
+
+
+def build_symbol_changes(
+    symbol_name: str, changelog_actions: Sequence[ChangelogAction], group_name: str
+) -> list[SymbolChange]:
     changes: list[SymbolChange] = []
     for action in sorted(changelog_actions):
         if isinstance(action, ReleaseAction):
             continue
         if action.name != symbol_name:
+            continue
+        if (ag := _action_group(action)) and ag != group_name:
             continue
         version = find_release_version(action.ts, changelog_actions) or UNRELEASED_VERSION
         if isinstance(action, MakePublicAction):
