@@ -140,7 +140,7 @@ def _group_changelog_entries(
     for action in BumpType.sort_by_bump(actions):
         line = as_changelog_line(action, remote_url, ctx)
         try:
-            group: PublicGroup = ctx.action_group(action)
+            group: PublicGroup = ctx.get_action_group(action)
             group_sections[group.name].append(line)
         except NoPublicGroupMatch:
             other_sections.append(line)

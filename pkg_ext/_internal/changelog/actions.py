@@ -141,11 +141,19 @@ class KeepPrivateAction(ChangelogActionBase):
 
 class FixAction(ChangelogActionBase):
     type: Literal["fix"] = "fix"
+    group: str = ""
     short_sha: str
     message: str
     changelog_message: str = ""
     rephrased: bool = False
     ignored: bool = False
+
+    @model_validator(mode="after")
+    def _backfill_group(self) -> Self:
+        """Legacy YAML files store the group in `name`; copy it to `group`."""
+        if not self.group and self.name:
+            self.group = self.name
+        return self
 
     @property
     def bump_type(self) -> BumpType:
@@ -153,7 +161,7 @@ class FixAction(ChangelogActionBase):
 
     @property
     def stable_sort_key(self) -> tuple[str, ...]:
-        return (self.type, self.short_sha, self.name)
+        return (self.type, self.group, self.short_sha, self.name)
 
 
 class DeleteAction(ChangelogActionBase):
@@ -352,6 +360,28 @@ ChangelogAction = Annotated[
     ],
     Field(discriminator="type"),
 ]
+
+
+def action_group(action: ChangelogAction) -> str | None:
+    match action:
+        case (
+            MakePublicAction(group=g)
+            | DeleteAction(group=g)
+            | RenameAction(group=g)
+            | BreakingChangeAction(group=g)
+            | AdditionalChangeAction(group=g)
+            | FixAction(group=g)
+        ):
+            return g or None
+        case (
+            ExperimentalAction(target=StabilityTarget.group, name=name)
+            | GAAction(target=StabilityTarget.group, name=name)
+            | DeprecatedAction(target=StabilityTarget.group, name=name)
+        ):
+            return name
+        case ExperimentalAction(group=g) | GAAction(group=g) | DeprecatedAction(group=g):
+            return g
+    return None
 
 
 _changelog_action_adapter: TypeAdapter[ChangelogAction] = TypeAdapter(ChangelogAction)

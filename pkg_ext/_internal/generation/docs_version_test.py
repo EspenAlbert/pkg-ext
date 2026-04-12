@@ -78,6 +78,7 @@ def test_build_symbol_changes_unreleased():
         MakePublicAction(name="my_func", group="config", full_path="mod.my_func", ts=datetime(2025, 1, 1, tzinfo=UTC)),
         FixAction(
             name="my_func",
+            group="config",
             short_sha="abc",
             message="fix bug",
             ts=datetime(2025, 1, 2, tzinfo=UTC),
@@ -94,6 +95,7 @@ def test_build_symbol_changes_with_releases():
         ReleaseAction(name="1.0.0", old_version="0.0.0", ts=datetime(2025, 1, 5, tzinfo=UTC)),
         FixAction(
             name="parse",
+            group="config",
             short_sha="def",
             message="fix parse",
             ts=datetime(2025, 1, 10, tzinfo=UTC),
@@ -162,6 +164,27 @@ def test_build_symbol_changes_filters_by_group():
     config_changes = build_symbol_changes("init_cmd", actions, "config")
     assert len(config_changes) == 1
     assert config_changes[0].version == UNRELEASED_VERSION
+
+
+def test_build_symbol_changes_fix_action_filters_by_group():
+    actions = [
+        MakePublicAction(name="parse", group="core", full_path="core.parse", ts=datetime(2025, 1, 1, tzinfo=UTC)),
+        MakePublicAction(name="parse", group="config", full_path="config.parse", ts=datetime(2025, 1, 1, tzinfo=UTC)),
+        FixAction(
+            name="parse",
+            group="core",
+            short_sha="abc",
+            message="fix parse in core",
+            ts=datetime(2025, 1, 3, tzinfo=UTC),
+        ),
+    ]
+    core_changes = build_symbol_changes("parse", actions, "core")
+    assert len(core_changes) == 2
+    assert any("fix parse" in c.description for c in core_changes)
+
+    config_changes = build_symbol_changes("parse", actions, "config")
+    assert len(config_changes) == 1
+    assert all("fix parse" not in c.description for c in config_changes)
 
 
 def test_get_symbol_stability_defaults_to_ga():

@@ -10,6 +10,7 @@ from pathlib import Path
 from model_lib import Entity
 from zero_3rdparty.sections import slug, wrap_section
 
+from pkg_ext._internal.changelog import actions as changelog_actions_mod
 from pkg_ext._internal.changelog.actions import ChangelogAction
 from pkg_ext._internal.config import (
     PKG_EXT_TOOL_NAME,
@@ -25,7 +26,6 @@ from pkg_ext._internal.generation.docs_render import (
 )
 from pkg_ext._internal.generation.docs_version import (
     MEANINGFUL_CHANGE_ACTIONS,
-    _action_group,
     build_symbol_changes,
 )
 from pkg_ext._internal.models.api_dump import ClassDump, GroupDump, PublicApiDump, SymbolDump
@@ -76,7 +76,7 @@ def build_symbol_context(
     has_changes = any(
         action.name == symbol.name
         and isinstance(action, MEANINGFUL_CHANGE_ACTIONS)
-        and ((ag := _action_group(action)) is None or ag == group_name)
+        and ((ag := changelog_actions_mod.action_group(action)) is None or ag == group_name)
         for action in changelog_actions
     )
     is_primary = symbol.name.lower() == group_name.lower()

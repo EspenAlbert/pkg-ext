@@ -5,6 +5,7 @@ from datetime import datetime
 
 from model_lib import Event, fields
 
+from pkg_ext._internal.changelog import actions as changelog_actions_mod
 from pkg_ext._internal.changelog.actions import (
     AdditionalChangeAction,
     BreakingChangeAction,
@@ -120,10 +121,6 @@ def _action_description(action: ChangelogAction) -> str:
     return ""
 
 
-def _action_group(action: ChangelogAction) -> str | None:
-    return getattr(action, "group", None)
-
-
 def build_symbol_changes(
     symbol_name: str, changelog_actions: Sequence[ChangelogAction], group_name: str
 ) -> list[SymbolChange]:
@@ -133,7 +130,7 @@ def build_symbol_changes(
             continue
         if action.name != symbol_name:
             continue
-        if (ag := _action_group(action)) and ag != group_name:
+        if (ag := changelog_actions_mod.action_group(action)) and ag != group_name:
             continue
         version = find_release_version(action.ts, changelog_actions) or UNRELEASED_VERSION
         if isinstance(action, MakePublicAction):

@@ -120,6 +120,7 @@ def fix_changelog_action(commit: GitCommit, ctx: pkg_ctx) -> FixAction | None:
     if public_group == SKIPPED:
         return FixAction(
             name="",
+            group="",
             short_sha=commit_sha,
             message=commit_message,
             ignored=True,
@@ -131,6 +132,7 @@ def fix_changelog_action(commit: GitCommit, ctx: pkg_ctx) -> FixAction | None:
     prompt_text = f"commit({commit_sha}): {commit_message}"
     fix = prompt_for_fix(commit_sha, commit_message, prompt_text)
     fix.name = group
+    fix.group = group
     fix.author = commit.author
     return fix
 
