@@ -11,3 +11,8 @@ name: action_group
 ts: 2026-04-12 17:09:03.607681+00:00
 type: keep_private
 full_path: _internal.changelog.actions.action_group
+---
+name: 0.4.7
+ts: 2026-04-12 17:13:37.906627+00:00
+type: release
+old_version: 0.4.6

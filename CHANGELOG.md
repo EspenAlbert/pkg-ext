@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.7 2026-04-12T17-13Z
+
+### Generate
+- fix(docs): Filter changelog actions by group to prevent duplicate entries for same-named symbols [03015c](https://github.com/EspenAlbert/pkg-ext/commit/03015c)
+
+
 ## 0.4.6 2026-04-12T16-30Z
 
 ### Workflows
