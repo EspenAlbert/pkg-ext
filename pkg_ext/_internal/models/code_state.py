@@ -44,9 +44,17 @@ class PkgCodeState(Entity):
     def ref_symbol(self, name_or_local_id: str) -> RefSymbol:
         if ref := self.import_id_refs.get(name_or_local_id):
             return ref
+        matches: list[RefSymbol] = []
         for ref in self.import_id_refs.values():
-            if ref.local_id == name_or_local_id or ref.name == name_or_local_id:
+            if ref.local_id == name_or_local_id:
                 return ref
+            if ref.name == name_or_local_id:
+                matches.append(ref)
+        if len(matches) == 1:
+            return matches[0]
+        if matches:
+            local_ids = [m.local_id for m in matches]
+            raise RefSymbolNotInCodeError(f"{name_or_local_id} is ambiguous, matches: {local_ids}")
         raise RefSymbolNotInCodeError(name_or_local_id)
 
     @property

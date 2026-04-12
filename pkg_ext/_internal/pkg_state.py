@@ -72,6 +72,11 @@ class PkgExtState(Entity):
         key = qualified_name(group, name)
         if state := self.refs.get(key):
             if state.exist_in_code:
+                if grp := self.groups.name_to_group.get(group):
+                    for owned_ref in grp.owned_refs:
+                        if owned_ref.endswith(f".{name}"):
+                            with suppress(RefSymbolNotInCodeError):
+                                return code_state.ref_symbol(owned_ref)
                 with suppress(RefSymbolNotInCodeError):
                     return code_state.ref_symbol(name)
         return None
@@ -185,6 +190,15 @@ class PkgExtState(Entity):
     def get_deprecation_replacement(self, key: str) -> str:
         return self.deprecation_replacements.get(key, "")
 
+    def reconcile_with_code(self, import_id_refs: dict[str, RefSymbol]) -> int:
+        """Run reconcile_moved_refs and update decided_local_ids for moved symbols."""
+        old_owned = {ref for group in self.groups.groups for ref in group.owned_refs}
+        count = self.groups.reconcile_moved_refs(import_id_refs)
+        if count:
+            new_owned = {ref for group in self.groups.groups for ref in group.owned_refs}
+            self.decided_local_ids.update(new_owned - old_owned)
+        return count
+
     def has_decision(self, local_id: str) -> bool:
         return local_id in self.decided_local_ids
 
@@ -200,6 +214,8 @@ class PkgExtState(Entity):
                 if owned_for_name & active_local_ids:
                     continue
             elif state.name in {ref.name for ref in code.import_id_refs.values()}:
+                # Fallback for legacy refs without group info: any symbol with the
+                # same short name still in code prevents marking as removed.
                 continue
             result.append((group, state))
         return result
@@ -219,7 +235,9 @@ class PkgExtState(Entity):
         return False
 
     def exposed_refs(self, group: str, active_refs: dict[str, RefStateWithSymbol]) -> dict[str, RefSymbol]:
-        return {state.name: state.symbol for state in active_refs.values() if self.is_exposed(group, state.name)}
+        return {
+            state.symbol.local_id: state.symbol for state in active_refs.values() if self.is_exposed(group, state.name)
+        }
 
     def is_pkg_relative(self, rel_path: str) -> bool:
         pkg_rel_path = self.pkg_path.relative_to(self.repo_root)

@@ -21,6 +21,7 @@ from pkg_ext._internal.models import (
     SymbolType,
 )
 from pkg_ext._internal.models.py_files import PkgSrcFile
+from pkg_ext._internal.models.ref_state import RefState, RefStateType
 from pkg_ext._internal.pkg_state import PkgExtState
 from pkg_ext._internal.settings import PkgSettings
 
@@ -267,7 +268,7 @@ def test_ref_symbol_lookup_by_local_id():
         code.ref_symbol("nonexistent_func")
 
 
-def test_exposed_refs_uses_short_name_key(tmp_path):
+def test_exposed_refs_keys_by_local_id(tmp_path):
     ref_a = _ref("my_func", "_internal/mod_a")
     code = _code_state(ref_a)
     state = _tool_state(tmp_path)
@@ -275,7 +276,104 @@ def test_exposed_refs_uses_short_name_key(tmp_path):
         MakePublicAction(name="my_func", group="grp", full_path="_internal.mod_a.my_func", author="test")
     )
     exposed = state.exposed_refs("grp", code.named_refs)
-    assert "my_func" in exposed
+    assert "_internal.mod_a.my_func" in exposed
+
+
+def test_exposed_refs_preserves_both_same_name(tmp_path):
+    core_ref = _ref("init_cmd", "_internal/core/cmd_init")
+    config_ref = _ref("init_cmd", "_internal/config/cmd_config")
+    code = _code_state(core_ref, config_ref)
+    state = _tool_state(tmp_path)
+    state.update_state(
+        MakePublicAction(name="init_cmd", group="grp", full_path="_internal.core.cmd_init.init_cmd", author="test")
+    )
+    state.update_state(
+        MakePublicAction(name="init_cmd", group="grp", full_path="_internal.config.cmd_config.init_cmd", author="test")
+    )
+    exposed = state.exposed_refs("grp", code.named_refs)
+    assert len(exposed) == 2
+    assert "_internal.core.cmd_init.init_cmd" in exposed
+    assert "_internal.config.cmd_config.init_cmd" in exposed
+
+
+def test_ref_symbol_raises_on_ambiguous_short_name():
+    core_ref = _ref("init_cmd", "_internal/core/cmd_init")
+    config_ref = _ref("init_cmd", "_internal/config/cmd_config")
+    code = _code_state(core_ref, config_ref)
+
+    with pytest.raises(RefSymbolNotInCodeError, match="ambiguous"):
+        code.ref_symbol("init_cmd")
+
+
+def test_ref_symbol_unique_short_name_resolves():
+    ref_a = _ref("my_func", "_internal/mod_a")
+    code = _code_state(ref_a)
+    found = code.ref_symbol("my_func")
+    assert found.rel_path == "_internal/mod_a"
+
+
+def test_code_ref_resolves_via_owned_refs(tmp_path):
+    core_ref = _ref("init_cmd", "_internal/core/cmd_init")
+    config_ref = _ref("init_cmd", "_internal/config/cmd_config")
+    code = _code_state(core_ref, config_ref)
+    state = _tool_state(tmp_path)
+    state.update_state(
+        MakePublicAction(name="init_cmd", group="core", full_path="_internal.core.cmd_init.init_cmd", author="test")
+    )
+    state.update_state(
+        MakePublicAction(
+            name="init_cmd", group="config", full_path="_internal.config.cmd_config.init_cmd", author="test"
+        )
+    )
+    result = state.code_ref(code, "core", "init_cmd")
+    assert result is not None
+    assert result.rel_path == "_internal/core/cmd_init"
+
+    result2 = state.code_ref(code, "config", "init_cmd")
+    assert result2 is not None
+    assert result2.rel_path == "_internal/config/cmd_config"
+
+
+def test_removed_refs_fallback_without_group(tmp_path):
+    """Legacy ref without group info: short-name fallback keeps it when any same-name ref exists."""
+    state = _tool_state(tmp_path)
+    state.refs["init_cmd"] = RefState(name="init_cmd", type=RefStateType.EXPOSED)
+    config_ref = _ref("init_cmd", "_internal/config/cmd_config")
+    code = _code_state(config_ref)
+
+    removed = state.removed_refs(code)
+    assert len(removed) == 0
+
+
+def test_reconcile_with_code_covers_moved_symbol(tmp_path):
+    """After a symbol moves, reconcile_with_code prevents re-flagging as new."""
+    state = _tool_state(tmp_path)
+    state.update_state(
+        MakePublicAction(name="check_cmd", group="core", full_path="_internal.core.cmd_check.check_cmd", author="test")
+    )
+    assert state.has_decision("_internal.core.cmd_check.check_cmd")
+    assert not state.has_decision("_internal.check.cmd_check.check_cmd")
+
+    new_ref = _ref("check_cmd", "_internal/check/cmd_check")
+    code = _code_state(new_ref)
+    state.reconcile_with_code(code.import_id_refs)
+    assert state.has_decision("_internal.check.cmd_check.check_cmd")
+
+    added = state.added_refs(code.named_refs)
+    assert len(added) == 0
+
+
+def test_reconcile_with_code_no_move_leaves_decisions_unchanged(tmp_path):
+    """When nothing moves, no new decisions are added from owned_refs."""
+    state = _tool_state(tmp_path)
+    grp = state.groups.get_or_create_group("core")
+    grp.owned_refs.add("_internal.core.cmd_init.init_cmd")
+
+    ref = _ref("init_cmd", "_internal/core/cmd_init")
+    code = _code_state(ref)
+    state.reconcile_with_code(code.import_id_refs)
+
+    assert not state.has_decision("_internal.core.cmd_init.init_cmd")
 
 
 def test_removed_refs_detects_specific_deletion(tmp_path):
