@@ -276,3 +276,25 @@ def test_exposed_refs_uses_short_name_key(tmp_path):
     )
     exposed = state.exposed_refs("grp", code.named_refs)
     assert "my_func" in exposed
+
+
+def test_removed_refs_detects_specific_deletion(tmp_path):
+    """When core.init_cmd is deleted but config.init_cmd remains, only core is removed."""
+    state = _tool_state(tmp_path)
+    state.update_state(
+        MakePublicAction(name="init_cmd", group="core", full_path="_internal.core.cmd_init.init_cmd", author="test")
+    )
+    state.update_state(
+        MakePublicAction(
+            name="init_cmd", group="config", full_path="_internal.config.cmd_config.init_cmd", author="test"
+        )
+    )
+    # Only config.init_cmd remains in code
+    config_ref = _ref("init_cmd", "_internal/config/cmd_config")
+    code = _code_state(config_ref)
+
+    removed = state.removed_refs(code)
+    assert len(removed) == 1
+    group, ref_state = removed[0]
+    assert group == "core"
+    assert ref_state.name == "init_cmd"

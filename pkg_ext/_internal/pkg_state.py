@@ -189,14 +189,18 @@ class PkgExtState(Entity):
         return local_id in self.decided_local_ids
 
     def removed_refs(self, code: PkgCodeState) -> list[tuple[str, RefState]]:
-        active_names = {ref.name for ref in code.import_id_refs.values()}
+        active_local_ids = {ref.local_id for ref in code.import_id_refs.values()}
         result: list[tuple[str, RefState]] = []
         for key, state in self.refs.items():
             if state.type not in {RefStateType.EXPOSED, RefStateType.DEPRECATED}:
                 continue
-            if state.name in active_names:
-                continue
             group = key.rsplit(".", 1)[0] if "." in key else ""
+            if grp := self.groups.name_to_group.get(group):
+                owned_for_name = {r for r in grp.owned_refs if r.endswith(f".{state.name}")}
+                if owned_for_name & active_local_ids:
+                    continue
+            elif state.name in {ref.name for ref in code.import_id_refs.values()}:
+                continue
             result.append((group, state))
         return result
 
