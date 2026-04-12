@@ -3,5 +3,11 @@ ts: 2026-04-12 16:53:43.865828+00:00
 type: fix
 author: Espen Albert
 changelog_message: 'fix(docs): Filter changelog actions by group to prevent duplicate entries for same-named symbols'
+group: generate
 message: 'fix(docs): Filter changelog actions by group to prevent duplicate entries for same-named symbols'
 short_sha: 03015c
+---
+name: action_group
+ts: 2026-04-12 17:09:03.607681+00:00
+type: keep_private
+full_path: _internal.changelog.actions.action_group
