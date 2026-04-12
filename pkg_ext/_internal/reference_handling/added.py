@@ -71,7 +71,7 @@ def _expose_function_args(
     for func_ref, arg_refs in args_exposed.items():
         arg_refs_all.extend(arg_refs)
         for ref in arg_refs:
-            if tool_state.has_decision(ref.name):
+            if tool_state.has_decision(ref.local_id):
                 continue
             _expose_ref(
                 ctx,
@@ -211,7 +211,8 @@ def handle_added_refs(ctx: pkg_ctx) -> None:
             )
             all_refs_decided = relevant_refs + extra_refs_decided
             for ref in all_refs_decided:
-                added_refs.pop(ref.name, None)
+                local_id = ref.local_id if isinstance(ref, RefSymbol) else ref.symbol.local_id
+                added_refs.pop(local_id, None)
             task.update(advance=len(all_refs_decided))
     if added_refs:
         remaining_str = "\n".join(str(ref) for ref in added_refs.values())

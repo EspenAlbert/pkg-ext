@@ -39,6 +39,10 @@ class PkgExtState(Entity):
         default_factory=PublicGroups,
         description="Use with caution, inferred by changelog_dir entries.",
     )
+    decided_local_ids: set[str] = Field(
+        default_factory=set,
+        description="local_ids that have a make_public or keep_private decision",
+    )
     ignored_shas: set[str] = Field(
         default_factory=set,
         description="Fix commits not included in the changelog",
@@ -105,12 +109,16 @@ class PkgExtState(Entity):
         grp = self.groups.get_or_create_group(group)
         grp.owned_refs.add(full_path)
         grp.owned_modules.add(ref_id_module(full_path))
+        self.decided_local_ids.add(full_path)
 
     def _handle_keep_private(self, name: str, full_path: str) -> None:
-        if state := self.refs.get(name):
+        key = full_path or name
+        if state := self.refs.get(key):
             state.type = RefStateType.HIDDEN
         else:
-            self.refs[name] = RefState(name=name, type=RefStateType.HIDDEN)
+            self.refs[key] = RefState(name=name, type=RefStateType.HIDDEN)
+        if full_path:
+            self.decided_local_ids.add(full_path)
         for grp in self.groups.groups:
             grp.owned_refs.discard(full_path)
 
@@ -177,35 +185,23 @@ class PkgExtState(Entity):
     def get_deprecation_replacement(self, key: str) -> str:
         return self.deprecation_replacements.get(key, "")
 
-    def _refs_by_short_name(self) -> dict[str, list[RefState]]:
-        """Group refs by short name for lookups when group is unknown."""
-        from collections import defaultdict
-
-        result: dict[str, list[RefState]] = defaultdict(list)
-        for state in self.refs.values():
-            result[state.name].append(state)
-        return result
-
-    def has_decision(self, ref_name: str) -> bool:
-        """Check if any decision (expose/hide) has been made for this short name."""
-        return any(state.type != RefStateType.UNSET for state in self._refs_by_short_name().get(ref_name, []))
+    def has_decision(self, local_id: str) -> bool:
+        return local_id in self.decided_local_ids
 
     def removed_refs(self, code: PkgCodeState) -> list[tuple[str, RefState]]:
-        """Returns list of (group, RefState) for removed refs."""
-        named_refs = code.named_refs
+        active_names = {ref.name for ref in code.import_id_refs.values()}
         result: list[tuple[str, RefState]] = []
         for key, state in self.refs.items():
             if state.type not in {RefStateType.EXPOSED, RefStateType.DEPRECATED}:
                 continue
-            if state.name in named_refs:
+            if state.name in active_names:
                 continue
-            # Extract group from qualified_name key
             group = key.rsplit(".", 1)[0] if "." in key else ""
             result.append((group, state))
         return result
 
     def added_refs(self, active_refs: dict[str, RefStateWithSymbol]) -> dict[str, RefStateWithSymbol]:
-        return {ref_name: ref_symbol for ref_name, ref_symbol in active_refs.items() if not self.has_decision(ref_name)}
+        return {local_id: ref for local_id, ref in active_refs.items() if not self.has_decision(local_id)}
 
     def add_changelog_actions(self, actions: list[ChangelogAction]) -> None:
         assert actions, "must add at least one action"
@@ -219,7 +215,7 @@ class PkgExtState(Entity):
         return False
 
     def exposed_refs(self, group: str, active_refs: dict[str, RefStateWithSymbol]) -> dict[str, RefSymbol]:
-        return {name: state.symbol for name, state in active_refs.items() if self.is_exposed(group, name)}
+        return {state.name: state.symbol for state in active_refs.values() if self.is_exposed(group, state.name)}
 
     def is_pkg_relative(self, rel_path: str) -> bool:
         pkg_rel_path = self.pkg_path.relative_to(self.repo_root)

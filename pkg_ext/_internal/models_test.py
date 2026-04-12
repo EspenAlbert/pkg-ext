@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Callable
 
 import pytest
@@ -6,16 +7,21 @@ from model_lib import parse
 
 from pkg_ext._internal.changelog.actions import (
     GroupModuleAction,
+    KeepPrivateAction,
     MakePublicAction,
     changelog_filepath,
     dump_changelog_actions,
 )
 from pkg_ext._internal.changelog.parser import parse_changelog
+from pkg_ext._internal.errors import RefSymbolNotInCodeError
 from pkg_ext._internal.models import (
+    PkgCodeState,
     PublicGroups,
     RefSymbol,
     SymbolType,
 )
+from pkg_ext._internal.models.py_files import PkgSrcFile
+from pkg_ext._internal.pkg_state import PkgExtState
 from pkg_ext._internal.settings import PkgSettings
 
 
@@ -151,3 +157,122 @@ def test_reconcile_logs_when_ambiguous(_public_groups, caplog):
     assert _public_groups.reconcile_moved_refs(refs) == 0
     assert "_internal.old.Parser" in group.owned_refs  # kept stale
     assert "Cannot resolve" in caplog.text
+
+
+def _code_state(*refs: RefSymbol) -> PkgCodeState:
+    import_id_refs = {f"pkg.{r.local_id}": r for r in refs}
+    files = [
+        PkgSrcFile(
+            path=Path(f"/tmp/{r.rel_path}.py"),
+            relative_path=r.rel_path,
+            pkg_import_name="pkg",
+        )
+        for r in refs
+    ]
+    seen_paths: set[str] = set()
+    unique_files = []
+    for f in files:
+        if f.relative_path not in seen_paths:
+            seen_paths.add(f.relative_path)
+            unique_files.append(f)
+    return PkgCodeState(pkg_import_name="pkg", import_id_refs=import_id_refs, files=unique_files)
+
+
+def _tool_state(tmp_path: Path) -> PkgExtState:
+    changelog_dir = tmp_path / ".changelog"
+    changelog_dir.mkdir()
+    pkg_path = tmp_path / "pkg"
+    pkg_path.mkdir()
+    return PkgExtState(repo_root=tmp_path, changelog_dir=changelog_dir, pkg_path=pkg_path)
+
+
+def test_named_refs_preserves_duplicate_short_names():
+    """Two functions named init_cmd in different modules both appear in named_refs."""
+    core_ref = _ref("init_cmd", "_internal/core/cmd_init")
+    config_ref = _ref("init_cmd", "_internal/config/cmd_config")
+    code = _code_state(core_ref, config_ref)
+
+    named = code.named_refs
+    assert len(named) == 2
+    local_ids = set(named.keys())
+    assert "_internal.core.cmd_init.init_cmd" in local_ids
+    assert "_internal.config.cmd_config.init_cmd" in local_ids
+
+
+def test_has_decision_distinguishes_same_name(tmp_path):
+    """has_decision for one init_cmd must not block the other."""
+    state = _tool_state(tmp_path)
+    state.update_state(
+        MakePublicAction(name="init_cmd", group="core", full_path="_internal.core.cmd_init.init_cmd", author="test")
+    )
+    assert state.has_decision("_internal.core.cmd_init.init_cmd")
+    assert not state.has_decision("_internal.config.cmd_config.init_cmd")
+
+
+def test_added_refs_includes_both_same_name(tmp_path):
+    """Both init_cmd refs appear as added when neither has a decision."""
+    core_ref = _ref("init_cmd", "_internal/core/cmd_init")
+    config_ref = _ref("init_cmd", "_internal/config/cmd_config")
+    code = _code_state(core_ref, config_ref)
+    state = _tool_state(tmp_path)
+
+    added = state.added_refs(code.named_refs)
+    assert len(added) == 2
+
+
+def test_added_refs_filters_only_decided(tmp_path):
+    """After deciding one init_cmd, the other still appears as added."""
+    core_ref = _ref("init_cmd", "_internal/core/cmd_init")
+    config_ref = _ref("init_cmd", "_internal/config/cmd_config")
+    code = _code_state(core_ref, config_ref)
+    state = _tool_state(tmp_path)
+    state.update_state(
+        MakePublicAction(name="init_cmd", group="core", full_path="_internal.core.cmd_init.init_cmd", author="test")
+    )
+
+    added = state.added_refs(code.named_refs)
+    assert len(added) == 1
+    assert "_internal.config.cmd_config.init_cmd" in added
+
+
+def test_keep_private_does_not_shadow_other_same_name(tmp_path):
+    """keep_private for one ref must not block the other from appearing as added."""
+    core_ref = _ref("init_cmd", "_internal/core/cmd_init")
+    config_ref = _ref("init_cmd", "_internal/config/cmd_config")
+    code = _code_state(core_ref, config_ref)
+    state = _tool_state(tmp_path)
+    state.update_state(KeepPrivateAction(name="init_cmd", full_path="_internal.core.cmd_init.init_cmd", author="test"))
+
+    added = state.added_refs(code.named_refs)
+    assert len(added) == 1
+    assert "_internal.config.cmd_config.init_cmd" in added
+
+
+def test_ref_symbol_lookup_by_local_id():
+    core_ref = _ref("init_cmd", "_internal/core/cmd_init")
+    config_ref = _ref("init_cmd", "_internal/config/cmd_config")
+    code = _code_state(core_ref, config_ref)
+
+    found = code.ref_symbol("_internal.core.cmd_init.init_cmd")
+    assert found.rel_path == "_internal/core/cmd_init"
+
+    found2 = code.ref_symbol("_internal.config.cmd_config.init_cmd")
+    assert found2.rel_path == "_internal/config/cmd_config"
+
+    # import_id key lookup (first branch in ref_symbol)
+    found3 = code.ref_symbol(f"pkg.{core_ref.local_id}")
+    assert found3.rel_path == "_internal/core/cmd_init"
+
+    with pytest.raises(RefSymbolNotInCodeError):
+        code.ref_symbol("nonexistent_func")
+
+
+def test_exposed_refs_uses_short_name_key(tmp_path):
+    ref_a = _ref("my_func", "_internal/mod_a")
+    code = _code_state(ref_a)
+    state = _tool_state(tmp_path)
+    state.update_state(
+        MakePublicAction(name="my_func", group="grp", full_path="_internal.mod_a.my_func", author="test")
+    )
+    exposed = state.exposed_refs("grp", code.named_refs)
+    assert "my_func" in exposed

@@ -41,14 +41,17 @@ class PkgCodeState(Entity):
         self.files.sort()
         return self
 
-    def ref_symbol(self, name: str) -> RefSymbol:
-        if ref_state := self.named_refs.get(name):
-            return ref_state.symbol
-        raise RefSymbolNotInCodeError(name)
+    def ref_symbol(self, name_or_local_id: str) -> RefSymbol:
+        if ref := self.import_id_refs.get(name_or_local_id):
+            return ref
+        for ref in self.import_id_refs.values():
+            if ref.local_id == name_or_local_id or ref.name == name_or_local_id:
+                return ref
+        raise RefSymbolNotInCodeError(name_or_local_id)
 
     @property
     def named_refs(self) -> dict[str, RefStateWithSymbol]:
-        return {ref.name: RefStateWithSymbol(name=ref.name, symbol=ref) for ref in self.import_id_refs.values()}
+        return {ref.local_id: RefStateWithSymbol(name=ref.name, symbol=ref) for ref in self.import_id_refs.values()}
 
     def lookup(self, ref: RefSymbol) -> Any:
         full_reference_id = ref.full_id(self.pkg_import_name)
