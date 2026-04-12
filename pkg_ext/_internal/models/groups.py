@@ -12,7 +12,7 @@ from zero_3rdparty import file_utils
 from pkg_ext._internal.errors import InvalidGroupSelectionError, NoPublicGroupMatch
 
 from .py_symbols import RefSymbol
-from .types import PyIdentifier, SymbolRefId, ref_id_name
+from .types import PyIdentifier, SymbolRefId, ref_id_module, ref_id_name
 
 if TYPE_CHECKING:  # why type checking? Can we not use the root import?
     from pkg_ext._internal.config import ProjectConfig
@@ -146,7 +146,7 @@ class PublicGroups(Entity):
             group.docstring = group_cfg.docstring
 
     def reconcile_moved_refs(self, import_id_refs: dict[str, RefSymbol]) -> int:
-        """Auto-fix refs that have moved to different modules."""
+        """Auto-fix refs and modules that have moved to different paths."""
         name_to_candidates: dict[str, list[RefSymbol]] = {}
         for ref in import_id_refs.values():
             name_to_candidates.setdefault(ref.name, []).append(ref)
@@ -176,10 +176,16 @@ class PublicGroups(Entity):
                 else:
                     updated_refs.add(ref_id)  # unresolved - keep stale ref
             group.owned_refs = updated_refs
+            self._reconcile_owned_modules(group, updated_refs)
 
         if total_updated:
             self.write()
         return total_updated
+
+    @staticmethod
+    def _reconcile_owned_modules(group: PublicGroup, updated_refs: set[SymbolRefId]) -> None:
+        """Rebuild owned_modules to match the modules referenced by updated_refs."""
+        group.owned_modules = {ref_id_module(ref) for ref in updated_refs}
 
     def _resolve_ambiguous_ref(
         self, group: PublicGroup, stale_ref_id: SymbolRefId, candidates: list[RefSymbol]

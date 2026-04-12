@@ -106,6 +106,8 @@ def test_reconcile_moved_refs_updates_moved_symbol(_public_groups, caplog):
     assert _public_groups.reconcile_moved_refs(refs) == 1
     assert "_internal.new_module.MyClass" in group.owned_refs
     assert "_internal.old_module.MyClass" not in group.owned_refs
+    assert "_internal.new_module" in group.owned_modules
+    assert "_internal.old_module" not in group.owned_modules
     assert "Symbol moved:" in caplog.text
 
 
