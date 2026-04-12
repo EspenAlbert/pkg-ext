@@ -83,7 +83,7 @@ def test_build_symbol_context_only_make_public_not_complex():
 
 def test_build_symbol_context_fix_action_is_complex():
     func = _func_dump("my_func")
-    action = FixAction(name="my_func", short_sha="abc123", message="fix", ts=datetime.now(UTC))
+    action = FixAction(name="my_func", group="config", short_sha="abc123", message="fix", ts=datetime.now(UTC))
     ctx = build_symbol_context(func, "config", [action])
     assert ctx.has_meaningful_changes
     assert ctx.needs_own_page
