@@ -145,13 +145,17 @@ class PublicGroups(Entity):
             group.docs_exclude = group_cfg.docs_exclude.copy()
             group.docstring = group_cfg.docstring
 
-    def reconcile_moved_refs(self, import_id_refs: dict[str, RefSymbol]) -> int:
-        """Auto-fix refs and modules that have moved to different paths."""
+    def reconcile_moved_refs(self, import_id_refs: dict[str, RefSymbol]) -> tuple[int, set[SymbolRefId]]:
+        """Auto-fix refs and modules that have moved to different paths.
+
+        Returns (count_of_updates, set_of_moved_to_ref_ids).
+        """
         name_to_candidates: dict[str, list[RefSymbol]] = {}
         for ref in import_id_refs.values():
             name_to_candidates.setdefault(ref.name, []).append(ref)
 
         total_updated = 0
+        moved_to: set[SymbolRefId] = set()
         for group in self.groups:
             updated_refs: set[SymbolRefId] = set()
             for ref_id in list(group.owned_refs):
@@ -165,12 +169,14 @@ class PublicGroups(Entity):
                     if current_id != ref_id:
                         logger.warning(f"Symbol moved: {ref_id} -> {current_id} (group: {group.name})")
                         updated_refs.add(current_id)
+                        moved_to.add(current_id)
                         total_updated += 1
                     else:
                         updated_refs.add(ref_id)
                 elif resolved := self._resolve_ambiguous_ref(group, ref_id, candidates):
                     if resolved != ref_id:
                         logger.warning(f"Symbol moved: {ref_id} -> {resolved} (group: {group.name})")
+                        moved_to.add(resolved)
                         total_updated += 1
                     updated_refs.add(resolved)
                 else:
@@ -180,7 +186,7 @@ class PublicGroups(Entity):
 
         if total_updated:
             self.write()
-        return total_updated
+        return total_updated, moved_to
 
     @staticmethod
     def _reconcile_owned_modules(group: PublicGroup, updated_refs: set[SymbolRefId]) -> None:

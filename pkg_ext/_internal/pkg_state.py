@@ -24,7 +24,7 @@ from pkg_ext._internal.models.code_state import PkgCodeState
 from pkg_ext._internal.models.groups import PublicGroups
 from pkg_ext._internal.models.py_symbols import RefSymbol
 from pkg_ext._internal.models.ref_state import RefState, RefStateType, RefStateWithSymbol
-from pkg_ext._internal.models.types import qualified_name, ref_id_module
+from pkg_ext._internal.models.types import qualified_name, ref_id_module, ref_id_name
 
 
 class PkgExtState(Entity):
@@ -192,11 +192,18 @@ class PkgExtState(Entity):
 
     def reconcile_with_code(self, import_id_refs: dict[str, RefSymbol]) -> int:
         """Run reconcile_moved_refs and update decided_local_ids for moved symbols."""
-        old_owned = {ref for group in self.groups.groups for ref in group.owned_refs}
-        count = self.groups.reconcile_moved_refs(import_id_refs)
-        if count:
-            new_owned = {ref for group in self.groups.groups for ref in group.owned_refs}
-            self.decided_local_ids.update(new_owned - old_owned)
+        count, moved_to = self.groups.reconcile_moved_refs(import_id_refs)
+        if moved_to:
+            self.decided_local_ids.update(moved_to)
+        all_owned = {ref for group in self.groups.groups for ref in group.owned_refs}
+        stale_ids = self.decided_local_ids - all_owned
+        if stale_ids:
+            owned_by_name: dict[str, set[str]] = {}
+            for ref_id in all_owned:
+                owned_by_name.setdefault(ref_id_name(ref_id), set()).add(ref_id)
+            for stale_id in stale_ids:
+                if current := owned_by_name.get(ref_id_name(stale_id)):
+                    self.decided_local_ids.update(current)
         return count
 
     def has_decision(self, local_id: str) -> bool:

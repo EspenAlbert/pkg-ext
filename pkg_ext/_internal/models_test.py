@@ -93,7 +93,9 @@ def test_reconcile_moved_refs_no_changes(_public_groups):
     _public_groups.get_or_create_group("my_group").owned_refs.add("_internal.models.MyClass")
     refs = _refs_dict(_ref("MyClass", "_internal/models"))
 
-    assert _public_groups.reconcile_moved_refs(refs) == 0
+    count, moved_to = _public_groups.reconcile_moved_refs(refs)
+    assert count == 0
+    assert not moved_to
     assert "_internal.models.MyClass" in _public_groups.name_to_group["my_group"].owned_refs
 
 
@@ -103,7 +105,9 @@ def test_reconcile_moved_refs_updates_moved_symbol(_public_groups, caplog):
     group.owned_modules.add("_internal.old_module")
     refs = _refs_dict(_ref("MyClass", "_internal/new_module"))
 
-    assert _public_groups.reconcile_moved_refs(refs) == 1
+    count, moved_to = _public_groups.reconcile_moved_refs(refs)
+    assert count == 1
+    assert "_internal.new_module.MyClass" in moved_to
     assert "_internal.new_module.MyClass" in group.owned_refs
     assert "_internal.old_module.MyClass" not in group.owned_refs
     assert "_internal.new_module" in group.owned_modules
@@ -115,7 +119,9 @@ def test_reconcile_moved_refs_keeps_deleted_symbol(_public_groups):
     group = _public_groups.get_or_create_group("my_group")
     group.owned_refs.add("_internal.models.DeletedClass")
 
-    assert _public_groups.reconcile_moved_refs({}) == 0
+    count, moved_to = _public_groups.reconcile_moved_refs({})
+    assert count == 0
+    assert not moved_to
     assert "_internal.models.DeletedClass" in group.owned_refs
 
 
@@ -126,7 +132,9 @@ def test_reconcile_moved_refs_multiple_groups(_public_groups, caplog):
     group2.owned_refs.add("_internal.old.Func2")
     refs = _refs_dict(_ref("Func1", "_internal/new"), _ref("Func2", "_internal/new"))
 
-    assert _public_groups.reconcile_moved_refs(refs) == 2
+    count, moved_to = _public_groups.reconcile_moved_refs(refs)
+    assert count == 2
+    assert moved_to == {"_internal.new.Func1", "_internal.new.Func2"}
     assert "_internal.new.Func1" in group1.owned_refs
     assert "_internal.new.Func2" in group2.owned_refs
 
@@ -137,7 +145,9 @@ def test_reconcile_disambiguates_via_owned_modules(_public_groups):
     group.owned_modules.add("_internal.models")
     refs = _refs_dict(_ref("Parser", "_internal/models"), _ref("Parser", "_internal/utils"))
 
-    assert _public_groups.reconcile_moved_refs(refs) == 1
+    count, moved_to = _public_groups.reconcile_moved_refs(refs)
+    assert count == 1
+    assert "_internal.models.Parser" in moved_to
     assert "_internal.models.Parser" in group.owned_refs
 
 
@@ -148,7 +158,9 @@ def test_reconcile_disambiguates_via_other_groups(_public_groups):
     group2.owned_refs.add("_internal.utils.Parser")  # already owned by group2
     refs = _refs_dict(_ref("Parser", "_internal/models"), _ref("Parser", "_internal/utils"))
 
-    assert _public_groups.reconcile_moved_refs(refs) == 1
+    count, moved_to = _public_groups.reconcile_moved_refs(refs)
+    assert count == 1
+    assert "_internal.models.Parser" in moved_to
     assert "_internal.models.Parser" in group1.owned_refs
 
 
@@ -157,7 +169,9 @@ def test_reconcile_logs_when_ambiguous(_public_groups, caplog):
     group.owned_refs.add("_internal.old.Parser")
     refs = _refs_dict(_ref("Parser", "_internal/a"), _ref("Parser", "_internal/b"))
 
-    assert _public_groups.reconcile_moved_refs(refs) == 0
+    count, moved_to = _public_groups.reconcile_moved_refs(refs)
+    assert count == 0
+    assert not moved_to
     assert "_internal.old.Parser" in group.owned_refs  # kept stale
     assert "Cannot resolve" in caplog.text
 
@@ -363,6 +377,26 @@ def test_reconcile_with_code_covers_moved_symbol(tmp_path):
 
     added = state.added_refs(code.named_refs)
     assert len(added) == 0
+
+
+def test_reconcile_with_code_groups_yaml_already_has_correct_ref(tmp_path):
+    """When .groups.yaml already has the correct path, the moved-to ref still enters decided_local_ids."""
+    state = _tool_state(tmp_path)
+    # Changelog replays with stale full_path
+    state.update_state(
+        MakePublicAction(name="check_cmd", group="core", full_path="_internal.core.cmd_check.check_cmd", author="test")
+    )
+    # Simulate .groups.yaml already containing the correct ref (e.g., manually fixed or from a prior run)
+    grp = state.groups.name_to_group["core"]
+    grp.owned_refs.discard("_internal.core.cmd_check.check_cmd")
+    grp.owned_refs.add("_internal.check.cmd_check.check_cmd")
+
+    new_ref = _ref("check_cmd", "_internal/check/cmd_check")
+    code = _code_state(new_ref)
+    state.reconcile_with_code(code.import_id_refs)
+
+    assert state.has_decision("_internal.check.cmd_check.check_cmd")
+    assert len(state.added_refs(code.named_refs)) == 0
 
 
 def test_reconcile_with_code_no_move_leaves_decisions_unchanged(tmp_path):
