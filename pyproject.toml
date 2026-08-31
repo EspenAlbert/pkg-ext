@@ -18,6 +18,7 @@ authors = [
 ]
 dependencies = [
   "ask-shell",
+  "click>=8.0",
   "GitPython>=3.1.0",
   "model-lib[toml]",
   "ruff>=0.16.3",
