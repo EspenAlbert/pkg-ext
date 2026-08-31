@@ -18,8 +18,7 @@
 > **Since:** 0.1.0
 
 ```python
-def dep(*, target: str = ..., replacement: str | None = None):
-    ...
+def dep(*, target: str = ..., replacement: str | None = None): ...
 ```
 
 Mark target as deprecated.
@@ -45,8 +44,7 @@ Mark target as deprecated.
 > **Since:** 0.1.0
 
 ```python
-def exp(*, target: str = ...):
-    ...
+def exp(*, target: str = ...): ...
 ```
 
 Mark target as experimental.
@@ -71,8 +69,7 @@ Mark target as experimental.
 > **Since:** 0.1.0
 
 ```python
-def ga(*, target: str = ...):
-    ...
+def ga(*, target: str = ...): ...
 ```
 
 Graduate target to GA (general availability).

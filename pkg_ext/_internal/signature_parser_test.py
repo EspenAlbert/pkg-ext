@@ -146,7 +146,7 @@ def test_extract_cli_params_default_factory_and_none_defaults():
         nested: list[str] = typer.Option(
             ...,
             "--nested",
-            default_factory=lambda: list(("p1", "p2")),
+            default_factory=lambda: ["p1", "p2"],
         ),
     ) -> None:
         pass

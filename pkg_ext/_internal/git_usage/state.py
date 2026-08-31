@@ -38,7 +38,7 @@ def _file_content(git: Git, commit: str, file: str) -> str:
         if "'fatal: bad object" in msg:
             # most likely a submodule
             return ""
-        raise e
+        raise
 
 
 @dataclass

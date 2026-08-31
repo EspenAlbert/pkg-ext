@@ -13,14 +13,14 @@ from .state import (
 from .url import normalize_repo_url, read_remote_url, remove_credentials
 
 __all__ = [
-    "git_commit",
-    "git_show_file",
     "GitChanges",
     "GitChangesInput",
     "GitSince",
     "find_git_changes",
     "find_pr_info_or_none",
     "find_pr_info_raw",
+    "git_commit",
+    "git_show_file",
     "head_merge_pr",
     "normalize_repo_url",
     "read_remote_url",

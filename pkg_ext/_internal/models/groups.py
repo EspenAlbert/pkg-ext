@@ -27,8 +27,6 @@ def ensure_disk_path_updated(func: T) -> T:
     def wrapper(self_: PublicGroups, *args: Any, **kwargs: Any) -> Any:
         try:
             return func(self_, *args, **kwargs)
-        except BaseException:
-            raise
         finally:
             self_.write()
 

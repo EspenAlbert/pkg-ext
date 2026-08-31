@@ -268,7 +268,11 @@ When any group has non-GA stability, pkg-ext generates a `_warnings.py` module i
 
 ```python
 class MyPkgWarning(UserWarning): ...
+
+
 class MyPkgExperimentalWarning(MyPkgWarning): ...
+
+
 class MyPkgDeprecationWarning(MyPkgWarning, DeprecationWarning): ...
 ```
 

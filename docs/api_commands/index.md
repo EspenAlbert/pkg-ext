@@ -17,8 +17,7 @@
 > **Since:** 0.1.0
 
 ```python
-def diff_api(*, baseline_ref: str | None = None):
-    ...
+def diff_api(*, baseline_ref: str | None = None): ...
 ```
 
 Show API changes between baseline and dev dump.
@@ -43,8 +42,7 @@ Show API changes between baseline and dev dump.
 > **Since:** 0.1.0
 
 ```python
-def dump_api(*, output: Path | None = None, dev: bool = False):
-    ...
+def dump_api(*, output: Path | None = None, dev: bool = False): ...
 ```
 
 Dump public API to YAML for diffing and breaking change detection.

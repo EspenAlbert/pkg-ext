@@ -9,9 +9,9 @@
 class ExceptionDump(SymbolDumpBase):
     name: str
     module_path: str
-    docstring: str = ''
+    docstring: str = ""
     line_number: int | None = None
-    type: Literal[exception] = 'exception'
+    type: Literal[exception] = "exception"
     mro_bases: list[str] = ...
     num_direct_bases: int = 0
     init_signature: CallableSignature | None = None

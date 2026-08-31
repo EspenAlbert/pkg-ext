@@ -40,9 +40,7 @@ class SymbolParser(ast.NodeTransformer):
         """Check if annotation is TypeAlias (e.g., `x: TypeAlias = ...`)."""
         if isinstance(annotation, ast.Name) and annotation.id == "TypeAlias":
             return True
-        if isinstance(annotation, ast.Attribute) and annotation.attr == "TypeAlias":
-            return True
-        return False
+        return bool(isinstance(annotation, ast.Attribute) and annotation.attr == "TypeAlias")
 
     def _is_typevar_call(self, value: ast.expr) -> bool:
         """Check if value is a TypeVar(...) call."""
@@ -51,9 +49,7 @@ class SymbolParser(ast.NodeTransformer):
         func = value.func
         if isinstance(func, ast.Name) and func.id == "TypeVar":
             return True
-        if isinstance(func, ast.Attribute) and func.attr == "TypeVar":
-            return True
-        return False
+        return bool(isinstance(func, ast.Attribute) and func.attr == "TypeVar")
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> ast.AST:
         """TODO: Consider parsing function with generic_visit in case I want to look for raise statements and inspect signature."""

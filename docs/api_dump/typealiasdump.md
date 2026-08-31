@@ -9,9 +9,9 @@
 class TypeAliasDump(SymbolDumpBase):
     name: str
     module_path: str
-    docstring: str = ''
+    docstring: str = ""
     line_number: int | None = None
-    type: Literal[type_alias] = 'type_alias'
+    type: Literal[type_alias] = "type_alias"
     alias_target: str
 ```
 <!-- === OK_EDIT: pkg-ext typealiasdump_def === -->

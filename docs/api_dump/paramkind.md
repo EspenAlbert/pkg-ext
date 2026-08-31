@@ -6,8 +6,7 @@
 > **Since:** 0.1.0
 
 ```python
-class ParamKind(StrEnum):
-    ...
+class ParamKind(StrEnum): ...
 ```
 <!-- === OK_EDIT: pkg-ext paramkind_def === -->
 <!-- === DO_NOT_EDIT: pkg-ext paramkind_changes === -->

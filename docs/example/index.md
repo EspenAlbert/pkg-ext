@@ -20,8 +20,7 @@
 > **Since:** 0.4.0
 
 ```python
-def check_examples():
-    ...
+def check_examples(): ...
 ```
 
 Verify all symbols in examples_include have corresponding .md files.
@@ -40,8 +39,7 @@ Verify all symbols in examples_include have corresponding .md files.
 > **Since:** 0.4.0
 
 ```python
-def gen_example_prompt(*, group: str | None = None):
-    ...
+def gen_example_prompt(*, group: str | None = None): ...
 ```
 
 Build an AI prompt for missing example docs and copy to clipboard.

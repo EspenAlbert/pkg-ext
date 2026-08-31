@@ -9,9 +9,9 @@
 class FunctionDump(SymbolDumpBase):
     name: str
     module_path: str
-    docstring: str = ''
+    docstring: str = ""
     line_number: int | None = None
-    type: Literal[function] = 'function'
+    type: Literal[function] = "function"
     signature: CallableSignature
 ```
 <!-- === OK_EDIT: pkg-ext functiondump_def === -->

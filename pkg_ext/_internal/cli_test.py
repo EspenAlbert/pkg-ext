@@ -4,7 +4,6 @@ from pathlib import Path
 
 from ask_shell._internal._run import run_and_wait
 from ask_shell._internal.interactive import KeyInput, PromptMatch, question_patcher
-from click.testing import Result
 from pytest import MonkeyPatch
 from typer.testing import CliRunner
 from zero_3rdparty.file_utils import clean_dir, copy
@@ -24,7 +23,7 @@ logger = logging.getLogger(__name__)
 runner = CliRunner()
 
 
-def run(command: str, exit_code: int = 0) -> Result:
+def run(command: str, exit_code: int = 0):
     result = runner.invoke(app, command.split())
     logger.info(f"cli command output={result.output}")
     if exit_code == 0 and (e := result.exception):

@@ -11,13 +11,13 @@ Marks a function or class as experimental. Emits `PkgExtExperimentalWarning` whe
 ```python
 from pkg_ext import experimental
 
-@experimental
-def new_feature():
-    ...
 
 @experimental
-class NewClass:
-    ...
+def new_feature(): ...
+
+
+@experimental
+class NewClass: ...
 ```
 
 ### `@deprecated`
@@ -28,9 +28,9 @@ Re-exported from Python 3.13+ standard library ([PEP 702](https://peps.python.or
 from pkg_ext import deprecated
 # or: from warnings import deprecated
 
+
 @deprecated("Use new_feature instead")
-def old_feature():
-    ...
+def old_feature(): ...
 ```
 
 ### `@experimental_args`
@@ -40,9 +40,10 @@ Marks specific keyword arguments as experimental. Warning emitted only when the 
 ```python
 from pkg_ext import experimental_args
 
+
 @experimental_args("new_format")
-def export(data, format="json", new_format=None):
-    ...
+def export(data, format="json", new_format=None): ...
+
 
 export(data, new_format="parquet")  # warns
 export(data)  # no warning
@@ -55,15 +56,15 @@ Marks specific keyword arguments as deprecated. Supports rename hints.
 ```python
 from pkg_ext import deprecated_args
 
+
 # Simple deprecation
 @deprecated_args("old_opt")
-def func(old_opt=None):
-    ...
+def func(old_opt=None): ...
+
 
 # With rename hint
 @deprecated_args(old_format="format")
-def export(data, format="json", old_format=None):
-    ...
+def export(data, format="json", old_format=None): ...
 ```
 
 ### `@deprecated_arg`
@@ -73,13 +74,13 @@ Single-argument deprecation with optional reason and rename.
 ```python
 from pkg_ext import deprecated_arg
 
+
 @deprecated_arg("unsafe", reason="security vulnerability")
-def func(unsafe=False):
-    ...
+def func(unsafe=False): ...
+
 
 @deprecated_arg("callback", new_name="on_done", reason="renamed for clarity")
-def async_op(callback=None, on_done=None):
-    ...
+def async_op(callback=None, on_done=None): ...
 ```
 
 ## Warning Classes
