@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.8 2026-08-31T19-09Z
+
+### Other Changes
+- Chore: updated dependencies
+
+
 ## 0.4.7 2026-04-12T17-13Z
 
 ### Generate
