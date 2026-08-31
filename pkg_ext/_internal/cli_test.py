@@ -4,9 +4,8 @@ from pathlib import Path
 
 from ask_shell._internal._run import run_and_wait
 from ask_shell._internal.interactive import KeyInput, PromptMatch, question_patcher
-from click.testing import Result
 from pytest import MonkeyPatch
-from typer.testing import CliRunner
+from typer.testing import CliRunner, Result
 from zero_3rdparty.file_utils import clean_dir, copy
 from zero_3rdparty.str_utils import ensure_suffix
 

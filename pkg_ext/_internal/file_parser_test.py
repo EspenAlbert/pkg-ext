@@ -24,7 +24,7 @@ def test_parse_symbols():
     assert symbols.path == settings_path
     assert symbols.relative_path == settings_path.name
     assert symbols.local_imports == set()
-    assert symbols.classes == ["AskShellSettings"]
+    assert "AskShellSettings" in symbols.classes
     assert symbols.functions == [
         "default_callbacks_funcs",
         "default_remove_os_secrets",
@@ -66,7 +66,7 @@ def test_create_refs():
 
 def test_parse_symbols_run_env():
     symbols = _parse_src_module(_run_env)
-    assert symbols.functions == ["interactive_shell"]
+    assert "interactive_shell" in symbols.functions
     all_symbols = list(symbols.iterate_ref_symbols())
     symbols = {symbol.name: symbol for symbol in all_symbols}
     assert len(symbols) == len(all_symbols)

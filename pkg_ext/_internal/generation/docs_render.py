@@ -176,8 +176,6 @@ def format_signature(symbol: SymbolDump) -> str:
             ann = f": {symbol.annotation}" if symbol.annotation else ""
             val = f" = {symbol.value_repr}" if symbol.value_repr else ""
             raw = f"{symbol.name}{ann}{val}"
-        case _:
-            raw = f"# {symbol.name}"
     return py_format.format_python_string(raw, line_length=120)
 
 
