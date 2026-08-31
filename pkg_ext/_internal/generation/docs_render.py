@@ -206,9 +206,7 @@ def should_show_field_table(
     visible = [f for f in fields if not f.is_computed]
     if any(f.deprecated or f.description for f in visible):
         return True
-    if field_versions and any(field_versions.get(f.name) for f in visible):
-        return True
-    return False
+    return bool(field_versions and any(field_versions.get(f.name) for f in visible))
 
 
 def render_field_table(
@@ -301,9 +299,12 @@ def calculate_source_link(
 def _render_symbol_type_table(
     symbol: SymbolDump, changelog_actions: Sequence[ChangelogAction], group_name: str
 ) -> str | None:
-    if isinstance(symbol, CLICommandDump) and symbol.cli_params:
-        if table := render_cli_params_table(symbol.cli_params):
-            return "\n".join(["**CLI Options:**", "", table])
+    if (
+        isinstance(symbol, CLICommandDump)
+        and symbol.cli_params
+        and (table := render_cli_params_table(symbol.cli_params))
+    ):
+        return f"**CLI Options:**\n\n{table}"
     if isinstance(symbol, ClassDump) and symbol.fields:
         field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions, group_name)
         if should_show_field_table(symbol.fields, field_versions):
@@ -408,19 +409,27 @@ def render_symbol_page(
     main_content = _render_symbol_main_section(symbol, group, source_link, changelog_actions, example_link)
     parts = [f"# {symbol.name}", "", main_content]
 
-    if has_env_vars_fn and isinstance(symbol, ClassDump) and has_env_vars_fn(symbol):
-        if env_table := render_env_var_table(symbol):
-            parts.extend(["", env_table])
+    if (
+        has_env_vars_fn
+        and isinstance(symbol, ClassDump)
+        and has_env_vars_fn(symbol)
+        and (env_table := render_env_var_table(symbol))
+    ):
+        parts.extend(["", env_table])
 
-    if isinstance(symbol, CLICommandDump) and symbol.cli_params:
-        if table := render_cli_params_table(symbol.cli_params):
-            parts.extend(["", "### CLI Options", "", table])
+    if (
+        isinstance(symbol, CLICommandDump)
+        and symbol.cli_params
+        and (table := render_cli_params_table(symbol.cli_params))
+    ):
+        parts.extend(["", "### CLI Options", "", table])
 
     if isinstance(symbol, ClassDump) and symbol.fields:
         field_versions = _build_field_versions(symbol.name, symbol.fields, changelog_actions, group.name)
-        if should_show_field_table(symbol.fields, field_versions):
-            if table := render_field_table(symbol.fields, field_versions):
-                parts.extend(["", "### Fields", "", table])
+        if should_show_field_table(symbol.fields, field_versions) and (
+            table := render_field_table(symbol.fields, field_versions)
+        ):
+            parts.extend(["", "### Fields", "", table])
 
     if changes:
         parts.extend(["", render_changes_section(changes, symbol.name)])

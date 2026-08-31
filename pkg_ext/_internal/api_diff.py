@@ -195,9 +195,12 @@ def _compare_defaults(
             field_name=item_name,
         )
     if base_default and dev_default:
-        if base_default.is_factory and dev_default.is_factory:
-            if base_default.value_repr == dev_default.value_repr == "...":
-                return None
+        if (
+            base_default.is_factory
+            and dev_default.is_factory
+            and base_default.value_repr == dev_default.value_repr == "..."
+        ):
+            return None
         if base_default.value_repr != dev_default.value_repr:
             return _diff(
                 symbol_name,

@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import pytest
 from typer.testing import CliRunner
 
@@ -44,7 +46,7 @@ def test_filter_functions(sample_private_action: KeepPrivateAction, sample_ref_s
 
 def test_match_symbol_in_code(sample_private_action: KeepPrivateAction, sample_ref_symbol: RefSymbol):
     class MockCodeState:
-        import_id_refs = {"serialize.dump.dump_as_str": sample_ref_symbol}
+        import_id_refs: ClassVar[dict[str, RefSymbol]] = {"serialize.dump.dump_as_str": sample_ref_symbol}
 
     assert (
         promote.match_symbol_in_code(
@@ -55,7 +57,7 @@ def test_match_symbol_in_code(sample_private_action: KeepPrivateAction, sample_r
     )
 
     class EmptyCodeState:
-        import_id_refs: dict[str, RefSymbol] = {}
+        import_id_refs: ClassVar[dict[str, RefSymbol]] = {}
 
     assert (
         promote.match_symbol_in_code(

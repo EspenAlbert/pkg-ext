@@ -54,8 +54,6 @@ line-length = 120
 target-version = "py313"
 
 [tool.ruff.lint]
-# ruff 0.16 default select is 413 rules; keep the pre-0.16 base
-select = ["E4", "E7", "E9", "F"]
 # E501: line too long (handled by formatter)
 # UP006: use `type` instead of `Type` from typing module
 # UP007: use `X | Y` instead of `Union[X, Y]`
@@ -65,6 +63,9 @@ select = ["E4", "E7", "E9", "F"]
 # UP047: use type parameters instead of `Generic[T]` subclass
 extend-ignore = ["E501", "UP006", "UP007", "UP035", "UP040", "UP046", "UP047"]
 extend-select = ["Q", "RUF100", "C90", "UP", "I", "T", "FURB"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Option", "typer.Argument"]
 
 [tool.ruff.format]
 # pytest-examples print prefix is `#>`; ruff 0.16 markdown format turns that into `# >`

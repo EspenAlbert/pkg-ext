@@ -249,17 +249,20 @@ def _parse_func_param(param: inspect.Parameter, resolved_annotation: Any | None 
     )
 
 
+def _safe_type_hints(obj: Any) -> dict[str, Any]:
+    try:
+        return get_type_hints(obj)
+    except (NameError, TypeError, AttributeError):
+        return {}
+
+
 def parse_signature(obj: Callable) -> CallableSignature:
     try:
         sig = inspect.signature(obj)
     except (ValueError, TypeError):
         return CallableSignature()
 
-    # Resolve string annotations to actual types
-    try:
-        hints = get_type_hints(obj)
-    except Exception:
-        hints = {}
+    hints = _safe_type_hints(obj)
 
     params = [_parse_func_param(p, hints.get(p.name)) for p in sig.parameters.values()]
     return_hint = hints.get("return")
@@ -306,7 +309,7 @@ def _extract_env_vars(cls: type, field_name: str) -> list[str] | None:
         model_field = cls.model_fields[field_name]
         field_infos = source._extract_field_info(model_field, field_name)
         return [info[1] for info in field_infos]
-    except (ImportError, Exception):
+    except (ImportError, AttributeError, KeyError, TypeError, ValueError):
         return None
 
 
@@ -385,10 +388,7 @@ def parse_class_fields(cls: type) -> list[ClassFieldInfo] | None:
 
 def _has_cli_context_param(func: Callable) -> bool:
     """Check if function has a typer/click Context parameter."""
-    try:
-        hints = get_type_hints(func)
-    except Exception:
-        return False
+    hints = _safe_type_hints(func)
     for hint in hints.values():
         type_name = getattr(hint, "__name__", None) or str(hint)
         if type_name in CLI_CONTEXT_TYPE_NAMES:
@@ -449,9 +449,9 @@ def _format_envvar(envvar: str | list[str] | None) -> str | None:
 def extract_cli_params(func: Callable) -> list[CLIParamInfo]:
     try:
         sig = inspect.signature(func)
-        hints = get_type_hints(func)
-    except Exception:
+    except (ValueError, TypeError):
         return []
+    hints = _safe_type_hints(func)
 
     params: list[CLIParamInfo] = []
     for name, param in sig.parameters.items():

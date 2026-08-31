@@ -139,9 +139,8 @@ def bump_version(
         bump = cap_bump_type(bump, max_bump_action.max_bump)
     elif ctx.settings.max_bump_type:
         bump = cap_bump_type(bump, ctx.settings.max_bump_type)
-    if prerelease_bump := old_version.prerelease_bump_type:
-        if ctx.settings.keep_prerelease:
-            bump = prerelease_bump
+    if (prerelease_bump := old_version.prerelease_bump_type) and ctx.settings.keep_prerelease:
+        bump = prerelease_bump
     return old_version.bump(bump)
 
 
@@ -158,16 +157,15 @@ def read_current_version(ctx: pkg_ctx):
             version_raw = pyproject["project"]["version"]
             version = PkgVersion.parse(version_raw)
     init_path = ctx.settings.init_path
-    if version.is_default and init_path.exists():
-        if raw_init_version := _extract_version(init_path.read_text()):
-            with suppress(Exception):
-                version = PkgVersion.parse(raw_init_version)
+    if version.is_default and init_path.exists() and (raw_init_version := _extract_version(init_path.read_text())):
+        with suppress(Exception):
+            version = PkgVersion.parse(raw_init_version)
     return version
 
 
 __all__ = [
+    "PkgVersion",
     "bump_version",
     "cap_bump_type",
     "read_current_version",
-    "PkgVersion",
 ]

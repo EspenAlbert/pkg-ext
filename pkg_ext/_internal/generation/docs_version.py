@@ -54,9 +54,8 @@ def get_symbol_stability(symbol_name: str, group_name: str, changelog_actions: S
         elif isinstance(action, GAAction):
             if _matches_symbol_or_group(action, symbol_name, group_name):
                 last_stability = Stability.ga
-        elif isinstance(action, DeprecatedAction):
-            if _matches_symbol_or_group(action, symbol_name, group_name):
-                last_stability = Stability.deprecated
+        elif isinstance(action, DeprecatedAction) and _matches_symbol_or_group(action, symbol_name, group_name):
+            last_stability = Stability.deprecated
     return last_stability
 
 
@@ -135,7 +134,6 @@ def build_symbol_changes(
         version = find_release_version(action.ts, changelog_actions) or UNRELEASED_VERSION
         if isinstance(action, MakePublicAction):
             changes.append(SymbolChange(version=version, description="Made public", ts=action.ts))
-        elif isinstance(action, MEANINGFUL_CHANGE_ACTIONS):
-            if desc := _action_description(action):
-                changes.append(SymbolChange(version=version, description=desc, ts=action.ts))
+        elif isinstance(action, MEANINGFUL_CHANGE_ACTIONS) and (desc := _action_description(action)):
+            changes.append(SymbolChange(version=version, description=desc, ts=action.ts))
     return sorted(changes, key=lambda c: (c.version == UNRELEASED_VERSION, c.ts), reverse=True)

@@ -10,4 +10,4 @@ def main():
     app()
 
 
-__all__ = ["main", "app"]
+__all__ = ["app", "main"]

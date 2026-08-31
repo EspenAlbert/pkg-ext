@@ -126,9 +126,8 @@ def as_changelog_line(action: ChangelogAction, remote_url: str, ctx: pkg_ctx) ->
 
 def _get_section_header_level(path: Path, version: str):
     section_header_level = 2
-    if path.exists():
-        if current_header_level := _header_level(path.read_text(), version):
-            section_header_level = current_header_level
+    if path.exists() and (current_header_level := _header_level(path.read_text(), version)):
+        section_header_level = current_header_level
     return section_header_level
 
 

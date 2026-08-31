@@ -70,15 +70,14 @@ class PkgExtState(Entity):
 
     def code_ref(self, code_state: PkgCodeState, group: str, name: str) -> RefSymbol | None:
         key = qualified_name(group, name)
-        if state := self.refs.get(key):
-            if state.exist_in_code:
-                if grp := self.groups.name_to_group.get(group):
-                    for owned_ref in grp.owned_refs:
-                        if owned_ref.endswith(f".{name}"):
-                            with suppress(RefSymbolNotInCodeError):
-                                return code_state.ref_symbol(owned_ref)
-                with suppress(RefSymbolNotInCodeError):
-                    return code_state.ref_symbol(name)
+        if (state := self.refs.get(key)) and state.exist_in_code:
+            if grp := self.groups.name_to_group.get(group):
+                for owned_ref in grp.owned_refs:
+                    if owned_ref.endswith(f".{name}"):
+                        with suppress(RefSymbolNotInCodeError):
+                            return code_state.ref_symbol(owned_ref)
+            with suppress(RefSymbolNotInCodeError):
+                return code_state.ref_symbol(name)
         return None
 
     def sha_processed(self, sha: str) -> bool:

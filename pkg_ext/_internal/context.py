@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Self
 
 from pkg_ext._internal.changelog import (
     ChangelogAction,
@@ -78,7 +79,7 @@ class pkg_ctx:
             return self.tool_state.groups.get_or_create_group(group_name)
         raise NoPublicGroupMatch()
 
-    def __enter__(self) -> pkg_ctx:
+    def __enter__(self) -> Self:
         self._actions_dumped = False
         return self
 

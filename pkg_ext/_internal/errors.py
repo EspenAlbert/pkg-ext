@@ -4,8 +4,6 @@ from pathlib import Path
 class NoPublicGroupMatch(Exception):
     """Internal error"""
 
-    pass
-
 
 class PublicGroupAlreadyExist(Exception):
     def __init__(self, name: str) -> None:

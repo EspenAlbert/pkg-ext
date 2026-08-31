@@ -36,8 +36,6 @@ class RegularClassNoDoc:
 class RegularClassWithDoc:
     """My regular class docstring."""
 
-    pass
-
 
 def test_is_auto_generated_dataclass_doc():
     assert api_dumper._is_auto_generated_dataclass_doc(DataclassNoDoc)
