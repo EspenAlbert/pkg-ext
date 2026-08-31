@@ -89,7 +89,7 @@ class PkgCodeState(Entity):
 
         return sorted(refs, key=lookup_in_file)
 
-    def sort_rel_paths_by_dependecy_order(self, paths: Iterable[str], reverse: bool = True) -> list[str]:
+    def sort_rel_paths_by_dependency_order(self, paths: Iterable[str], reverse: bool = True) -> list[str]:
         """assume a.py:
         from my_pkg.b import b
         def a():

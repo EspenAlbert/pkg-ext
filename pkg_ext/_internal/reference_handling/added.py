@@ -176,7 +176,7 @@ def _sort_by_dep_order(
     code_state: PkgCodeState,
     rel_path_refs: dict[str, list[RefStateWithSymbol]],
 ) -> dict[str, list[RefStateWithSymbol]]:
-    sorted_rel_paths = code_state.sort_rel_paths_by_dependecy_order(rel_path_refs.keys(), reverse=True)
+    sorted_rel_paths = code_state.sort_rel_paths_by_dependency_order(rel_path_refs.keys(), reverse=True)
     return {rel_path: rel_path_refs[rel_path] for rel_path in sorted_rel_paths}
 
 
