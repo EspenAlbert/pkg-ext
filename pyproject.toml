@@ -20,6 +20,7 @@ dependencies = [
   "ask-shell",
   "GitPython>=3.1.0",
   "model-lib[toml]",
+  "ruff>=0.16.3",
   "tomlkit>=0.13",
   "zero-3rdparty",
 ]

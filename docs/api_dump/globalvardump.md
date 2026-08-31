@@ -9,9 +9,9 @@
 class GlobalVarDump(SymbolDumpBase):
     name: str
     module_path: str
-    docstring: str = ''
+    docstring: str = ""
     line_number: int | None = None
-    type: Literal[global_var] = 'global_var'
+    type: Literal[global_var] = "global_var"
     annotation: str | None = None
     value_repr: str | None = None
 ```

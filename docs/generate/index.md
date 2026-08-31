@@ -16,8 +16,7 @@
 > **Since:** 0.1.0
 
 ```python
-def gen_docs(*, output_dir: Path | None = None, group: str | None = None):
-    ...
+def gen_docs(*, output_dir: Path | None = None, group: str | None = None): ...
 ```
 
 Generate documentation from public API.

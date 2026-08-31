@@ -90,7 +90,7 @@ def test_format_signature_function():
         ),
     )
     sig = format_signature(func)
-    assert "def parse(data: str, *, strict: bool = False) -> dict:" in sig
+    assert sig == "def parse(data: str, *, strict: bool = False) -> dict: ..."
 
 
 def test_format_signature_class_with_fields():
@@ -108,13 +108,12 @@ def test_format_signature_class_with_fields():
         ],
     )
     sig = format_signature(cls)
-    assert "class MySettings(BaseSettings):" in sig
-    assert "host: str = 'localhost'" in sig
+    assert sig == 'class MySettings(BaseSettings):\n    host: str = "localhost"'
 
 
 def test_format_signature_exception():
     exc = ExceptionDump(name="MyError", module_path="pkg.mod", mro_bases=["ValueError"], num_direct_bases=1)
-    assert "class MyError(ValueError):" in format_signature(exc)
+    assert format_signature(exc) == "class MyError(ValueError): ..."
 
 
 def test_format_signature_type_alias():
@@ -124,7 +123,7 @@ def test_format_signature_type_alias():
 
 def test_format_signature_global_var():
     var = GlobalVarDump(name="VERSION", module_path="pkg.mod", annotation="str", value_repr="'1.0.0'")
-    assert format_signature(var) == "VERSION: str = '1.0.0'"
+    assert format_signature(var) == 'VERSION: str = "1.0.0"'
 
 
 def test_format_docstring():
@@ -224,7 +223,7 @@ def test_format_signature_cli_command():
         ],
     )
     sig = format_signature(cmd)
-    assert "def chore(*, description: str = ..., pr: int = 0)" in sig
+    assert sig == "def chore(*, description: str = ..., pr: int = 0): ..."
 
 
 def test_render_cli_params_table():

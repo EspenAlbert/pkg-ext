@@ -18,8 +18,7 @@
 > **Since:** 0.1.0
 
 ```python
-def release_notes(*, tag_name: str = ...):
-    ...
+def release_notes(*, tag_name: str = ...): ...
 ```
 
 **CLI Options:**
@@ -42,8 +41,7 @@ def release_notes(*, tag_name: str = ...):
 > **Since:** 0.1.0
 
 ```python
-def chore(*, description: str = ..., pr_number: int = 0):
-    ...
+def chore(*, description: str = ..., pr_number: int = 0): ...
 ```
 
 Create a ChoreAction for internal changes that warrant a release.
@@ -69,8 +67,15 @@ Create a ChoreAction for internal changes that warrant a release.
 > **Since:** 0.1.0
 
 ```python
-def promote(*, name: str | None = None, group: str | None = None, module_filter: str | None = None, pattern: str | None = None, undecided: bool = False, pr_number: int = 0):
-    ...
+def promote(
+    *,
+    name: str | None = None,
+    group: str | None = None,
+    module_filter: str | None = None,
+    pattern: str | None = None,
+    undecided: bool = False,
+    pr_number: int = 0,
+): ...
 ```
 
 Promote symbols to public API (private or undecided).

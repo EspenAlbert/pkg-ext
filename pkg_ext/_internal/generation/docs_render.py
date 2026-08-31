@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 
 from zero_3rdparty.sections import slug, wrap_section
 
+from pkg_ext._internal import py_format
 from pkg_ext._internal.changelog.actions import ChangelogAction
 from pkg_ext._internal.config import PKG_EXT_TOOL_NAME, Stability
 from pkg_ext._internal.generation.docs_constants import MD_CONFIG
@@ -162,20 +163,22 @@ def _format_exception_signature(exc: ExceptionDump) -> str:
 def format_signature(symbol: SymbolDump) -> str:
     match symbol:
         case FunctionDump():
-            return _format_function_signature(symbol)
+            raw = _format_function_signature(symbol)
         case CLICommandDump():
-            return _format_cli_command_signature(symbol)
+            raw = _format_cli_command_signature(symbol)
         case ClassDump():
-            return _format_class_signature(symbol)
+            raw = _format_class_signature(symbol)
         case ExceptionDump():
-            return _format_exception_signature(symbol)
+            raw = _format_exception_signature(symbol)
         case TypeAliasDump():
-            return f"{symbol.name} = {symbol.alias_target}"
+            raw = f"{symbol.name} = {symbol.alias_target}"
         case GlobalVarDump():
             ann = f": {symbol.annotation}" if symbol.annotation else ""
             val = f" = {symbol.value_repr}" if symbol.value_repr else ""
-            return f"{symbol.name}{ann}{val}"
-    return f"# {symbol.name}"
+            raw = f"{symbol.name}{ann}{val}"
+        case _:
+            raw = f"# {symbol.name}"
+    return py_format.format_python_string(raw, line_length=120)
 
 
 def format_docstring(docstring: str) -> str:

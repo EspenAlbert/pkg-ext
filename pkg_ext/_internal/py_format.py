@@ -6,6 +6,7 @@ Provides functions to format Python files using ruff check --fix and ruff format
 import logging
 import subprocess
 from pathlib import Path
+from shutil import which
 
 logger = logging.getLogger(__name__)
 
@@ -22,16 +23,15 @@ def _run_ruff_stdin(args: list[str], code: str) -> str | None:
             check=True,
         )
         return result.stdout.rstrip()
-    except (subprocess.CalledProcessError, FileNotFoundError):
+    except subprocess.CalledProcessError:
         return None
 
 
 def format_python_string(code: str, line_length: int = DEFAULT_LINE_LENGTH) -> str:
-    """Format and lint-fix Python code string using ruff."""
-    # First run check --fix to add missing imports etc
+    if which("ruff") is None:
+        raise FileNotFoundError("ruff is required on PATH")
     fixed = _run_ruff_stdin(["check", "--fix", "--stdin-filename", "_.py", "--isolated"], code)
     code = fixed if fixed is not None else code
-    # Then format
     formatted = _run_ruff_stdin(["format", "--line-length", str(line_length)], code)
     return formatted if formatted is not None else code
 

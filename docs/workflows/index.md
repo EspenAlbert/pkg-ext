@@ -19,8 +19,9 @@
 > **Since:** 0.1.0
 
 ```python
-def post_merge(*, explicit_pr: int = 0, push: bool = False, skip_clean_old_entries: bool = False, force_reason: str = ''):
-    ...
+def post_merge(
+    *, explicit_pr: int = 0, push: bool = False, skip_clean_old_entries: bool = False, force_reason: str = ""
+): ...
 ```
 
 **CLI Options:**
@@ -106,8 +107,7 @@ Update changelog and regenerate docs (bot mode, writes to -dev files).
 > **Since:** 0.4.0
 
 ```python
-def change_base(*, new_base: str = ..., pr_number: int = 0):
-    ...
+def change_base(*, new_base: str = ..., pr_number: int = 0): ...
 ```
 
 Consolidate changelog files from closed PRs after re-targeting a stacked PR.
