@@ -148,7 +148,7 @@ class PkgSettings(BaseSettings):
             file_utils.copy(no_suffix_path, public_groups_path)
         if public_groups_path.exists():
             public_groups = parse.parse_model(public_groups_path, t=PublicGroups)
-            public_groups.storage_path = public_groups_path
+            public_groups.storage_path = public_groups_path  # ty: ignore[invalid-assignment]
         else:
             public_groups = PublicGroups(storage_path=public_groups_path)
         return public_groups  # type: ignore

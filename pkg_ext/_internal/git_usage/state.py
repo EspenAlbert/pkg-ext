@@ -251,7 +251,7 @@ def _parse_changes(repo: Repo, start_sha: str, head_sha: str) -> tuple[list[GitC
             GitCommit(
                 author=commit.author.name or "",
                 message=str(commit.message.strip()),
-                ts=commit.committed_datetime,  # type: ignore
+                ts=commit.committed_datetime,
                 sha=commit.hexsha,
                 file_changes=commit_files,
             )

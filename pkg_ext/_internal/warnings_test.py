@@ -92,7 +92,7 @@ def test_deprecated_reexport():
         return "old"
 
     with pytest.warns(DeprecationWarning, match="Use new_func instead"):
-        result = old_func()
+        result = old_func()  # ty: ignore[deprecated]
     assert result == "old"
 
 

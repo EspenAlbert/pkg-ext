@@ -113,7 +113,7 @@ def _find_test_file(symbol: SymbolDumpBase, settings: PkgSettings) -> str:
 
 
 def _format_related_type(rt: SymbolDumpBase) -> str:
-    sig = format_signature(rt)  # type: ignore[arg-type]
+    sig = format_signature(rt)  # ty: ignore[invalid-argument-type]
     return f"### {rt.name}\n```python\n{sig}\n```"
 
 
@@ -124,7 +124,7 @@ def _format_symbol_context(
 ) -> str:
     parts: list[str] = []
 
-    sig = format_signature(symbol)  # type: ignore[arg-type]
+    sig = format_signature(symbol)  # ty: ignore[invalid-argument-type]
     parts.append(f"**Signature:**\n```python\n{sig}\n```")
 
     if symbol.docstring:

@@ -45,7 +45,7 @@ class BumpType(StrEnum):
         indexes = {bump: i for i, bump in enumerate(cls)}
 
         def as_index(action: ChangelogAction) -> int:
-            return indexes[action.bump_type]
+            return indexes[action.bump_type]  # ty: ignore[invalid-argument-type]
 
         return sorted(actions, key=as_index)
 
@@ -84,7 +84,7 @@ class ChangelogActionBase(Entity):
     def file_content(self) -> str:
         data = self.model_dump(exclude_unset=True, exclude_none=True, exclude={"pr"})
         data.setdefault("ts", self.ts)
-        data["type"] = self.type  # pyright: ignore[reportAttributeAccessIssue]
+        data["type"] = self.type  # ty: ignore[unresolved-attribute]
         # Ensure consistent field order: base fields first, then remaining sorted
         ordered: dict[str, object] = {}
         for key in self._YAML_FIELD_ORDER:
@@ -101,7 +101,7 @@ class ChangelogActionBase(Entity):
         Subclasses should override to include their unique identifiers.
         Used as secondary tiebreaker when timestamps are equal.
         """
-        return (self.type, self.name)  # pyright: ignore[reportAttributeAccessIssue]
+        return (self.type, self.name)  # ty: ignore[unresolved-attribute]
 
     def __lt__(self, other) -> bool:
         if not isinstance(other, ChangelogActionBase):

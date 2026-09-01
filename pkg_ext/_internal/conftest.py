@@ -151,7 +151,7 @@ def _e2e_dir(request) -> Path:
 
 @pytest.fixture()
 def _e2e_pkg_path(_e2e_dir) -> Path:  # type: ignore
-    yield _e2e_dir / TEST_PKG_NAME  # type: ignore
+    yield _e2e_dir / TEST_PKG_NAME
     with suppress(KeyError):
         del sys.modules[TEST_PKG_NAME]  # support re-importing in the next test
     with suppress(KeyError):
@@ -165,7 +165,7 @@ def e2e_dirs(tmp_path, _e2e_dir, _e2e_pkg_path):
 
 @pytest.fixture()
 def file_regression_e2e(file_regression, e2e_dirs) -> E2eRegressionCheck:  # type: ignore
-    yield E2eRegressionCheck(e2e_dirs, file_regression)  # type: ignore
+    yield E2eRegressionCheck(e2e_dirs, file_regression)
 
 
 @pytest.fixture()

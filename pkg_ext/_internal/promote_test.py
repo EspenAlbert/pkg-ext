@@ -51,7 +51,7 @@ def test_match_symbol_in_code(sample_private_action: KeepPrivateAction, sample_r
     assert (
         promote.match_symbol_in_code(
             sample_private_action,
-            MockCodeState(),  # type: ignore[arg-type]
+            MockCodeState(),  # ty: ignore[invalid-argument-type]
         )
         == sample_ref_symbol
     )
@@ -62,7 +62,7 @@ def test_match_symbol_in_code(sample_private_action: KeepPrivateAction, sample_r
     assert (
         promote.match_symbol_in_code(
             sample_private_action,
-            EmptyCodeState(),  # type: ignore[arg-type]
+            EmptyCodeState(),  # ty: ignore[invalid-argument-type]
         )
         is None
     )

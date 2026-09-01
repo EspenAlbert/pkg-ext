@@ -38,7 +38,7 @@ class RefStateWithSymbol(RefState):
             description=self.symbol.docstring,
         )
 
-    def __eq__(self, value: object) -> bool:
+    def __eq__(self, value: object) -> bool:  # ty: ignore[invalid-method-override]
         if not isinstance(value, RefStateWithSymbol):
             return False
         return str(self.symbol) == str(value.symbol)

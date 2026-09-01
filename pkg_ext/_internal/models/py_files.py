@@ -55,7 +55,7 @@ class PkgFileBase(Entity):
             return True
         return self.relative_path < other.relative_path
 
-    def __eq__(self, value: object) -> bool:
+    def __eq__(self, value: object) -> bool:  # ty: ignore[invalid-method-override]
         if not isinstance(value, PkgFileBase):
             raise TypeError
         return self.path == value.path

@@ -17,7 +17,7 @@ def _validate_arg_names(func: Callable, names: set[str], context: str) -> None:
     valid_names = _get_arg_names(func)
     invalid = names - valid_names
     if invalid:
-        raise ValueError(f"{context}: {invalid} not in {func.__name__} signature {valid_names}")
+        raise ValueError(f"{context}: {invalid} not in {func.__name__} signature {valid_names}")  # ty: ignore[unresolved-attribute]
 
 
 class PkgExtWarning(UserWarning):
@@ -66,15 +66,15 @@ def experimental(obj: type | F) -> type | F:
             warn_experimental(obj.__name__, stacklevel=2)
             original_init(self, *args, **kwargs)
 
-        obj.__init__ = wrapped_init  # type: ignore[method-assign]
+        obj.__init__ = wrapped_init  # ty: ignore[invalid-assignment]
         return obj
 
     @wraps(obj)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
-        warn_experimental(obj.__name__, stacklevel=2)
+        warn_experimental(obj.__name__, stacklevel=2)  # ty: ignore[unresolved-attribute]
         return obj(*args, **kwargs)
 
-    return wrapper  # type: ignore[return-value]
+    return wrapper  # ty: ignore[invalid-return-type]
 
 
 def experimental_args(*names: str) -> Callable[[F], F]:
@@ -92,7 +92,7 @@ def experimental_args(*names: str) -> Callable[[F], F]:
                     )
             return func(*args, **kwargs)
 
-        return wrapper  # type: ignore[return-value]
+        return wrapper  # ty: ignore[invalid-return-type]
 
     return decorator
 
@@ -120,7 +120,7 @@ def deprecated_args(*names: str, **renames: str) -> Callable[[F], F]:
                     )
             return func(*args, **kwargs)
 
-        return wrapper  # type: ignore[return-value]
+        return wrapper  # ty: ignore[invalid-return-type]
 
     return decorator
 
@@ -133,7 +133,7 @@ def deprecated_arg(
 ) -> Callable[[F], F]:
     def decorator(func: F) -> F:
         to_validate = {name, new_name} - {None}
-        _validate_arg_names(func, to_validate, "@deprecated_arg")  # type: ignore[arg-type]
+        _validate_arg_names(func, to_validate, "@deprecated_arg")  # ty: ignore[invalid-argument-type]
 
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -148,6 +148,6 @@ def deprecated_arg(
                 warnings.warn(msg, category=PkgExtDeprecationWarning, stacklevel=2)
             return func(*args, **kwargs)
 
-        return wrapper  # type: ignore[return-value]
+        return wrapper  # ty: ignore[invalid-return-type]
 
     return decorator
