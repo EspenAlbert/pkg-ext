@@ -302,9 +302,9 @@ def _extract_env_vars(cls: type, field_name: str) -> list[str] | None:
         model_config = cls.model_config
         source = EnvSettingsSource(
             cls,
-            case_sensitive=model_config.get("case_sensitive"),  # type: ignore
-            env_prefix=model_config.get("env_prefix"),  # type: ignore
-            env_nested_delimiter=model_config.get("env_nested_delimiter"),  # type: ignore
+            case_sensitive=model_config.get("case_sensitive"),
+            env_prefix=model_config.get("env_prefix"),
+            env_nested_delimiter=model_config.get("env_nested_delimiter"),
         )
         model_field = cls.model_fields[field_name]
         field_infos = source._extract_field_info(model_field, field_name)
@@ -353,7 +353,7 @@ def _parse_dataclass_fields(cls: type) -> list[ClassFieldInfo]:
     except NameError:
         hints = getattr(cls, "__annotations__", {})
     fields: list[ClassFieldInfo] = []
-    for f in dataclasses.fields(cls):
+    for f in dataclasses.fields(cls):  # ty: ignore[invalid-argument-type]
         if f.name.startswith("_"):
             continue
         annotation = hints.get(f.name)

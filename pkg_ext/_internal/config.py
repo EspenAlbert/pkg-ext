@@ -121,15 +121,7 @@ class ProjectConfig(Entity):
 
 def _safe_load_toml(path: Path) -> dict[str, Any]:
     """Safely load TOML file, returning empty dict on any error."""
-    try:
-        import tomllib
-    except ImportError:
-        # Python < 3.11 fallback
-        try:
-            import tomli as tomllib  # type: ignore
-        except ImportError:
-            logger.warning("No TOML library available. Config loading disabled.")
-            return {}
+    import tomllib
 
     if not path.exists():
         return {}

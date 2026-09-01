@@ -77,8 +77,8 @@ def dump_function(symbol: Callable, ref: RefSymbol) -> FunctionDump | CLICommand
         "line_number": _get_line_number(symbol),
     }
     if is_cli_command(symbol):
-        return CLICommandDump(**base, cli_params=extract_cli_params(symbol))
-    return FunctionDump(**base)
+        return CLICommandDump(**base, cli_params=extract_cli_params(symbol))  # ty: ignore[invalid-argument-type]
+    return FunctionDump(**base)  # ty: ignore[invalid-argument-type]
 
 
 def dump_class(cls: type, ref: RefSymbol) -> ClassDump:

@@ -92,7 +92,7 @@ def test_apply_remap_to_actions_skips_non_fix():
     actions = [keep_private, _fix("aaa111", "fix: A")]
     count = apply_remap_to_actions(actions, {"aaa111": "bbb222"})
     assert count == 1
-    assert actions[1].short_sha == "bbb222"
+    assert actions[1].short_sha == "bbb222"  # ty: ignore[unresolved-attribute]
 
 
 def test_remove_actions_by_sha():

@@ -66,8 +66,8 @@ class pkg_ctx:
         self.run_state.new_version = new_version
 
     def add_changelog_action(self, action: ChangelogActionBase) -> None:
-        self._actions.append(action)  # type: ignore[arg-type]
-        self.tool_state.add_changelog_actions([action])  # type: ignore[arg-type]
+        self._actions.append(action)  # ty: ignore[invalid-argument-type]
+        self.tool_state.add_changelog_actions([action])  # ty: ignore[invalid-argument-type]
 
     def pr_changelog_actions(self) -> list[ChangelogAction]:
         if self._actions_dumped:
