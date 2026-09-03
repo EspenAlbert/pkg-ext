@@ -22,6 +22,18 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T", bound=Callable)
 
 
+def _should_warn_symbol_moved(
+    old_id: SymbolRefId,
+    disk_owned_refs: set[SymbolRefId] | None,
+    unreleased_full_paths: set[SymbolRefId] | None,
+) -> bool:
+    if disk_owned_refs is None:
+        return True
+    if old_id in disk_owned_refs:
+        return True
+    return old_id in (unreleased_full_paths or ())
+
+
 def ensure_disk_path_updated(func: T) -> T:
     @wraps(func)
     def wrapper(self_: PublicGroups, *args: Any, **kwargs: Any) -> Any:
@@ -142,7 +154,13 @@ class PublicGroups(Entity):
             group.docs_exclude = group_cfg.docs_exclude.copy()
             group.docstring = group_cfg.docstring
 
-    def reconcile_moved_refs(self, import_id_refs: dict[str, RefSymbol]) -> tuple[int, set[SymbolRefId]]:
+    def reconcile_moved_refs(
+        self,
+        import_id_refs: dict[str, RefSymbol],
+        *,
+        disk_owned_refs: set[SymbolRefId] | None = None,
+        unreleased_full_paths: set[SymbolRefId] | None = None,
+    ) -> tuple[int, set[SymbolRefId]]:
         """Auto-fix refs and modules that have moved to different paths.
 
         Returns (count_of_updates, set_of_moved_to_ref_ids).
@@ -160,6 +178,8 @@ class PublicGroups(Entity):
                 resolved, moved = self._resolve_current_ref_id(group, ref_id, name_to_candidates)
                 updated_refs.add(resolved)
                 if moved:
+                    if _should_warn_symbol_moved(ref_id, disk_owned_refs, unreleased_full_paths):
+                        logger.warning(f"Symbol moved: {ref_id} -> {resolved} (group: {group.name})")
                     moved_to.add(resolved)
                     total_updated += 1
             group.owned_refs = updated_refs
@@ -190,12 +210,10 @@ class PublicGroups(Entity):
             current_id = candidates[0].local_id
             if current_id == ref_id:
                 return ref_id, False
-            logger.warning(f"Symbol moved: {ref_id} -> {current_id} (group: {group.name})")
             return current_id, True
         if resolved := self._resolve_ambiguous_ref(group, ref_id, candidates):
             if resolved == ref_id:
                 return ref_id, False
-            logger.warning(f"Symbol moved: {ref_id} -> {resolved} (group: {group.name})")
             return resolved, True
         return ref_id, False
 

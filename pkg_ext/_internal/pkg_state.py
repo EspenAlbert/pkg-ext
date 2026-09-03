@@ -67,6 +67,8 @@ class PkgExtState(Entity):
         default_factory=dict,
         description="Key = target (group/symbol/arg), value = replacement suggestion.",
     )
+    disk_owned_refs: set[str] = Field(default_factory=set)
+    unreleased_full_paths: set[str] = Field(default_factory=set)
 
     def code_ref(self, code_state: PkgCodeState, group: str, name: str) -> RefSymbol | None:
         key = qualified_name(group, name)
@@ -191,7 +193,11 @@ class PkgExtState(Entity):
 
     def reconcile_with_code(self, import_id_refs: dict[str, RefSymbol]) -> int:
         """Run reconcile_moved_refs and update decided_local_ids for moved symbols."""
-        count, moved_to = self.groups.reconcile_moved_refs(import_id_refs)
+        count, moved_to = self.groups.reconcile_moved_refs(
+            import_id_refs,
+            disk_owned_refs=self.disk_owned_refs,
+            unreleased_full_paths=self.unreleased_full_paths,
+        )
         if moved_to:
             self.decided_local_ids.update(moved_to)
         all_owned = {ref for group in self.groups.groups for ref in group.owned_refs}

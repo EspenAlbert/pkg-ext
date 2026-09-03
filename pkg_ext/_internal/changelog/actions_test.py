@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -10,13 +11,24 @@ from pkg_ext._internal.changelog.actions import (
     DeprecatedAction,
     ExperimentalAction,
     GAAction,
+    MakePublicAction,
     MaxBumpTypeAction,
+    ReleaseAction,
     StabilityTarget,
     _changelog_action_adapter,
     archive_old_actions,
     changelog_filename,
     changelog_filepath,
+    unreleased_make_public_paths,
 )
+
+
+def test_unreleased_make_public_paths():
+    ts = datetime(2025, 1, 1, tzinfo=UTC)
+    released = MakePublicAction(name="A", group="g", full_path="mod.old.A", author="t", pr=1, ts=ts)
+    release = ReleaseAction(name="1.0.0", old_version="0.9.0", author="t", pr=1, ts=ts)
+    open_mp = MakePublicAction(name="B", group="g", full_path="mod.old.B", author="t", pr=2, ts=ts)
+    assert unreleased_make_public_paths([released, release, open_mp]) == {"mod.old.B"}
 
 
 def test_archive_old_actions_no_cleanup_when_below_trigger(tmp_path: Path):

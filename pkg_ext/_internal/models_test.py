@@ -9,6 +9,7 @@ from pkg_ext._internal.changelog.actions import (
     GroupModuleAction,
     KeepPrivateAction,
     MakePublicAction,
+    ReleaseAction,
     changelog_filepath,
     dump_changelog_actions,
 )
@@ -198,6 +199,42 @@ def test_reconcile_logs_when_ambiguous(_public_groups, caplog):
     assert not moved_to
     assert "_internal.old.Parser" in group.owned_refs  # kept stale
     assert "Cannot resolve" in caplog.text
+
+
+@pytest.mark.parametrize(
+    ("disk_owned_refs", "unreleased_full_paths", "expect_warn"),
+    [
+        ({"_internal.models.CommitConfig"}, set(), False),
+        ({"_internal.models_dep.CommitConfig"}, set(), True),
+        (set(), {"_internal.models_dep.CommitConfig"}, True),
+    ],
+)
+def test_reconcile_moved_refs_warn_gating(_public_groups, caplog, disk_owned_refs, unreleased_full_paths, expect_warn):
+    group = _public_groups.get_or_create_group("dep_update")
+    group.owned_refs.update({"_internal.models.CommitConfig", "_internal.models_dep.CommitConfig"})
+    refs = _refs_dict(_ref("CommitConfig", "_internal/models"))
+
+    count, moved_to = _public_groups.reconcile_moved_refs(
+        refs,
+        disk_owned_refs=disk_owned_refs,
+        unreleased_full_paths=unreleased_full_paths,
+    )
+    assert count == 1
+    assert moved_to == {"_internal.models.CommitConfig"}
+    assert "Symbol moved:" in caplog.text if expect_warn else "Symbol moved:" not in caplog.text
+
+
+def test_parse_changelog_snapshots_unreleased_paths(settings):
+    released_actions = [
+        MakePublicAction(name="A", group="g", full_path="mod.released.A", author="t"),
+        ReleaseAction(name="1.0.0", old_version="0.9.0", author="t"),
+    ]
+    open_actions = [MakePublicAction(name="B", group="g", full_path="mod.open.B", author="t")]
+    dump_changelog_actions(changelog_filepath(settings.changelog_dir, 1), released_actions)
+    dump_changelog_actions(changelog_filepath(settings.changelog_dir, 2), open_actions)
+
+    state, _ = parse_changelog(settings)
+    assert state.unreleased_full_paths == {"mod.open.B"}
 
 
 def _code_state(*refs: RefSymbol) -> PkgCodeState:

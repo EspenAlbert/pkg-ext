@@ -362,6 +362,13 @@ ChangelogAction = Annotated[
 ]
 
 
+def unreleased_make_public_paths(actions: Sequence[ChangelogAction]) -> set[str]:
+    released_prs = {a.pr for a in actions if isinstance(a, ReleaseAction) and a.pr}
+    return {
+        a.full_path for a in actions if isinstance(a, MakePublicAction) and a.full_path and a.pr not in released_prs
+    }
+
+
 def action_group(action: ChangelogAction) -> str | None:
     match action:
         case (
