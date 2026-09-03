@@ -1,0 +1,4 @@
+name: unreleased_make_public_paths
+ts: 2026-09-03 06:00:00+00:00
+type: keep_private
+full_path: _internal.changelog.actions.unreleased_make_public_paths

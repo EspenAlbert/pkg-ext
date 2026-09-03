@@ -183,11 +183,21 @@ class PublicGroups(Entity):
                     moved_to.add(resolved)
                     total_updated += 1
             group.owned_refs = updated_refs
-            self._reconcile_owned_modules(group, updated_refs, module_owner)
+
+        self._evict_released_module_owners(module_owner)
+        for group in self.groups:
+            self._reconcile_owned_modules(group, group.owned_refs, module_owner)
 
         if total_updated:
             self.write()
         return total_updated, moved_to
+
+    def _evict_released_module_owners(self, module_owner: dict[str, str]) -> None:
+        for group in self.groups:
+            ref_modules = {ref_id_module(ref) for ref in group.owned_refs}
+            for module_path in group.owned_modules:
+                if module_path not in ref_modules and module_owner.get(module_path) == group.name:
+                    del module_owner[module_path]
 
     def _module_owners(self) -> dict[str, str]:
         owners: dict[str, str] = {}

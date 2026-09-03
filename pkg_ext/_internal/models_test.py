@@ -14,7 +14,7 @@ from pkg_ext._internal.changelog.actions import (
     dump_changelog_actions,
 )
 from pkg_ext._internal.changelog.parser import parse_changelog
-from pkg_ext._internal.errors import RefSymbolNotInCodeError
+from pkg_ext._internal.errors import InvalidGroupSelectionError, RefSymbolNotInCodeError
 from pkg_ext._internal.models import (
     PkgCodeState,
     PublicGroups,
@@ -49,6 +49,15 @@ def test_public_groups_dumping_after_new_ref_symbol(_public_groups, _public_grou
     test_group = groups.matching_group(ref)
     assert test_group.name == "test"
     assert test_group.owned_refs == {"my_module.my_func"}
+
+
+def test_add_module_conflict_does_not_write(_public_groups):
+    _public_groups.add_module("config", "shared_module")
+    snapshot = _public_groups.storage_path.read_text()
+
+    with pytest.raises(InvalidGroupSelectionError):
+        _public_groups.add_module("dep", "shared_module")
+    assert _public_groups.storage_path.read_text() == snapshot
 
 
 def test_public_groups_add_to_existing_group(_public_groups, _public_group_check):
@@ -124,6 +133,24 @@ def test_reconcile_moved_refs_keeps_deleted_symbol(_public_groups):
     assert count == 0
     assert not moved_to
     assert "_internal.models.DeletedClass" in group.owned_refs
+
+
+def test_reconcile_transfers_released_module_to_other_group(_public_groups):
+    claimant = _public_groups.get_or_create_group("claimant")
+    releaser = _public_groups.get_or_create_group("releaser")
+    releaser.owned_modules.add("_internal.mod_x")
+    releaser.owned_refs.add("_internal.mod_x.Stale")
+    claimant.owned_refs.add("_internal.mod_y.Item")
+    refs = _refs_dict(_ref("Stale", "_internal/mod_z"), _ref("Item", "_internal/mod_x"))
+
+    count, moved_to = _public_groups.reconcile_moved_refs(refs)
+    assert count == 2
+    assert moved_to == {"_internal.mod_z.Stale", "_internal.mod_x.Item"}
+    assert "_internal.mod_z.Stale" in releaser.owned_refs
+    assert "_internal.mod_x.Item" in claimant.owned_refs
+    assert "_internal.mod_x" in claimant.owned_modules
+    assert "_internal.mod_x" not in releaser.owned_modules
+    assert _public_groups.matching_group_by_module_path("_internal.mod_x").name == "claimant"
 
 
 def test_reconcile_does_not_steal_module_owned_by_other_group(_public_groups):
