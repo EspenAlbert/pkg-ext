@@ -47,7 +47,6 @@ groups:
   - _internal.cli.gen_cmds
   owned_refs:
   - _internal.cli.gen_cmds.gen_docs
-  - _internal.cli.gen_cmds.gen_tests
 - name: stability
   owned_modules:
   - _internal.cli.stability_cmds
