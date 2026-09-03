@@ -25,10 +25,9 @@ T = TypeVar("T", bound=Callable)
 def ensure_disk_path_updated(func: T) -> T:
     @wraps(func)
     def wrapper(self_: PublicGroups, *args: Any, **kwargs: Any) -> Any:
-        try:
-            return func(self_, *args, **kwargs)
-        finally:
-            self_.write()
+        result = func(self_, *args, **kwargs)
+        self_.write()
+        return result
 
     return wrapper  # type: ignore
 
@@ -154,42 +153,67 @@ class PublicGroups(Entity):
 
         total_updated = 0
         moved_to: set[SymbolRefId] = set()
+        module_owner = self._module_owners()
         for group in self.groups:
             updated_refs: set[SymbolRefId] = set()
             for ref_id in list(group.owned_refs):
-                ref_name = ref_id_name(ref_id)
-                candidates = name_to_candidates.get(ref_name, [])
-
-                if not candidates:
-                    updated_refs.add(ref_id)  # deleted - keep for removed_refs flow
-                elif len(candidates) == 1:
-                    current_id = candidates[0].local_id
-                    if current_id != ref_id:
-                        logger.warning(f"Symbol moved: {ref_id} -> {current_id} (group: {group.name})")
-                        updated_refs.add(current_id)
-                        moved_to.add(current_id)
-                        total_updated += 1
-                    else:
-                        updated_refs.add(ref_id)
-                elif resolved := self._resolve_ambiguous_ref(group, ref_id, candidates):
-                    if resolved != ref_id:
-                        logger.warning(f"Symbol moved: {ref_id} -> {resolved} (group: {group.name})")
-                        moved_to.add(resolved)
-                        total_updated += 1
-                    updated_refs.add(resolved)
-                else:
-                    updated_refs.add(ref_id)  # unresolved - keep stale ref
+                resolved, moved = self._resolve_current_ref_id(group, ref_id, name_to_candidates)
+                updated_refs.add(resolved)
+                if moved:
+                    moved_to.add(resolved)
+                    total_updated += 1
             group.owned_refs = updated_refs
-            self._reconcile_owned_modules(group, updated_refs)
+            self._reconcile_owned_modules(group, updated_refs, module_owner)
 
         if total_updated:
             self.write()
         return total_updated, moved_to
 
+    def _module_owners(self) -> dict[str, str]:
+        owners: dict[str, str] = {}
+        for group in self.groups:
+            for module_path in group.owned_modules:
+                owners.setdefault(module_path, group.name)
+        return owners
+
+    def _resolve_current_ref_id(
+        self,
+        group: PublicGroup,
+        ref_id: SymbolRefId,
+        name_to_candidates: dict[str, list[RefSymbol]],
+    ) -> tuple[SymbolRefId, bool]:
+        """Return (resolved_id, was_moved)."""
+        candidates = name_to_candidates.get(ref_id_name(ref_id), [])
+        if not candidates:
+            return ref_id, False
+        if len(candidates) == 1:
+            current_id = candidates[0].local_id
+            if current_id == ref_id:
+                return ref_id, False
+            logger.warning(f"Symbol moved: {ref_id} -> {current_id} (group: {group.name})")
+            return current_id, True
+        if resolved := self._resolve_ambiguous_ref(group, ref_id, candidates):
+            if resolved == ref_id:
+                return ref_id, False
+            logger.warning(f"Symbol moved: {ref_id} -> {resolved} (group: {group.name})")
+            return resolved, True
+        return ref_id, False
+
     @staticmethod
-    def _reconcile_owned_modules(group: PublicGroup, updated_refs: set[SymbolRefId]) -> None:
-        """Rebuild owned_modules to match the modules referenced by updated_refs."""
-        group.owned_modules = {ref_id_module(ref) for ref in updated_refs}
+    def _reconcile_owned_modules(
+        group: PublicGroup, updated_refs: set[SymbolRefId], module_owner: dict[str, str]
+    ) -> None:
+        """Rebuild owned_modules from refs, without taking modules another group already owns."""
+        ref_modules = {ref_id_module(ref) for ref in updated_refs}
+        owned: set[str] = set()
+        for module_path in ref_modules:
+            owner = module_owner.get(module_path)
+            if owner is None:
+                module_owner[module_path] = group.name
+                owned.add(module_path)
+            elif owner == group.name:
+                owned.add(module_path)
+        group.owned_modules = owned
 
     def _resolve_ambiguous_ref(
         self, group: PublicGroup, stale_ref_id: SymbolRefId, candidates: list[RefSymbol]

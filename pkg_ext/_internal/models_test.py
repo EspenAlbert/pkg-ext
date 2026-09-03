@@ -125,6 +125,30 @@ def test_reconcile_moved_refs_keeps_deleted_symbol(_public_groups):
     assert "_internal.models.DeletedClass" in group.owned_refs
 
 
+def test_reconcile_does_not_steal_module_owned_by_other_group(_public_groups):
+    config = _public_groups.get_or_create_group("config")
+    dep = _public_groups.get_or_create_group("dep_update")
+    config.owned_modules.add("_internal.models")
+    config.owned_refs.add("_internal.models.SrcConfig")
+    dep.owned_modules.add("_internal.models_dep")
+    dep.owned_refs.add("_internal.models_dep.CommitConfig")
+    dep.owned_refs.add("_internal.models_dep.DepConfig")
+    refs = _refs_dict(
+        _ref("SrcConfig", "_internal/models"),
+        _ref("CommitConfig", "_internal/models"),
+        _ref("DepConfig", "_internal/models_dep"),
+    )
+
+    count, moved_to = _public_groups.reconcile_moved_refs(refs)
+    assert count == 1
+    assert "_internal.models.CommitConfig" in moved_to
+    assert "_internal.models.CommitConfig" in dep.owned_refs
+    assert "_internal.models" in config.owned_modules
+    assert "_internal.models" not in dep.owned_modules
+    assert "_internal.models_dep" in dep.owned_modules
+    assert _public_groups.matching_group_by_module_path("_internal.models").name == "config"
+
+
 def test_reconcile_moved_refs_multiple_groups(_public_groups, caplog):
     group1 = _public_groups.get_or_create_group("group1")
     group2 = _public_groups.get_or_create_group("group2")
