@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
-from typing import Callable, Union
+from typing import Annotated, Callable, Union
 
 import typer
 from pydantic import BaseModel, Field, computed_field
@@ -115,9 +115,16 @@ def _context_only_cli(ctx: typer.Context) -> None:
     pass
 
 
+def _annotated_only_cli(
+    dest_paths: Annotated[list[str] | None, typer.Option("-d", "--dest", help="Destination relative paths")] = None,
+) -> None:
+    pass
+
+
 def test_is_cli_command():
     assert is_cli_command(_sample_cli_command)
     assert is_cli_command(_context_only_cli)
+    assert is_cli_command(_annotated_only_cli)
     assert not is_cli_command(_regular_function)
     assert not is_cli_command(sample_func)
 
@@ -160,6 +167,39 @@ def test_extract_cli_params_default_factory_and_none_defaults():
     assert ps["include"].default_repr == "[]"
     assert not ps["nested"].required
     assert ps["nested"].default_repr == "['p1', 'p2']"
+
+
+def test_extract_cli_params_from_annotated():
+    def cmd(
+        files: Annotated[list[str], typer.Argument()],
+        dest_paths: Annotated[list[str] | None, typer.Option("-d", "--dest", help="Destination relative paths")] = None,
+    ) -> None:
+        pass
+
+    params = extract_cli_params(cmd)
+    assert [p.param_name for p in params] == ["files", "dest_paths"]
+    files = params[0]
+    assert files.is_argument
+    assert files.flags == []
+    assert files.type_annotation == "list[str]"
+    assert files.required
+    dest = params[1]
+    assert dest.flags == ["-d", "--dest"]
+    assert dest.type_annotation == "list[str] | None"
+    assert dest.default_repr == "None"
+    assert dest.help == "Destination relative paths"
+    assert not dest.is_argument
+
+
+def test_extract_cli_params_annotated_mixed_keeps_source_order():
+    def boot(
+        name: str = typer.Option(..., "-n", "--name", help="Config name"),
+        dest_paths: Annotated[list[str] | None, typer.Option("-d", "--dest")] = None,
+        dry_run: bool = typer.Option(False, "--dry-run"),
+    ) -> None:
+        pass
+
+    assert [p.param_name for p in extract_cli_params(boot)] == ["name", "dest_paths", "dry_run"]
 
 
 def test_stable_repr_normalizes_memory_addresses():

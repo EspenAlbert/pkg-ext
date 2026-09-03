@@ -1,0 +1,22 @@
+name: unreleased_make_public_paths
+ts: 2026-09-03 06:00:00+00:00
+type: keep_private
+full_path: _internal.changelog.actions.unreleased_make_public_paths
+---
+name: __ROOT__
+ts: 2026-09-03 06:19:23.672848+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(groups): Keep module ownership exclusive on symbol move'
+group: __ROOT__
+message: 'fix(groups): Keep module ownership exclusive on symbol move'
+short_sha: 6e6e51
+---
+name: changelog
+ts: 2026-09-03 06:19:31.546812+00:00
+type: fix
+author: Espen Albert
+changelog_message: 'fix(groups): Quiet symbol-move warnings for released changelog paths'
+group: changelog
+message: 'fix(groups): Quiet symbol-move warnings for released changelog paths'
+short_sha: 234e31

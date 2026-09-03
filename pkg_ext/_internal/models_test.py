@@ -9,11 +9,12 @@ from pkg_ext._internal.changelog.actions import (
     GroupModuleAction,
     KeepPrivateAction,
     MakePublicAction,
+    ReleaseAction,
     changelog_filepath,
     dump_changelog_actions,
 )
 from pkg_ext._internal.changelog.parser import parse_changelog
-from pkg_ext._internal.errors import RefSymbolNotInCodeError
+from pkg_ext._internal.errors import InvalidGroupSelectionError, RefSymbolNotInCodeError
 from pkg_ext._internal.models import (
     PkgCodeState,
     PublicGroups,
@@ -48,6 +49,15 @@ def test_public_groups_dumping_after_new_ref_symbol(_public_groups, _public_grou
     test_group = groups.matching_group(ref)
     assert test_group.name == "test"
     assert test_group.owned_refs == {"my_module.my_func"}
+
+
+def test_add_module_conflict_does_not_write(_public_groups):
+    _public_groups.add_module("config", "shared_module")
+    snapshot = _public_groups.storage_path.read_text()
+
+    with pytest.raises(InvalidGroupSelectionError):
+        _public_groups.add_module("dep", "shared_module")
+    assert _public_groups.storage_path.read_text() == snapshot
 
 
 def test_public_groups_add_to_existing_group(_public_groups, _public_group_check):
@@ -125,6 +135,48 @@ def test_reconcile_moved_refs_keeps_deleted_symbol(_public_groups):
     assert "_internal.models.DeletedClass" in group.owned_refs
 
 
+def test_reconcile_transfers_released_module_to_other_group(_public_groups):
+    claimant = _public_groups.get_or_create_group("claimant")
+    releaser = _public_groups.get_or_create_group("releaser")
+    releaser.owned_modules.add("_internal.mod_x")
+    releaser.owned_refs.add("_internal.mod_x.Stale")
+    claimant.owned_refs.add("_internal.mod_y.Item")
+    refs = _refs_dict(_ref("Stale", "_internal/mod_z"), _ref("Item", "_internal/mod_x"))
+
+    count, moved_to = _public_groups.reconcile_moved_refs(refs)
+    assert count == 2
+    assert moved_to == {"_internal.mod_z.Stale", "_internal.mod_x.Item"}
+    assert "_internal.mod_z.Stale" in releaser.owned_refs
+    assert "_internal.mod_x.Item" in claimant.owned_refs
+    assert "_internal.mod_x" in claimant.owned_modules
+    assert "_internal.mod_x" not in releaser.owned_modules
+    assert _public_groups.matching_group_by_module_path("_internal.mod_x").name == "claimant"
+
+
+def test_reconcile_does_not_steal_module_owned_by_other_group(_public_groups):
+    config = _public_groups.get_or_create_group("config")
+    dep = _public_groups.get_or_create_group("dep_update")
+    config.owned_modules.add("_internal.models")
+    config.owned_refs.add("_internal.models.SrcConfig")
+    dep.owned_modules.add("_internal.models_dep")
+    dep.owned_refs.add("_internal.models_dep.CommitConfig")
+    dep.owned_refs.add("_internal.models_dep.DepConfig")
+    refs = _refs_dict(
+        _ref("SrcConfig", "_internal/models"),
+        _ref("CommitConfig", "_internal/models"),
+        _ref("DepConfig", "_internal/models_dep"),
+    )
+
+    count, moved_to = _public_groups.reconcile_moved_refs(refs)
+    assert count == 1
+    assert "_internal.models.CommitConfig" in moved_to
+    assert "_internal.models.CommitConfig" in dep.owned_refs
+    assert "_internal.models" in config.owned_modules
+    assert "_internal.models" not in dep.owned_modules
+    assert "_internal.models_dep" in dep.owned_modules
+    assert _public_groups.matching_group_by_module_path("_internal.models").name == "config"
+
+
 def test_reconcile_moved_refs_multiple_groups(_public_groups, caplog):
     group1 = _public_groups.get_or_create_group("group1")
     group2 = _public_groups.get_or_create_group("group2")
@@ -174,6 +226,42 @@ def test_reconcile_logs_when_ambiguous(_public_groups, caplog):
     assert not moved_to
     assert "_internal.old.Parser" in group.owned_refs  # kept stale
     assert "Cannot resolve" in caplog.text
+
+
+@pytest.mark.parametrize(
+    ("disk_owned_refs", "unreleased_full_paths", "expect_warn"),
+    [
+        ({"_internal.models.CommitConfig"}, set(), False),
+        ({"_internal.models_dep.CommitConfig"}, set(), True),
+        (set(), {"_internal.models_dep.CommitConfig"}, True),
+    ],
+)
+def test_reconcile_moved_refs_warn_gating(_public_groups, caplog, disk_owned_refs, unreleased_full_paths, expect_warn):
+    group = _public_groups.get_or_create_group("dep_update")
+    group.owned_refs.update({"_internal.models.CommitConfig", "_internal.models_dep.CommitConfig"})
+    refs = _refs_dict(_ref("CommitConfig", "_internal/models"))
+
+    count, moved_to = _public_groups.reconcile_moved_refs(
+        refs,
+        disk_owned_refs=disk_owned_refs,
+        unreleased_full_paths=unreleased_full_paths,
+    )
+    assert count == 1
+    assert moved_to == {"_internal.models.CommitConfig"}
+    assert "Symbol moved:" in caplog.text if expect_warn else "Symbol moved:" not in caplog.text
+
+
+def test_parse_changelog_snapshots_unreleased_paths(settings):
+    released_actions = [
+        MakePublicAction(name="A", group="g", full_path="mod.released.A", author="t"),
+        ReleaseAction(name="1.0.0", old_version="0.9.0", author="t"),
+    ]
+    open_actions = [MakePublicAction(name="B", group="g", full_path="mod.open.B", author="t")]
+    dump_changelog_actions(changelog_filepath(settings.changelog_dir, 1), released_actions)
+    dump_changelog_actions(changelog_filepath(settings.changelog_dir, 2), open_actions)
+
+    state, _ = parse_changelog(settings)
+    assert state.unreleased_full_paths == {"mod.open.B"}
 
 
 def _code_state(*refs: RefSymbol) -> PkgCodeState:
