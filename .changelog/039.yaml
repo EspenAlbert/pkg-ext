@@ -20,3 +20,8 @@ changelog_message: 'fix(groups): Quiet symbol-move warnings for released changel
 group: changelog
 message: 'fix(groups): Quiet symbol-move warnings for released changelog paths'
 short_sha: 234e31
+---
+name: 0.4.9
+ts: 2026-09-03 07:57:26.572003+00:00
+type: release
+old_version: 0.4.8

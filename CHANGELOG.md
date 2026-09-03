@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.9 2026-09-03T07-57Z
+
+### __Root__
+- fix(groups): Keep module ownership exclusive on symbol move [6e6e51](https://github.com/EspenAlbert/pkg-ext/commit/6e6e51)
+
+### Changelog
+- fix(groups): Quiet symbol-move warnings for released changelog paths [234e31](https://github.com/EspenAlbert/pkg-ext/commit/234e31)
+
+
 ## 0.4.8 2026-08-31T19-09Z
 
 ### Other Changes
