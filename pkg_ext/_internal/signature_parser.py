@@ -14,7 +14,14 @@ from typing import Any, Callable, ClassVar, Literal, NamedTuple, Union, get_args
 
 from pydantic.fields import FieldInfo
 from pydantic_core import PydanticUndefined
-from typer.models import ArgumentInfo, ParameterInfo
+from typer.models import ArgumentInfo, ParameterInfo, ParamMeta
+from typer.utils import (
+    AnnotatedParamWithDefaultValueError,
+    DefaultFactoryAndDefaultValueError,
+    MixedAnnotatedAndDefaultStyleError,
+    MultipleTyperAnnotationsError,
+    get_params_from_function,
+)
 
 from pkg_ext._internal.models.api_dump import (
     CallableSignature,
@@ -386,6 +393,18 @@ def parse_class_fields(cls: type) -> list[ClassFieldInfo] | None:
     return None
 
 
+_TYPER_PARAMS_ERRORS = (
+    ValueError,
+    TypeError,
+    NameError,
+    AttributeError,
+    AnnotatedParamWithDefaultValueError,
+    DefaultFactoryAndDefaultValueError,
+    MixedAnnotatedAndDefaultStyleError,
+    MultipleTyperAnnotationsError,
+)
+
+
 def _has_cli_context_param(func: Callable) -> bool:
     """Check if function has a typer/click Context parameter."""
     hints = _safe_type_hints(func)
@@ -396,13 +415,19 @@ def _has_cli_context_param(func: Callable) -> bool:
     return False
 
 
-def is_cli_command(func: Callable) -> bool:
-    """Check if a function is a typer CLI command by looking for ParameterInfo defaults or Context params."""
+def _typer_params(func: Callable) -> dict[str, ParamMeta] | None:
     try:
-        sig = inspect.signature(func)
-    except (ValueError, TypeError):
+        return get_params_from_function(func)
+    except _TYPER_PARAMS_ERRORS:
+        return None
+
+
+def is_cli_command(func: Callable) -> bool:
+    """True if the function has Typer ParameterInfo (default or Annotated) or a Context param."""
+    params = _typer_params(func)
+    if params is None:
         return False
-    has_param_info = any(isinstance(p.default, ParameterInfo) for p in sig.parameters.values())
+    has_param_info = any(isinstance(p.default, ParameterInfo) for p in params.values())
     return has_param_info or _has_cli_context_param(func)
 
 
@@ -430,10 +455,11 @@ def is_cli_required_for_docs(info: ParameterInfo) -> bool:
 
 
 def _cli_default_object_for_docs(info: ParameterInfo) -> Any:
-    if info.default is ...:
-        if info.default_factory is None:
-            raise ValueError("required CLI parameter has no default to materialize")
+    # get_params_from_function moves default_factory onto default as the callable.
+    if info.default_factory is not None:
         return info.default_factory()
+    if info.default is ...:
+        raise ValueError("required CLI parameter has no default to materialize")
     return info.default
 
 
@@ -447,18 +473,16 @@ def _format_envvar(envvar: str | list[str] | None) -> str | None:
 
 
 def extract_cli_params(func: Callable) -> list[CLIParamInfo]:
-    try:
-        sig = inspect.signature(func)
-    except (ValueError, TypeError):
+    typer_params = _typer_params(func)
+    if typer_params is None:
         return []
-    hints = _safe_type_hints(func)
 
     params: list[CLIParamInfo] = []
-    for name, param in sig.parameters.items():
-        if not isinstance(param.default, ParameterInfo):
+    for name, meta in typer_params.items():
+        if not isinstance(meta.default, ParameterInfo):
             continue
-        info = param.default
-        annotation = hints.get(name)
+        info = meta.default
+        annotation = meta.annotation
         is_arg = isinstance(info, ArgumentInfo)
         required = is_cli_required_for_docs(info)
         default_repr: str | None = None
