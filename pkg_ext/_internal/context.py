@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Self
+
+logger = logging.getLogger(__name__)
 
 from pkg_ext._internal.changelog import (
     ChangelogAction,
@@ -53,6 +56,7 @@ class pkg_ctx:
         default_path = default_changelog_path(changelog_dir)
         dump_to_disk = False
         if default_path.exists() and path != default_path:
+            logger.info(f"Migrating placeholder changelog {default_path.name} -> {path.name}")
             self._actions.extend(parse_changelog_file_path(default_path))
             default_path.unlink()
             dump_to_disk = True
