@@ -1,5 +1,5 @@
 pkg_import_name: pkg_ext
-version: 0.4.9
+version: 0.5.0
 groups:
 - name: __ROOT__
   symbols:
@@ -132,6 +132,17 @@ groups:
       is_computed: false
       env_vars:
       - keep_private
+    - name: expose_mode
+      type_annotation: ExposeMode
+      type_imports:
+      - pkg_ext._internal.config.ExposeMode
+      default:
+        value_repr: '<ExposeMode.prompt: ''prompt''>'
+        is_factory: false
+      is_class_var: false
+      is_computed: false
+      env_vars:
+      - expose_mode
     - name: tag_prefix
       type_annotation: str
       type_imports: []
@@ -930,12 +941,12 @@ groups:
     init_signature:
       parameters:
       - name: self
-        kind: positional_or_keyword
+        kind: positional_only
         type_imports: []
       - name: args
         kind: var_positional
         type_imports: []
-      - name: kwds
+      - name: kwargs
         kind: var_keyword
         type_imports: []
       return_type_imports: []
@@ -1751,4 +1762,4 @@ groups:
       required: false
       is_argument: false
       hidden: false
-dumped_at: 2026-09-03 07:57:26.501977+00:00
+dumped_at: 2026-09-05 15:53:35.448107+00:00

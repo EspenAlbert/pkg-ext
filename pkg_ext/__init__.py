@@ -10,7 +10,7 @@ from pkg_ext._internal.config import ExposeMode
 from pkg_ext import api_dump
 from pkg_ext._internal.settings import PkgSettings
 
-VERSION = "0.4.9"
+VERSION = "0.5.0"
 __all__ = [
     "api_commands",
     "changelog",

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 2026-09-05T15-53Z
+
+### __Root__
+- New class `ExposeMode`
+- `__ROOT__.PkgSettings`: added optional field 'expose_mode' (default: <ExposeMode.prompt: 'prompt'>)
+
+
 ## 0.4.9 2026-09-03T07-57Z
 
 ### __Root__
