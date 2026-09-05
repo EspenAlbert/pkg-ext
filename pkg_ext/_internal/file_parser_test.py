@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from ask_shell import settings
-from ask_shell._internal import _run_env, interactive, models
+from ask_shell._internal import _run_env, models
 
 from pkg_ext._internal.file_parser import parse_code_symbols, parse_symbols
 from pkg_ext._internal.models import PkgSrcFile
@@ -23,7 +23,10 @@ def test_parse_symbols():
     settings_path = Path(settings.__file__)
     assert symbols.path == settings_path
     assert symbols.relative_path == settings_path.name
-    assert symbols.local_imports == set()
+    assert symbols.local_imports == {
+        "ask_shell._internal.prompt_file.ensure_session_header",
+        "ask_shell._internal.prompt_file.load_prompt_file",
+    }
     assert "AskShellSettings" in symbols.classes
     assert symbols.functions == [
         "default_callbacks_funcs",
@@ -76,12 +79,12 @@ def test_parse_symbols_run_env():
 
 
 def test_typevars_captured_as_type_aliases():
-    # TypeVars (FuncT = TypeVar(...)) are captured as type aliases
-    file = _parse_src_module(interactive)
-    assert "FuncT" in file.type_aliases
+    # TypeVars (OutputT = TypeVar(...)) are captured as type aliases
+    file = _parse_src_module(models)
+    assert "OutputT" in file.type_aliases
     symbols = parse_code_symbols([file], "ask_shell")
-    assert "ask_shell._internal.interactive.FuncT" in symbols
-    assert symbols["ask_shell._internal.interactive.FuncT"].type == "type_alias"
+    assert "ask_shell._internal.models.OutputT" in symbols
+    assert symbols["ask_shell._internal.models.OutputT"].type == "type_alias"
 
 
 def test_type_alias_annotation_captured():
