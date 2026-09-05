@@ -26,3 +26,15 @@ change_kind: optional_field_added
 details: 'added optional field ''expose_mode'' (default: <ExposeMode.prompt: ''prompt''>)'
 field_name: expose_mode
 group: __ROOT__
+---
+name: __ROOT__
+ts: 2026-09-05 13:58:55.858896+00:00
+type: group_module
+module_path: _internal.config
+---
+name: ExposeMode
+ts: 2026-09-05 13:58:55.860915+00:00
+type: make_public
+details: promoted from private (_internal.config.ExposeMode)
+full_path: _internal.config.ExposeMode
+group: __ROOT__

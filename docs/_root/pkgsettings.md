@@ -79,6 +79,7 @@ class PkgSettings(BaseSettings):
 
 | Version | Change |
 |---------|--------|
+| unreleased | added optional field 'expose_mode' (default: <ExposeMode.prompt: 'prompt'>) |
 | 0.3.0 | field 'after_file_write_hooks' default added: None |
 | 0.3.0 | field 'max_bump_type' default added: None |
 | 0.3.0 | added base class 'BaseSettings' |
