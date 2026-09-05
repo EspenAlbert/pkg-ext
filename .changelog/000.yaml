@@ -1,0 +1,19 @@
+name: ExposeMode
+ts: 2026-09-05 13:47:18.350362+00:00
+type: keep_private
+full_path: _internal.config.ExposeMode
+---
+name: MARKDOWN_LINK_PATTERN
+ts: 2026-09-05 13:47:18.350400+00:00
+type: keep_private
+full_path: _internal.generation.docs_mkdocs.MARKDOWN_LINK_PATTERN
+---
+name: REPO_ROOT_FILE_PATTERNS
+ts: 2026-09-05 13:47:18.350407+00:00
+type: keep_private
+full_path: _internal.generation.docs_mkdocs.REPO_ROOT_FILE_PATTERNS
+---
+name: CLI_CONTEXT_TYPE_NAMES
+ts: 2026-09-05 13:47:18.350413+00:00
+type: keep_private
+full_path: _internal.signature_parser.CLI_CONTEXT_TYPE_NAMES
