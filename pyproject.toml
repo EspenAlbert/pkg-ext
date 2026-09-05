@@ -48,6 +48,7 @@ exclude = [
 tag_prefix = "v"
 max_bump_type = "minor"
 # === OK_EDIT: path-sync pkg-ext ===
+expose_mode = "cli_only"
 
 # === DO_NOT_EDIT: path-sync ruff ===
 [tool.ruff]
