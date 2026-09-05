@@ -1,0 +1,8 @@
+name: PkgSettings
+ts: 2026-09-05 15:16:25.210830+00:00
+type: additional_change
+auto_generated: true
+change_kind: optional_field_added
+details: 'added optional field ''expose_mode'' (default: <ExposeMode.prompt: ''prompt''>)'
+field_name: expose_mode
+group: __ROOT__
