@@ -9,6 +9,7 @@ from zero_3rdparty.iter_utils import group_by_once
 
 from pkg_ext._internal.changelog import GroupModuleAction, KeepPrivateAction, MakePublicAction
 from pkg_ext._internal.cli.options import get_default_editor
+from pkg_ext._internal.config import ExposeMode
 from pkg_ext._internal.context import pkg_ctx
 from pkg_ext._internal.errors import NoPublicGroupMatch
 from pkg_ext._internal.interactive import select_group, select_multiple_refs
@@ -121,6 +122,11 @@ def _prompt_and_expose(
     if not non_cli:
         return []
 
+    if settings.expose_mode == ExposeMode.cli_only:
+        for ref in non_cli:
+            ctx.add_changelog_action(KeepPrivateAction(name=ref.name, full_path=ref.symbol.local_id))
+        return []
+
     if not settings.skip_open_in_editor:
         run_and_wait(f"{get_default_editor()} {pkg_path / rel_path}")
 
@@ -191,7 +197,7 @@ def handle_added_refs(ctx: pkg_ctx) -> None:
         logger.info("No new references found in the package")
         return
 
-    if ctx.settings.keep_private:
+    if ctx.settings.keep_private or ctx.settings.expose_mode == ExposeMode.opt_in:
         _keep_all_private(ctx, added_refs)
         return
 

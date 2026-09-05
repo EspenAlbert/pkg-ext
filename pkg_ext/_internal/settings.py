@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings
 from zero_3rdparty import file_utils
 
 from pkg_ext._internal.changelog.actions import BumpType
-from pkg_ext._internal.config import ProjectConfig, load_project_config, load_user_config
+from pkg_ext._internal.config import ExposeMode, ProjectConfig, load_project_config, load_user_config
 from pkg_ext._internal.errors import RemoteURLNotFound
 from pkg_ext._internal.git_usage import read_remote_url
 
@@ -51,6 +51,7 @@ class PkgSettings(BaseSettings):
     repo_root: DirectoryPath
     skip_open_in_editor: bool = False
     keep_private: bool = False
+    expose_mode: ExposeMode = ExposeMode.prompt
     tag_prefix: str = ""
     keep_prerelease: bool = False
     ignored_symbols: frozenset[str] = frozenset()
@@ -200,5 +201,6 @@ def pkg_settings(
         format_command=project_config.format_command,
         max_bump_type=project_config.get_max_bump(),
         default_branch=project_config.default_branch,
+        expose_mode=project_config.expose_mode,
         repo_url=_read_repo_url_safe(repo_root),
     )

@@ -40,6 +40,12 @@ class Stability(StrEnum):
     deprecated = "deprecated"
 
 
+class ExposeMode(StrEnum):
+    prompt = "prompt"
+    cli_only = "cli_only"
+    opt_in = "opt_in"
+
+
 class GroupConfig(Entity):
     dependencies: list[str] = Field(default_factory=list)
     docs_exclude: list[str] = Field(default_factory=list)
@@ -96,6 +102,7 @@ class ProjectConfig(Entity):
     mkdocs_skip_sections: tuple[str, ...] = ()
     format_command: tuple[str, ...] = DEFAULT_FORMAT_COMMAND
     max_bump_type: MaxBumpLiteral | None = None
+    expose_mode: ExposeMode = ExposeMode.prompt
     groups: dict[str, GroupConfig] = Field(default_factory=dict)
 
     def get_max_bump(self) -> BumpType | None:
