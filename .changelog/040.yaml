@@ -17,3 +17,12 @@ name: CLI_CONTEXT_TYPE_NAMES
 ts: 2026-09-05 13:47:18.350413+00:00
 type: keep_private
 full_path: _internal.signature_parser.CLI_CONTEXT_TYPE_NAMES
+---
+name: PkgSettings
+ts: 2026-09-05 13:58:01.821921+00:00
+type: additional_change
+auto_generated: true
+change_kind: optional_field_added
+details: 'added optional field ''expose_mode'' (default: <ExposeMode.prompt: ''prompt''>)'
+field_name: expose_mode
+group: __ROOT__
