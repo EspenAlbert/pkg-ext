@@ -6,6 +6,7 @@ from pkg_ext import example
 from pkg_ext import generate
 from pkg_ext import stability
 from pkg_ext import workflows
+from pkg_ext._internal.config import ExposeMode
 from pkg_ext import api_dump
 from pkg_ext._internal.settings import PkgSettings
 
@@ -17,6 +18,7 @@ __all__ = [
     "generate",
     "stability",
     "workflows",
+    "ExposeMode",
     "api_dump",
     "PkgSettings",
 ]
