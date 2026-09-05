@@ -5,6 +5,7 @@ groups:
   - _internal.config
   - _internal.settings
   owned_refs:
+  - _internal.config.ExposeMode
   - _internal.settings.PkgSettings
 - name: api_commands
   owned_modules:
