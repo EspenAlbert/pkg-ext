@@ -3,7 +3,7 @@
 
 [user]
 # Editor preference (fallback to $EDITOR if not set)
-editor = "cursor"  # or "code", "vim", etc.
+editor = "zed"  # or "cursor", "code", "vim", etc.
 
 # UI preferences - whether to automatically open files in editor
 skip_open_in_editor = false  # Set to true for automated workflows
