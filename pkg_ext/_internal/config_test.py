@@ -8,6 +8,7 @@ from pkg_ext._internal.config import (
     ExposeMode,
     GroupConfig,
     ProjectConfig,
+    UserConfig,
     load_project_config,
     validate_group_dependencies,
 )
@@ -166,3 +167,7 @@ def test_pkg_settings_copies_expose_mode(tmp_path: Path):
     ensure_parents_write_text(pkg_dir / "__init__.py", "")
     settings = pkg_settings(tmp_path, "pkg", skip_open_in_editor=True)
     assert settings.expose_mode == ExposeMode.cli_only
+
+
+def test_user_config_default_editor_is_zed():
+    assert UserConfig().editor == "zed"

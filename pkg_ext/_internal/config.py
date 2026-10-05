@@ -30,7 +30,7 @@ PKG_EXT_TOOL_NAME = "pkg-ext"
 class UserConfig:
     """User-level preferences stored in ~/.config/pkg-ext/config.toml."""
 
-    editor: str = "cursor"  # fallback to $EDITOR env var
+    editor: str = "zed"  # fallback to $EDITOR env var
     skip_open_in_editor: bool = False
 
 

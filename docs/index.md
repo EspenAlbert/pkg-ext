@@ -5,12 +5,12 @@
 [![codecov](https://codecov.io/gh/EspenAlbert/pkg-ext/graph/badge.svg?token=47B15SDYMF)](https://codecov.io/gh/EspenAlbert/pkg-ext)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://espenalbert.github.io/pkg-ext/)
 
-
 A CLI tool for managing Python package public API, versioning, and changelog generation.
 
 ## Overview
 
 `pkg-ext` tracks which symbols (functions, classes, exceptions) in your package are "exposed" (public) vs "hidden" (internal). It:
+
 - Generates `__init__.py` with imports and `__all__` based on decisions stored in changelog entries
 - Creates group modules (e.g., `my_group.py`) that re-export related symbols
 - Maintains a structured changelog directory (`.changelog/`) per PR
@@ -37,26 +37,27 @@ Symbols are identified by `{module_path}.{symbol_name}`, e.g., `my_pkg.utils.par
 
 Stored in `.changelog/{pr_number}.yaml` files using Pydantic discriminated unions:
 
-| Action Type | Description | Version Bump | Key Fields |
-|-------------|-------------|--------------|------------|
-| `make_public` | Make symbol public | Minor | `group`, `details` |
-| `keep_private` | Keep symbol internal | None | `full_path` |
-| `fix` | Bug fix from git commit | Patch | `short_sha`, `message`, `changelog_message`, `ignored` |
-| `delete` | Remove from public API | Major | `group` |
-| `rename` | Rename with old alias | Major | `group`, `old_name` |
-| `breaking_change` | Breaking API change | Major | `group`, `details` |
-| `additional_change` | Non-breaking change | Patch | `group`, `details` |
-| `group_module` | Assign module to a group | None | `module_path` |
-| `release` | Version release marker | None | `old_version` |
-| `experimental` | Mark as experimental | Patch | `target`, `group`/`parent` |
-| `ga` | Graduate to GA | Patch | `target`, `group`/`parent` |
-| `deprecated` | Mark as deprecated | Patch | `target`, `group`/`parent`, `replacement` |
-| `max_bump_type` | Cap version bump | None | `max_bump`, `reason` |
-| `chore` | Internal changes | Patch | `description` |
+| Action Type         | Description              | Version Bump | Key Fields                                             |
+| ------------------- | ------------------------ | ------------ | ------------------------------------------------------ |
+| `make_public`       | Make symbol public       | Minor        | `group`, `details`                                     |
+| `keep_private`      | Keep symbol internal     | None         | `full_path`                                            |
+| `fix`               | Bug fix from git commit  | Patch        | `short_sha`, `message`, `changelog_message`, `ignored` |
+| `delete`            | Remove from public API   | Major        | `group`                                                |
+| `rename`            | Rename with old alias    | Major        | `group`, `old_name`                                    |
+| `breaking_change`   | Breaking API change      | Major        | `group`, `details`                                     |
+| `additional_change` | Non-breaking change      | Patch        | `group`, `details`                                     |
+| `group_module`      | Assign module to a group | None         | `module_path`                                          |
+| `release`           | Version release marker   | None         | `old_version`                                          |
+| `experimental`      | Mark as experimental     | Patch        | `target`, `group`/`parent`                             |
+| `ga`                | Graduate to GA           | Patch        | `target`, `group`/`parent`                             |
+| `deprecated`        | Mark as deprecated       | Patch        | `target`, `group`/`parent`, `replacement`              |
+| `max_bump_type`     | Cap version bump         | None         | `max_bump`, `reason`                                   |
+| `chore`             | Internal changes         | Patch        | `description`                                          |
 
 All actions inherit common fields: `name`, `ts`, `author`, `pr`.
 
 The `breaking_change` and `additional_change` actions support optional fields for API diff:
+
 - `change_kind: str | None` - machine-readable change type (e.g., `param_removed`, `default_changed`)
 - `auto_generated: bool` - `true` when created by API diff, `false` for interactive actions
 - `field_name: str | None` - field name for field-level changes
@@ -65,11 +66,11 @@ The `breaking_change` and `additional_change` actions support optional fields fo
 
 Stability actions (`experimental`, `ga`, `deprecated`) support three target levels:
 
-| Target | Description | Required Field |
-|--------|-------------|----------------|
-| `group` | Entire group | `name` = group name |
-| `symbol` | Single symbol | `group` + `name` = symbol name |
-| `arg` | Function argument | `parent` = `{group}.{symbol}`, `name` = arg name |
+| Target   | Description       | Required Field                                   |
+| -------- | ----------------- | ------------------------------------------------ |
+| `group`  | Entire group      | `name` = group name                              |
+| `symbol` | Single symbol     | `group` + `name` = symbol name                   |
+| `arg`    | Function argument | `parent` = `{group}.{symbol}`, `name` = arg name |
 
 ### Public Groups
 
@@ -77,7 +78,7 @@ Groups organize related symbols. Configured in `.groups.yaml`:
 
 ```yaml
 groups:
-  - name: __ROOT__  # Top-level exports in __init__.py
+  - name: __ROOT__ # Top-level exports in __init__.py
     owned_refs: []
     owned_modules: []
   - name: my_group
@@ -97,34 +98,34 @@ pkg-ext [OPTIONS] COMMAND
 
 ### Global Options
 
-| Option | Description |
-|--------|-------------|
+| Option                   | Description                                            |
+| ------------------------ | ------------------------------------------------------ |
 | `-p, --path, --pkg-path` | Package directory path (auto-detected if not provided) |
-| `--repo-root` | Repository root (auto-detected from `.git`) |
-| `--is-bot` | CI mode: no prompts, fail on missing decisions |
-| `--skip-open` | Skip opening files in editor |
-| `--tag-prefix` | Git tag prefix (e.g., `v` for `v1.0.0`) |
+| `--repo-root`            | Repository root (auto-detected from `.git`)            |
+| `--is-bot`               | CI mode: no prompts, fail on missing decisions         |
+| `--skip-open`            | Skip opening files in editor                           |
+| `--tag-prefix`           | Git tag prefix (e.g., `v` for `v1.0.0`)                |
 
 ### Command Reference
 
-| Category | Commands | Description | Docs |
-|----------|----------|-------------|------|
-| Workflow | `pre-change`, `pre-commit`, `post-merge`, `change-base` | Development lifecycle commands | [docs/workflows](workflows/index.md) |
-| Changelog | `chore`, `promote`, `release-notes` | Changelog management | [docs/changelog](changelog/index.md) |
-| Stability | `exp`, `ga`, `dep` | Stability level management | [docs/stability](stability/index.md) |
-| API | `diff-api`, `dump-api` | API comparison and export | [docs/api_commands](api_commands/index.md) |
-| Generation | `gen-docs` | Generate API documentation | [docs/generate](generate/index.md) |
-| Examples | `gen-example-prompt`, `check-examples` | Example doc generation and validation | [docs/example](example/index.md) |
+| Category   | Commands                                                | Description                           | Docs                                            |
+| ---------- | ------------------------------------------------------- | ------------------------------------- | ----------------------------------------------- |
+| Workflow   | `pre-change`, `pre-commit`, `post-merge`, `change-base` | Development lifecycle commands        | [docs/workflows](workflows/index.md)       |
+| Changelog  | `chore`, `promote`, `release-notes`                     | Changelog management                  | [docs/changelog](changelog/index.md)       |
+| Stability  | `exp`, `ga`, `dep`                                      | Stability level management            | [docs/stability](stability/index.md)       |
+| API        | `diff-api`, `dump-api`                                  | API comparison and export             | [docs/api_commands](api_commands/index.md) |
+| Generation | `gen-docs`                                              | Generate API documentation            | [docs/generate](generate/index.md)         |
+| Examples   | `gen-example-prompt`, `check-examples`                  | Example doc generation and validation | [docs/example](example/index.md)           |
 
 ### When to Use Workflow Commands
 
-| Scenario | Command |
-|----------|---------|
-| Added or removed symbols | `pre-change` |
-| Final validation before commit | `pre-commit` |
-| Single command for everything | `pre-change --full` |
-| CI/CD pipeline | `pre-commit` (bot mode) |
-| Re-targeted a stacked PR | `change-base --new-base main` |
+| Scenario                       | Command                       |
+| ------------------------------ | ----------------------------- |
+| Added or removed symbols       | `pre-change`                  |
+| Final validation before commit | `pre-commit`                  |
+| Single command for everything  | `pre-change --full`           |
+| CI/CD pipeline                 | `pre-commit` (bot mode)       |
+| Re-targeted a stacked PR       | `change-base --new-base main` |
 
 - **`pre-change`** handles interactive decisions (expose/hide symbols, delete/rename)
 - **`pre-commit`** validates all decisions are made (fails in bot mode if prompts needed), syncs generated files, regenerates docs, and runs the dirty check
@@ -137,7 +138,7 @@ pkg-ext [OPTIONS] COMMAND
 
 ```toml
 [user]
-editor = "cursor"  # or "code", "vim", etc.
+editor = "zed"  # or "cursor", "code", "vim", etc.
 skip_open_in_editor = false
 ```
 
@@ -198,12 +199,13 @@ name: version_cap
 type: max_bump_type
 max_bump: patch
 reason: Documentation-only release
-ts: '2026-01-17T14:35:00+00:00'
+ts: "2026-01-17T14:35:00+00:00"
 ```
 
 ### Dev Mode
 
 The `pre-commit` command enables dev mode, which writes to `-dev` suffixed files:
+
 - `.groups-dev.yaml` instead of `.groups.yaml`
 - `CHANGELOG-dev.md` instead of `CHANGELOG.md`
 
@@ -213,16 +215,16 @@ This allows iterating on changelog entries during development without modifying 
 
 ### Files Updated During PR
 
-| File | Purpose | Editable |
-|------|---------|----------|
-| `.changelog/{pr}.yaml` | Changelog actions for this PR | Yes |
-| `.groups-dev.yaml` | Group assignments (dev copy) | No |
-| `CHANGELOG-dev.md` | Human-readable changelog (dev copy) | No |
-| `{pkg}.api-dev.yaml` | API dump for dev comparison (gitignored) | No |
-| `{pkg}/__init__.py` | Package exports (VERSION unchanged) | No |
-| `{pkg}/{group}.py` | Group re-export modules | No |
-| `{pkg}/_warnings.py` | Stability warning decorators | No |
-| `docs/**/*.md` | API documentation | Yes (outside markers) |
+| File                   | Purpose                                  | Editable              |
+| ---------------------- | ---------------------------------------- | --------------------- |
+| `.changelog/{pr}.yaml` | Changelog actions for this PR            | Yes                   |
+| `.groups-dev.yaml`     | Group assignments (dev copy)             | No                    |
+| `CHANGELOG-dev.md`     | Human-readable changelog (dev copy)      | No                    |
+| `{pkg}.api-dev.yaml`   | API dump for dev comparison (gitignored) | No                    |
+| `{pkg}/__init__.py`    | Package exports (VERSION unchanged)      | No                    |
+| `{pkg}/{group}.py`     | Group re-export modules                  | No                    |
+| `{pkg}/_warnings.py`   | Stability warning decorators             | No                    |
+| `docs/**/*.md`         | API documentation                        | Yes (outside markers) |
 
 - `__init__.py` exports are updated but VERSION remains unchanged until release
 - Symbol doc pages include a "Changes" table showing unreleased modifications
@@ -233,14 +235,14 @@ This allows iterating on changelog entries during development without modifying 
 
 These files are updated by `post-merge` after PR is merged (main branch only):
 
-| File | What Changes |
-|------|--------------|
-| `.groups.yaml` | Copied from `.groups-dev.yaml` |
-| `CHANGELOG.md` | Copied from `CHANGELOG-dev.md` |
-| `{pkg}/__init__.py` | VERSION updated to new version |
-| `pyproject.toml` | Version field updated (if used) |
-| `{pkg}.api.yaml` | Regenerated with new version |
-| `docs/**/*.md` | Unreleased changes become versioned |
+| File                | What Changes                        |
+| ------------------- | ----------------------------------- |
+| `.groups.yaml`      | Copied from `.groups-dev.yaml`      |
+| `CHANGELOG.md`      | Copied from `CHANGELOG-dev.md`      |
+| `{pkg}/__init__.py` | VERSION updated to new version      |
+| `pyproject.toml`    | Version field updated (if used)     |
+| `{pkg}.api.yaml`    | Regenerated with new version        |
+| `docs/**/*.md`      | Unreleased changes become versioned |
 
 ### File Contents Examples
 
@@ -288,6 +290,7 @@ class MyPkgDeprecationWarning(MyPkgWarning, DeprecationWarning): ...
 ## Symbol Detection
 
 The tool parses Python files using AST to find:
+
 - **Functions** - Public functions (not starting with `_`)
 - **Classes** - Public classes
 - **Exceptions** - Classes inheriting from `Exception` or `BaseException`
@@ -295,6 +298,7 @@ The tool parses Python files using AST to find:
 - **Global Variables** - UPPERCASE names with 2+ characters
 
 Files skipped:
+
 - `__init__.py`, `__main__.py` (dunder files)
 - `*_test.py`, `test_*.py`, `conftest.py` (test files)
 - Files starting with the configured `file_header` (already generated)
@@ -317,25 +321,26 @@ During `pre-commit`, pkg-ext compares `{pkg}.api.yaml` (baseline from last relea
 
 ### Detected Change Types
 
-| Change | Breaking? | `change_kind` |
-|--------|-----------|---------------|
-| Parameter removed | Yes | `param_removed` |
-| Required parameter added | Yes | `required_param_added` |
-| Parameter type changed | Yes | `param_type_changed` |
-| Return type changed | Yes | `return_type_changed` |
-| Default removed | Yes | `default_removed` |
-| Required field added | Yes | `required_field_added` |
-| Field removed | Yes | `field_removed` |
-| Base class removed | Yes | `base_class_removed` |
-| Base class added | No | `base_class_added` |
-| Optional parameter added | No | `optional_param_added` |
-| Default added | No | `default_added` |
-| Default changed | No | `default_changed` |
-| Optional field added | No | `optional_field_added` |
+| Change                   | Breaking? | `change_kind`          |
+| ------------------------ | --------- | ---------------------- |
+| Parameter removed        | Yes       | `param_removed`        |
+| Required parameter added | Yes       | `required_param_added` |
+| Parameter type changed   | Yes       | `param_type_changed`   |
+| Return type changed      | Yes       | `return_type_changed`  |
+| Default removed          | Yes       | `default_removed`      |
+| Required field added     | Yes       | `required_field_added` |
+| Field removed            | Yes       | `field_removed`        |
+| Base class removed       | Yes       | `base_class_removed`   |
+| Base class added         | No        | `base_class_added`     |
+| Optional parameter added | No        | `optional_param_added` |
+| Default added            | No        | `default_added`        |
+| Default changed          | No        | `default_changed`      |
+| Optional field added     | No        | `optional_field_added` |
 
 ### Auto-Generated Actions
 
 API diff creates `BreakingChangeAction` or `AdditionalChangeAction` entries with `auto_generated: true`. These are:
+
 - Replaced on each `pre-commit` run
 - Keyed by `(name, group, type, change_kind)` for deduplication
 - Timestamps preserved for unchanged changes
@@ -349,40 +354,48 @@ When no baseline `{pkg}.api.yaml` exists, diff is skipped (nothing to compare ag
 ## Limitations
 
 ### Symbol Detection
+
 - **Type aliases require `T` suffix** - e.g., `ConfigT` not `Config`
 - **Global vars require UPPERCASE** - e.g., `DEFAULT_TIMEOUT` not `default_timeout`
 - **Exceptions require `Error` suffix** - e.g., `ParseError` not `ParseException`
 - **No relative import support** - Only `from pkg.module import ...` is tracked
 
 ### Group Handling
+
 - **One group per module** - All symbols from a module belong to the same group
 - **Cannot move symbols between groups** - Once assigned, module-to-group mapping is fixed
 - **Root group always exists** - Cannot be removed, used for top-level exports
 
 ### Git Requirements
+
 - **Requires `gh` CLI** for PR info detection
 - **PR number in commit message** - supports `Merge pull request #123 from ...` and squash merge `... (#123)` formats
 - **Single remote assumed** - Uses first remote for URL
 
 ### Changelog
+
 - **PR-based storage** - Each PR gets one `.yaml` file
 - **No conflict resolution** - Manual merge of `.changelog/` files needed
 - **Archiving by PR number** - Old entries archived to `.changelog/000/*.yaml`
 
 ### Version Bumping
+
 - **SemVer only** - No calendar versioning support
 - **`pyproject.toml` or `__init__.py`** - Version must exist in one of these
 - **Pre-release suffixes** - Supports `rc`, `a` (alpha), `b` (beta)
 
 ### Interactive Mode
+
 - **Removed reference handling incomplete** - `select_ref` and `select_multiple_ref_state` raise `NotImplementedError`. This breaks rename workflows when symbols are removed.
 - **Alias creation not implemented** - `confirm_create_alias` always returns `False`
 
 ### Stability
+
 - **Non-callable symbols** - Constants and type aliases in experimental/deprecated groups don't emit warnings. `@experimental` and `@deprecated` only work on functions and classes.
 - **Arg-level only for GA groups** - Cannot track arg-level stability changes until group is GA.
 
 ### API Diff
+
 - **No rename detection** - Renames are treated as remove + add (two separate actions)
 - **Return types always breaking** - No semantic analysis (e.g., returning subclass is flagged as breaking)
 - **Factory defaults** - Defaults using `"..."` (factory pattern) may cause false positives
