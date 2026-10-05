@@ -108,8 +108,8 @@ pkg-ext [OPTIONS] COMMAND
 
 ### Command Reference
 
-| Category   | Commands                                                | Description                           | Docs                                       |
-| ---------- | ------------------------------------------------------- | ------------------------------------- | ------------------------------------------ |
+| Category   | Commands                                                | Description                           | Docs                                            |
+| ---------- | ------------------------------------------------------- | ------------------------------------- | ----------------------------------------------- |
 | Workflow   | `pre-change`, `pre-commit`, `post-merge`, `change-base` | Development lifecycle commands        | [docs/workflows](workflows/index.md)       |
 | Changelog  | `chore`, `promote`, `release-notes`                     | Changelog management                  | [docs/changelog](changelog/index.md)       |
 | Stability  | `exp`, `ga`, `dep`                                      | Stability level management            | [docs/stability](stability/index.md)       |
